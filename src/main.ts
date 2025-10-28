@@ -1,6 +1,6 @@
 import Konva from "konva";
 import type { ScreenSwitcher, Screen } from "./types";
-// import { HomeScreenController } from "./screens/HomeScreen/HomeScreenController";
+import { HomeScreenController } from "./screens/HomeScreen/HomeScreenController";
 import { STAGE_WIDTH, STAGE_HEIGHT } from "./constants";
 
 class App implements ScreenSwitcher {
@@ -21,16 +21,16 @@ class App implements ScreenSwitcher {
 		this.stage.add(this.layer);
 
 		// Initialize all screen controllers
-		// this.homeController = new HomeScreenController(this);
+		this.homeController = new HomeScreenController(this);
 
 		// Add all screen groups to the layer
-		// this.layer.add(this.homeController.getView().getGroup());
+		this.layer.add(this.homeController.getView().getGroup());
 
 		// Draw the layer
 		this.layer.draw();
 
 		// Start with home screen visible
-		// this.homeController.getView().show();
+		this.homeController.getView().show();
 	}
 
 	switchToScreen(screen: Screen): void {
