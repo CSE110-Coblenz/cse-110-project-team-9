@@ -48,6 +48,10 @@ class App implements ScreenSwitcher {
 			// case "home":
 			// 	this.homeController.show();
 			// 	break;
+			
+			// case "char_select":
+            //     this.charSelectController.show();
+            //     break;
 		}
 	}
 }
