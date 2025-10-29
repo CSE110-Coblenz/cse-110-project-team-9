@@ -9,6 +9,7 @@ class App implements ScreenSwitcher {
 	private layer: Konva.Layer;
 
 	// private homeController: HomeScreenController;
+
 	private WizardGameController : WizardGameScreenController;
 
 	constructor(container: string) {
@@ -43,6 +44,7 @@ class App implements ScreenSwitcher {
 		switch (screen.type) {
 			case "WizardGame":
 				this.WizardGameController.startGame();
+				//TODO: return value wizard Game Exit();
 				break;
 
 			// case "home":
