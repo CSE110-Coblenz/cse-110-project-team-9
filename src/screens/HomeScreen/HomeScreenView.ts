@@ -13,20 +13,19 @@ export class HomeScreenView implements View {
 
 		/** Home Background */
 		const homebackground_img = new Image();
-		homebackground_img.src = "/home.png"; // TODO : NEED BACKGROUND IMAGE
+		homebackground_img.src = "images/home.png"; // TODO : NEED BACKGROUND IMAGE
 
 		/** Buttons */
 		this.startButtonImage = this.createImageButton(
-			"/placeholder.svg", // NEED BUTTON IMAGE
+			"images/placeholder.svg", // NEED BUTTON IMAGE
 			(STAGE_WIDTH - 200) / 2,
 			300,
 			200,
 			60
 		);
 
-
 		this.settingsButtonImage = this.createImageButton(
-			"/placeholder.svg", // NEED BUTTON IMAGE
+			"images/placeholder.svg", // NEED BUTTON IMAGE
 			(STAGE_WIDTH - 200) / 2,
 		    400,
 			200,
@@ -80,11 +79,11 @@ export class HomeScreenView implements View {
 	/**
 	 * Getters
 	 */
-	getStartButton(): Konva.Image | null {
+	getStartButton(): Konva.Image {
 		return this.startButtonImage;
 	}
 
-	getSettingsButton(): Konva.Image | null {
+	getSettingsButton(): Konva.Image {
 		return this.settingsButtonImage;
 	}
 
