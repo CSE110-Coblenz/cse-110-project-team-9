@@ -20,13 +20,20 @@ export class WizardPlayerViewer {
                 animation: this.currentAnimation,
                 //constant in a typescript from image atlas
                 animations: WIZARD_ANIMATIONS,
-                frameRate: 10,
+                frameRate: 10, //about .100 secondsd
                 frameIndex: 0,
                 scaleX: 4,
                 scaleY: 4,
                 imageSmoothingEnabled: false
             });
             this.group.add(this.sprite);
+            //disable smoothing (I know the unknown is just context warning otherwise)
+            const layer = this.group.getLayer();
+            if (layer) {
+                const ctx = layer.getContext() as unknown as CanvasRenderingContext2D;
+                ctx.imageSmoothingEnabled = false;
+            }
+
             this.sprite.start();
             
         };

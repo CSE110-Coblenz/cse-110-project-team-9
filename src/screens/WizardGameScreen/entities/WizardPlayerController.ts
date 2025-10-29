@@ -6,13 +6,16 @@ export class WizardPlayerController {
 
     constructor(private model: WizardPlayerModel, private view: WizardPlayerViewer) {}
 
+    /**
+     * add Listening functionality
+     */
     bindControls() {
         window.addEventListener("keydown", (e) => this.handleKeyDown(e));
         window.addEventListener("keyup", (e) => this.handleKeyUp(e));
     }
 
     /**
-     * 
+     * remove Listening functionality
      */
     unbindControls() {
         window.removeEventListener("keydown", (e) => this.handleKeyDown(e));
