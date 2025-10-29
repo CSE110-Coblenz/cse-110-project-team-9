@@ -8,6 +8,8 @@ export interface View {
 
 export type Screen =
 	// | { type: "home" }
+	   | { type: "WizardGame"}
+	   | { type: "WizardResult"}
 
 export abstract class ScreenController {
 	abstract getView(): View;
