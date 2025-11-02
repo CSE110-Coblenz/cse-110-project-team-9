@@ -11,13 +11,37 @@ export class HomeScreenView implements View {
 	constructor() {
 		this.group = new Konva.Group({ visible: true });
 
-		/** Home Background */
-		const homebackground_img = new Image();
-		homebackground_img.src = "images/home.png"; // TODO : NEED BACKGROUND IMAGE
+		const layer = new Konva.Layer();
+		layer.add(this.group);
+
+		/** Homescreen background video */
+		const video = document.createElement("video");
+		video.src = "/video/homescreen_video.mp4";
+		video.load(); //
+		video.style.display = "none";
+		
+		video.muted = true;
+		video.setAttribute("muted", "true");
+
+		const videoBackground = new Konva.Image({
+			image: video,
+			x: 0,
+			y: 0,
+			width: STAGE_WIDTH,
+			height: STAGE_HEIGHT,
+		});
+
+		this.group.add(videoBackground);
+
+		video.addEventListener("loadeddata", () => {
+			video.play().catch((err) => {
+			console.error("Video playback failed:", err);
+			});
+		});
 
 		/** Buttons */
 		this.startButtonImage = this.createImageButton(
-			"images/placeholder.svg", // NEED BUTTON IMAGE
+			"images/placeholder.svg",
 			(STAGE_WIDTH - 200) / 2,
 			300,
 			200,
@@ -25,30 +49,38 @@ export class HomeScreenView implements View {
 		);
 
 		this.settingsButtonImage = this.createImageButton(
-			"images/placeholder.svg", // NEED BUTTON IMAGE
+			"images/placeholder.svg",
 			(STAGE_WIDTH - 200) / 2,
-		    400,
+			400,
 			200,
 			60
 		);
 
-        homebackground_img.onload = () => {
-			const background = new Konva.Image({
-				image: homebackground_img,
-				x: 0,
-				y: 0,
-				width: STAGE_WIDTH,
-				height: STAGE_HEIGHT,
-			});
-			this.group.add(background);
-            this.group.add(this.startButtonImage,this.settingsButtonImage);
-		};
+		this.group.add(this.startButtonImage, this.settingsButtonImage);
+
+		const anim = new Konva.Animation(function () {
+			videoBackground.getLayer()?.batchDraw();
+		  }, layer);
+
+		anim.start();
+
+		video.addEventListener("ended", () => {
+			video.currentTime = 4.0;
+			video.play();
+		});
 	}
 
 	/**
 	 * Helper — Creating image button
 	 */
-	private createImageButton(src: string, x: number, y: number, width: number, height: number, visible: boolean = true ): Konva.Image {
+	private createImageButton(
+		src: string,
+		x: number,
+		y: number,
+		width: number,
+		height: number,
+		visible: boolean = true
+	): Konva.Image {
 		const img = new Image();
 		const button = new Konva.Image({
 			x,
@@ -56,7 +88,7 @@ export class HomeScreenView implements View {
 			width,
 			height,
 			visible,
-            image: undefined,
+			image: undefined,
 		});
 
 		img.src = src;
@@ -65,12 +97,12 @@ export class HomeScreenView implements View {
 			button.image(img);
 			this.group.add(button);
 
-            button.on('mouseover', function (e) {
-                e.target.getStage()!.container().style.cursor = 'pointer';
-            });
-            button.on('mouseout', function (e) {
-                e.target.getStage()!.container().style.cursor = 'default';
-            });
+			button.on("mouseover", function (e) {
+				e.target.getStage()!.container().style.cursor = "pointer";
+			});
+			button.on("mouseout", function (e) {
+				e.target.getStage()!.container().style.cursor = "default";
+			});
 		};
 
 		return button;
