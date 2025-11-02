@@ -5,8 +5,8 @@ import { STAGE_WIDTH, STAGE_HEIGHT } from "../../constants";
 export class HomeScreenView implements View {
 	private group: Konva.Group;
 
-	private startButtonImage: Konva.Image;
-	private settingsButtonImage: Konva.Image;
+	private homeStartButton: Konva.Group;
+	private homeSettingsButton: Konva.Group;
 
 	private gameTitle: Konva.Text;
 
@@ -93,72 +93,82 @@ export class HomeScreenView implements View {
 		 * Buttons (Start, Settings)
 		 */
 
-		this.startButtonImage = this.createImageButton(
-			"homescreen/images/placeholder.svg",
-			(STAGE_WIDTH - 200) / 2,
+		this.homeStartButton = this.createTextButton(
+			"Start Game",
+			STAGE_WIDTH / 2 - 225,
 			300,
-			200,
-			60
+			48
 		);
 
-		this.settingsButtonImage = this.createImageButton(
-			"homescreen/images/placeholder.svg",
-			(STAGE_WIDTH - 200) / 2,
+		this.homeSettingsButton = this.createTextButton(
+			"Settings",
+			STAGE_WIDTH / 2 - 190,
 			400,
-			200,
-			60
+			48
 		);
 
-		this.group.add(this.startButtonImage, this.settingsButtonImage);
+		this.group.add(this.homeStartButton, this.homeSettingsButton);
 	}
 
 	/**
-	 * Helper — Creating image button
+	 * Helper Funtion — Creating text button (transparent background)
 	 */
-	private createImageButton(
-		src: string,
+	private createTextButton(
+		text: string,
 		x: number,
 		y: number,
-		width: number,
-		height: number,
-		visible: boolean = true
-	): Konva.Image {
-		const img = new Image();
-		const button = new Konva.Image({
+		fontSize: number = 36,
+		fontFamily: string = "HomeScreenFont",
+		fill: string = "white"
+	): Konva.Group {
+		const buttonText = new Konva.Text({
+			text,
 			x,
 			y,
-			width,
-			height,
-			visible,
-			image: undefined,
+			fontSize,
+			fontFamily,
+			fill,
 		});
 
-		img.src = src;
+		// Invisible Button Area
+		const invisibleRect = new Konva.Rect({
+			x: buttonText.x() - buttonText.width() / 2,
+			y: buttonText.y(),
+			width: buttonText.width(),
+			height: buttonText.height(),
+			fill: "rgba(0,0,0,0)",
+		});
 
-		img.onload = () => {
-			button.image(img);
-			this.group.add(button);
+		const buttonGroup = new Konva.Group();
+		buttonGroup.add(invisibleRect, buttonText);
 
-			button.on("mouseover", function (e) {
-				e.target.getStage()!.container().style.cursor = "pointer";
-			});
-			button.on("mouseout", function (e) {
-				e.target.getStage()!.container().style.cursor = "default";
-			});
-		};
+		/**
+		 * Button Animation
+		 */
 
-		return button;
+		buttonGroup.on("mouseover", () => {
+			buttonText.fill("#ffd700");
+			document.body.style.cursor = "pointer";
+		});
+		buttonGroup.on("mouseout", () => {
+			buttonText.fill(fill);
+			document.body.style.cursor = "default";
+		});
+
+		this.group.add(buttonGroup);
+		return buttonGroup;
 	}
+
 
 	/**
 	 * Getters
 	 */
-	getStartButton(): Konva.Image {
-		return this.startButtonImage;
+	getStartButton(): Konva.Group {
+		return this.homeStartButton;
 	}
 
-	getSettingsButton(): Konva.Image {
-		return this.settingsButtonImage;
+	getSettingsButton(): Konva.Group {
+		return this.homeSettingsButton;
 	}
 
 	/**
