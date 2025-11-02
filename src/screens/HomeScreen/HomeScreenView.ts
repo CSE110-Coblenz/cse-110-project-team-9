@@ -8,15 +8,20 @@ export class HomeScreenView implements View {
 	private startButtonImage: Konva.Image;
 	private settingsButtonImage: Konva.Image;
 
+	private gameTitle: Konva.Text;
+
 	constructor() {
 		this.group = new Konva.Group({ visible: true });
 
 		const layer = new Konva.Layer();
 		layer.add(this.group);
 
-		/** Homescreen background video */
+		/** 
+		 * Homescreen Background Video 
+		 */
+
 		const video = document.createElement("video");
-		video.src = "/video/homescreen_video.mp4";
+		video.src = "/homescreen/video/homescreen_video.mp4";
 		video.load(); //
 		video.style.display = "none";
 		
@@ -33,15 +38,63 @@ export class HomeScreenView implements View {
 
 		this.group.add(videoBackground);
 
+		/**
+		 * Homescreen Background Video Animation
+		 */
+
+		// Play video when loaded
 		video.addEventListener("loadeddata", () => {
 			video.play().catch((err) => {
 			console.error("Video playback failed:", err);
 			});
 		});
 
-		/** Buttons */
+		// Animation to update video frames
+		const anim = new Konva.Animation(function () {
+			videoBackground.getLayer()?.batchDraw();
+		}, layer);
+		
+		// Start the animation
+		anim.start();
+
+		// Loop video from 4s to end
+		video.addEventListener("ended", () => {
+			video.currentTime = 4.0;
+			video.play();
+		});
+
+		/** 
+		 * Game Title 
+		 */
+
+		this.gameTitle = new Konva.Text({
+			x: STAGE_WIDTH / 2 - 350,
+			y: 120,
+			text: "Math Magic",
+			fontSize: 96,
+			fontFamily: "HomeScreenFont",
+			fill: "white",
+		});
+
+		this.group.add(this.gameTitle);
+
+		/**
+		 * Game Title Animation
+		 */
+
+		// Fade-In effect
+		this.gameTitle.opacity(0);
+		this.gameTitle.to({
+			opacity: 1,
+			duration: 3,
+		});
+
+		/** 
+		 * Buttons (Start, Settings)
+		 */
+
 		this.startButtonImage = this.createImageButton(
-			"images/placeholder.svg",
+			"homescreen/images/placeholder.svg",
 			(STAGE_WIDTH - 200) / 2,
 			300,
 			200,
@@ -49,7 +102,7 @@ export class HomeScreenView implements View {
 		);
 
 		this.settingsButtonImage = this.createImageButton(
-			"images/placeholder.svg",
+			"homescreen/images/placeholder.svg",
 			(STAGE_WIDTH - 200) / 2,
 			400,
 			200,
@@ -57,17 +110,6 @@ export class HomeScreenView implements View {
 		);
 
 		this.group.add(this.startButtonImage, this.settingsButtonImage);
-
-		const anim = new Konva.Animation(function () {
-			videoBackground.getLayer()?.batchDraw();
-		  }, layer);
-
-		anim.start();
-
-		video.addEventListener("ended", () => {
-			video.currentTime = 4.0;
-			video.play();
-		});
 	}
 
 	/**

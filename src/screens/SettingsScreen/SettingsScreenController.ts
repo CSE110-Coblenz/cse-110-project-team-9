@@ -17,7 +17,7 @@ export class SettingsScreenController extends ScreenController {
 			this.screenSwitcher.switchToScreen({ type: "home" });
 		});
 
-		const bar = this.view.getVolumeBar();
+		const bar = this.view.getbackground_VolumeBar();
 	}
 
     /**

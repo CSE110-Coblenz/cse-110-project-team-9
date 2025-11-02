@@ -5,7 +5,8 @@ import type { View } from "../../types";
 export class SettingsScreenView implements View {
 	private group: Konva.Group;
 	private closeButton: Konva.Image;
-	private volumeBar: Konva.Rect;
+	private background_volumeBar: Konva.Rect;
+	private soundeffect_volumeBar: Konva.Rect;
 
 	constructor() {
 		this.group = new Konva.Group({ visible: false });
@@ -39,27 +40,37 @@ export class SettingsScreenView implements View {
             x: (STAGE_WIDTH - SETTINGS_WIDTH) / 2 + 20,
             y: (STAGE_HEIGHT - SETTINGS_HEIGHT) / 2 + 20,
             text: "Settings",
-            fontSize: 24,
-            fontFamily: "Arial",
+            fontSize: 30,
+            fontFamily: "Jacquard 12",
             fill: "black",
         });
 
 		this.group.add(settingsPanel, settingsPanel_title);
 
         /**
-         * Volume Slider
+         * Volume Slider (Background Music & Sound Effects)
          */
 
-		this.volumeBar = new Konva.Rect({
+		this.background_volumeBar = new Konva.Rect({
 			x: (STAGE_WIDTH - SETTINGS_WIDTH) / 2 + 80,
-			y: (STAGE_HEIGHT - SETTINGS_HEIGHT) / 2 + 140,
-			width: 200,
+			y: (STAGE_HEIGHT - SETTINGS_HEIGHT) / 2 + 120,
+			width: 240,
 			height: 10,
 			fill: "gray",
 			cornerRadius: 5,
 		});
 
-		this.group.add(this.volumeBar);
+		this.soundeffect_volumeBar = new Konva.Rect({
+			x: (STAGE_WIDTH - SETTINGS_WIDTH) / 2 + 80,
+			y: (STAGE_HEIGHT - SETTINGS_HEIGHT) / 2 + 190,
+			width: 240,
+			height: 10,
+			fill: "gray",
+			cornerRadius: 5,
+		});
+
+		this.group.add(this.background_volumeBar);
+		this.group.add(this.soundeffect_volumeBar);
 
         /**
          *  Close Button
@@ -101,8 +112,12 @@ export class SettingsScreenView implements View {
 		return this.closeButton;
 	}
 
-	getVolumeBar(): Konva.Rect {
-		return this.volumeBar;
+	getbackground_VolumeBar(): Konva.Rect {
+		return this.background_volumeBar;
+	}
+
+	getsoundeffect_VolumeBar(): Konva.Rect {
+		return this.soundeffect_volumeBar;
 	}
 
 	getGroup(): Konva.Group {
