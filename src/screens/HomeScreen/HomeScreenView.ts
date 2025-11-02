@@ -155,6 +155,13 @@ export class HomeScreenView implements View {
 			document.body.style.cursor = "default";
 		});
 
+		// Fade-In effect
+		buttonGroup.opacity(0);
+		buttonGroup.to({
+			opacity: 1,
+			duration: 3,
+		});
+
 		this.group.add(buttonGroup);
 		return buttonGroup;
 	}
