@@ -3,6 +3,8 @@ export class PlayerModel {
     public y: number;
     public speed: number;
 
+    //TODO: refactor x and y pos into generic entity model perhaps
+    
     /**
      * 
      * @param x x pos in game

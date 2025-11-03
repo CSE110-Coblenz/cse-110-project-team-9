@@ -1,16 +1,16 @@
 import type { PlayerModel } from "./PlayerModel";
 import type { PlayerViewer } from "./PlayerViewer";
-import type { Collidable, AABB } from "../CollisionManager";
+import type { Collidable, AABB } from "../../CollisionManager";
 
-export class PlayerController implements Collidable {
+export class PlayerController<A extends string> implements Collidable {
     private keys: Record<string, boolean> = {};
     private walkSound: HTMLAudioElement;
     private attackSound: HTMLAudioElement;
     private bowshootSound: HTMLAudioElement;
 
-    //TODO: add audio files
-    constructor(private model: PlayerModel, private view: PlayerViewer) {
+    constructor(private model: PlayerModel, private view: PlayerViewer<A>) {
         //TODO: grab correct foramt .100 seconds per frame for any given animation
+        //TODO: move this to knight.ts
         this.walkSound = new Audio("public/WizardMiniGame/Audio/8-bit-grass-footsteps-2-408574.mp3")
         this.attackSound = new Audio("public/WizardMiniGame/Audio/sword-slash-and-swing-185432.mp3")
         this.bowshootSound = new Audio("public/WizardMiniGame/Audio/bow_release-85040.mp3")
@@ -90,6 +90,8 @@ export class PlayerController implements Collidable {
             dx /= mag;
             dy /= mag;
         }
+        
+        //TODO: fix generic class removal
 
         //speed on time about 150 pixel per second from last move
         this.model.x += dx * this.model.speed * deltaTime;
@@ -97,22 +99,22 @@ export class PlayerController implements Collidable {
 
         //actions and animation only one at a time
         if (dx !== 0 || dy !== 0) {
-            this.view.playAnimation("walk");
+            this.view.playAnimation("walk" as A);
             this.walkSound.play();
 
         } else if (this.keys["f"]) {
-            this.view.playAnimation("attackslash");
+            this.view.playAnimation("attackslash" as A);
             this.attackSound.play();
 
         } else if (this.keys["e"]) {
-            this.view.playAnimation("attackdown");
+            this.view.playAnimation("attackdown" as A);
             this.attackSound.play();
 
         } else if (this.keys["r"]) {
-            this.view.playAnimation("attackbow");
+            this.view.playAnimation("attackbow" as A);
             this.bowshootSound.play();
         } else {
-            this.view.playAnimation("idle");
+            this.view.playAnimation("idle" as A);
             
         }
         this.view.render(this.model);

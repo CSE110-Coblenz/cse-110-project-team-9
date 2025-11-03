@@ -1,17 +1,21 @@
 import Konva from "konva";
-
-//Notice change module for player if need
-import { WIZARD_ANIMATIONS as ANIMATIONS, type WizardAnimation as Animation, Wizard as playerimg} from "./Wizard";
-
+//MVC imports
 import { PlayerModel } from "./PlayerModel";
-import { computeAllAnimationBoundingBoxes } from "./CreateBoundingBox";
-import { DebugBoundingBoxViewer } from "./DebugBoundingBoxViewer";
+//TODO: should I computer the bounding boxes in types intead
+import { computeAllAnimationBoundingBoxes } from "../CreateBoundingBox";
+//TODO: global turn on and off debug bounding boxes
+import { DebugBoundingBoxViewer } from "../DebugBoundingBox";
 
-export class PlayerViewer {
+export interface EntityType<A extends string>{
+    image: string;
+    animations: Record<A, number[]>;
+}
+
+export class PlayerViewer<A extends string> {
     private sprite: Konva.Sprite | null = null;
-    private currentAnimation: Animation = "idle";
+    private currentAnimation: A;
     // caches only the pixel bounding boxes per animation e.g. idle , walk, attack
-    private frameBoundingBoxes: Partial<Record<Animation, { x: number; y: number; width: number; height: number }[]>> = {};
+    private frameBoundingBoxes: Partial<Record<string, { x: number; y: number; width: number; height: number }[]>> = {};
     // opacity check for sprites
     private alphaThreshold = 1; 
     //add increase padding around pixel perfect bounding box
@@ -20,29 +24,39 @@ export class PlayerViewer {
     private debugViewer!: DebugBoundingBoxViewer;
 
     /**
-     * constructs sprite
+     * 
      * @param group 
+     * @param entityConfig grabs a type for object with corresponding animations
      */
-    constructor(private group: Konva.Group) {
+    constructor(
+        private group: Konva.Group,
+        private entity: EntityType<A>,
+        initialAnimation: A
+    ) {
+        this.currentAnimation = initialAnimation;
         const player = new Image();
+
         player.onload = () => {
             this.sprite = new Konva.Sprite({
                 x: 150,
                 y: 60,
                 image: player,
                 animation: this.currentAnimation,
-                //constant in a typescript from image atlas
-                animations: ANIMATIONS,
+                animations: this.entity.animations,
                 frameRate: 10, //about .100 secondsd
                 frameIndex: 0,
                 scaleX: 4,
                 scaleY: 4,
-                imageSmoothingEnabled: false
             });
             this.group.add(this.sprite);
 
             //compute bounding box for given character
-            this.frameBoundingBoxes = computeAllAnimationBoundingBoxes(player, ANIMATIONS as Record<string, number[]>, this.alphaThreshold, this.padding);
+            this.frameBoundingBoxes = computeAllAnimationBoundingBoxes(
+                player,
+                this.entity.animations as Record<string, number[]>,
+                this.alphaThreshold,
+                this.padding
+            );
 
             //TODO: might move fix somewhere else
             //disable smoothing (I know the unknown is just context warning otherwise)
@@ -53,15 +67,14 @@ export class PlayerViewer {
             }
 
             this.sprite.start();
-
             //DEBUG: bounding box red outline
             this.debugViewer = new DebugBoundingBoxViewer(this.group);
         };
         //inside public file
-        player.src = playerimg;
+        player.src = this.entity.image;
     }
 
-    //TODO: interface move
+    //TODO: interface move entity generic
 
     /**
      * 
@@ -71,12 +84,8 @@ export class PlayerViewer {
         if(!this.sprite) return null; 
         
         const frames = this.frameBoundingBoxes[this.currentAnimation];
-
         //TODO: fix partial null values in animations frame I have no clue
-        if (!frames) {
-            console.warn(`No frame bounding boxes for animation`);
-            return null;
-        }
+        if (!frames?.length) return null;
 
         const frameIndex = Math.max(0, Math.min(frames.length - 1, this.sprite.frameIndex()));
         const frameBox = frames[frameIndex];
@@ -84,15 +93,15 @@ export class PlayerViewer {
         const scaleX = this.sprite.scaleX();
         const scaleY = this.sprite.scaleY();
 
-        const worldX = this.sprite.x() + frameBox.x * scaleX;
-        const worldY = this.sprite.y() + frameBox.y * scaleY;
-        const worldWidth = frameBox.width * scaleX;
-        const worldHeight = frameBox.height * scaleY;
-
-        return { x: worldX, y: worldY, width: worldWidth, height: worldHeight };
+        return{
+            x: this.sprite.x() + frameBox.x * scaleX,
+            y: this.sprite.y() + frameBox.y * scaleY,
+            width: frameBox.width * scaleX,
+            height: frameBox.height * scaleY
+        }
     }
 
-    //TODO: interface move
+    //TODO: interface move entity genric
 
     /**
      * debuging function to toggle bounding box rendering   
@@ -106,7 +115,7 @@ export class PlayerViewer {
      * plays an animations through completion
      * @param name grabs animation name
      */
-    public playAnimation(name: Animation): void {
+    public playAnimation(name: A): void {
         if (this.sprite && name !== this.currentAnimation) {
             this.sprite.animation(name);
             this.sprite.start();
@@ -114,7 +123,7 @@ export class PlayerViewer {
         }
     }
 
-    //TODO: interface move
+    //TODO: interface move entity generic
 
     /**
      * Renders parameters for controller movement x and y pos

@@ -65,4 +65,6 @@ export const KNIGHT_ANIMATIONS: Record<KnightAnimation, number[]> = {
 /**
  * image atlas export
  */
-export const Wizard = "public/WizardMiniGame/Sprites/Knight.png";
+export const Knight = "public/WizardMiniGame/Sprites/Knight.png";
+
+//TODO: move creating dynamic bounding boxes here

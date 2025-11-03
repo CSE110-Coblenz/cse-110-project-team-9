@@ -7,30 +7,21 @@ import { WizardGameScreenViewer } from "./WizardGameScreenViewer";
 //Collision Manager
 import { CollisionManager } from "./CollisionManager";
 //Player MVC
-import { PlayerModel } from "./entities/PlayerModel";
-import { PlayerViewer } from "./entities/PlayerViewer";
-import { PlayerController } from "./entities/PlayerController";
-//projectile MVC
-import { WizardProjectileController } from "./entities/WizardProjectileController";
-import { WizardProjectileModel } from "./entities/WizardProjectileModel";
-import { WizardProjectileViewer } from "./entities/WizardProjectileViewer";
-//Math MVC (WIP)
-// import { WizardMathController } from "./MathController";
-// import { WizardMathModel } from "./MathModel";
-// import { WizardMathViewer } from "./MathViewer";
-//Tower MVC
+import { PlayerModel } from "./entities/player/PlayerModel";
+import { PlayerViewer } from "./entities/player/PlayerViewer";
+import { PlayerController } from "./entities/player/PlayerController";
+//Player type
+import { PlayerFactory } from "./entities/player/PlayerFactory";
+import type { WizardAnimation } from "./entities/types/Wizard";
+import type { KnightAnimation } from "./entities/types/Knight";
 
 export class WizardGameScreenController extends ScreenController {
     private model: WizardGameScreenModel;
     private view: WizardGameScreenViewer;
 
     private playerModel: PlayerModel;
-    private playerViewer: PlayerViewer;
-    private playerController: PlayerController;
-
-    private WizardprojectileModel: WizardProjectileModel;
-    private WizardprojectileViewer: WizardProjectileViewer;
-    private WizardprojectileController: WizardProjectileController;
+    private playerViewer: PlayerViewer<WizardAnimation | KnightAnimation>;
+    private playerController: PlayerController<WizardAnimation | KnightAnimation>;
 
     private collisionManager: CollisionManager;
 
@@ -46,15 +37,10 @@ export class WizardGameScreenController extends ScreenController {
         this.model = new WizardGameScreenModel();
         this.view = new WizardGameScreenViewer();
 
-        //wizard player MVC
+        //player MVC
         this.playerModel = new PlayerModel();
-        this.playerViewer = new PlayerViewer(this.view.getGroup());
+        this.playerViewer = PlayerFactory.create("knight",this.view.getGroup());
         this.playerController = new PlayerController(this.playerModel, this.playerViewer);
-
-        //wizard projectiles MVC
-        this.WizardprojectileModel = new WizardProjectileModel();
-        this.WizardprojectileViewer = new WizardProjectileViewer(this.view.getGroup());
-        this.WizardprojectileController = new WizardProjectileController(this.WizardprojectileModel, this.WizardprojectileViewer);
 
         //collision betweene entities
         this.collisionManager = new CollisionManager();
@@ -78,9 +64,8 @@ export class WizardGameScreenController extends ScreenController {
 
         //register collidables e.g. player for now. projectiles and blocks to added later
         this.collisionManager.register(this.playerController);
-        this.collisionManager.register(this.WizardprojectileController);
 
-        // TODO move to debu
+        // TODO move to debug functionality
         // add debug key listener (press 'b' to toggle pixel-perfect boundbox display)
         window.addEventListener('keydown', this.debugKeyHandler);
         //current time to get deltas
@@ -98,7 +83,6 @@ export class WizardGameScreenController extends ScreenController {
 
         //update entities with delta from last frame
         this.playerController.update(delta);
-        this.WizardprojectileController.update(delta);
         
         //check collisions between entities (not boundaries)  
         this.collisionManager.update();
@@ -116,7 +100,6 @@ export class WizardGameScreenController extends ScreenController {
 
         //remove collidables
         this.collisionManager.unregister(this.playerController);
-        this.collisionManager.unregister(this.WizardprojectileController);
 
         //TODO: move to debug
         //remove debug key listener
