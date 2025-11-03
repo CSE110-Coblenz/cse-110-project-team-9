@@ -4,19 +4,20 @@ import type { ScreenSwitcher } from "../../types";
 //Wizard Main
 import { WizardGameScreenModel } from "./WizardGameScreenModel";
 import { WizardGameScreenViewer } from "./WizardGameScreenViewer";
-//Player MVC
-import { WizardPlayerModel } from "./entities/WizardPlayerModel";
-import { WizardPlayerViewer } from "./entities/WizardPlayerViewer";
-import { WizardPlayerController } from "./entities/WizardPlayerController";
+//Collision Manager
 import { CollisionManager } from "./CollisionManager";
+//Player MVC
+import { WizardPlayerModel } from "./entities/PlayerModel";
+import { WizardPlayerViewer } from "./entities/PlayerViewer";
+import { WizardPlayerController } from "./entities/PlayerController";
 //projectile MVC
 import { WizardProjectileController } from "./entities/WizardProjectileController";
 import { WizardProjectileModel } from "./entities/WizardProjectileModel";
 import { WizardProjectileViewer } from "./entities/WizardProjectileViewer";
-//Math MVC
-// import { WizardMathController } from "./entities/WizardProjectileController";
-// import { WizardMathModel } from "./entities/WizardProjectileModel";
-// import { WizardMathViewer } from "./entities/WizardProjectileViewer";
+//Math MVC (WIP)
+// import { WizardMathController } from "./MathController";
+// import { WizardMathModel } from "./MathModel";
+// import { WizardMathViewer } from "./MathViewer";
 //Tower MVC
 
 export class WizardGameScreenController extends ScreenController {
@@ -58,6 +59,7 @@ export class WizardGameScreenController extends ScreenController {
         //collision betweene entities
         this.collisionManager = new CollisionManager();
 
+        //TODO: move to debug
         //debug key handler to toggle bounding boxes
         this.debugKeyHandler = (e: KeyboardEvent) => {
             if (e.key === 'b') {
@@ -78,6 +80,7 @@ export class WizardGameScreenController extends ScreenController {
         this.collisionManager.register(this.WizardplayerController);
         this.collisionManager.register(this.WizardprojectileController);
 
+        // TODO move to debu
         // add debug key listener (press 'b' to toggle pixel-perfect boundbox display)
         window.addEventListener('keydown', this.debugKeyHandler);
         //current time to get deltas
@@ -97,7 +100,7 @@ export class WizardGameScreenController extends ScreenController {
         this.WizardplayerController.update(delta);
         this.WizardprojectileController.update(delta);
         
-        //check collisions  
+        //check collisions between entities (not boundaries)  
         this.collisionManager.update();
 
         //repeat update loop keep reponsetime smooth
@@ -115,6 +118,7 @@ export class WizardGameScreenController extends ScreenController {
         this.collisionManager.unregister(this.WizardplayerController);
         this.collisionManager.unregister(this.WizardprojectileController);
 
+        //TODO: move to debug
         //remove debug key listener
         window.removeEventListener('keydown', this.debugKeyHandler);
     }
