@@ -1,10 +1,10 @@
 import Konva from "konva";
 import { WIZARD_ANIMATIONS, type WizardAnimation } from "./WizardAnimations";
-import { WizardPlayerModel } from "./PlayerModel";
+import { PlayerModel } from "./PlayerModel";
 import { computeAllAnimationBoundingBoxes } from "./CreateBoundingBox";
 import { DebugBoundingBoxViewer } from "./DebugBoundingBoxViewer";
 
-export class WizardPlayerViewer {
+export class PlayerViewer {
     private sprite: Konva.Sprite | null = null;
     private currentAnimation: WizardAnimation = "idle";
     // caches only the pixel bounding boxes per animation e.g. idle , walk, attack
@@ -54,7 +54,7 @@ export class WizardPlayerViewer {
             this.debugViewer = new DebugBoundingBoxViewer(this.group);
         };
         //inside public file
-        wizard.src = "/Wizard.png";
+        wizard.src = "public/WizardMiniGame/Sprites/Wizard.png";
     }
 
     //TODO: interface move
@@ -113,7 +113,7 @@ export class WizardPlayerViewer {
      * @param model wizard parmeters speed,x,y
      * @returns Nonexistent entity
      */
-    public render(model: WizardPlayerModel): void {
+    public render(model: PlayerModel): void {
         if (!this.sprite) return;
         this.sprite.x(model.x);
         this.sprite.y(model.y);

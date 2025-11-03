@@ -7,9 +7,9 @@ import { WizardGameScreenViewer } from "./WizardGameScreenViewer";
 //Collision Manager
 import { CollisionManager } from "./CollisionManager";
 //Player MVC
-import { WizardPlayerModel } from "./entities/PlayerModel";
-import { WizardPlayerViewer } from "./entities/PlayerViewer";
-import { WizardPlayerController } from "./entities/PlayerController";
+import { PlayerModel } from "./entities/PlayerModel";
+import { PlayerViewer } from "./entities/PlayerViewer";
+import { PlayerController } from "./entities/PlayerController";
 //projectile MVC
 import { WizardProjectileController } from "./entities/WizardProjectileController";
 import { WizardProjectileModel } from "./entities/WizardProjectileModel";
@@ -24,9 +24,9 @@ export class WizardGameScreenController extends ScreenController {
     private model: WizardGameScreenModel;
     private view: WizardGameScreenViewer;
 
-    private WizardplayerModel: WizardPlayerModel;
-    private WizardplayerViewer: WizardPlayerViewer;
-    private WizardplayerController: WizardPlayerController;
+    private playerModel: PlayerModel;
+    private playerViewer: PlayerViewer;
+    private playerController: PlayerController;
 
     private WizardprojectileModel: WizardProjectileModel;
     private WizardprojectileViewer: WizardProjectileViewer;
@@ -47,9 +47,9 @@ export class WizardGameScreenController extends ScreenController {
         this.view = new WizardGameScreenViewer();
 
         //wizard player MVC
-        this.WizardplayerModel = new WizardPlayerModel();
-        this.WizardplayerViewer = new WizardPlayerViewer(this.view.getGroup());
-        this.WizardplayerController = new WizardPlayerController(this.WizardplayerModel, this.WizardplayerViewer);
+        this.playerModel = new PlayerModel();
+        this.playerViewer = new PlayerViewer(this.view.getGroup());
+        this.playerController = new PlayerController(this.playerModel, this.playerViewer);
 
         //wizard projectiles MVC
         this.WizardprojectileModel = new WizardProjectileModel();
@@ -65,8 +65,8 @@ export class WizardGameScreenController extends ScreenController {
             if (e.key === 'b') {
                 this.showBoundingBoxes = !this.showBoundingBoxes;
                 // toggle viewer debug bbox
-                if (this.WizardplayerViewer && typeof (this.WizardplayerViewer as any).toggleBoundingBox === 'function') {
-                    (this.WizardplayerViewer as any).toggleBoundingBox(this.showBoundingBoxes);
+                if (this.playerViewer && typeof (this.playerViewer as any).toggleBoundingBox === 'function') {
+                    (this.playerViewer as any).toggleBoundingBox(this.showBoundingBoxes);
                 }
             }
         };
@@ -74,10 +74,10 @@ export class WizardGameScreenController extends ScreenController {
 
     startGame() {
         this.view.show();
-        this.WizardplayerController.bindControls();
+        this.playerController.bindControls();
 
         //register collidables e.g. player for now. projectiles and blocks to added later
-        this.collisionManager.register(this.WizardplayerController);
+        this.collisionManager.register(this.playerController);
         this.collisionManager.register(this.WizardprojectileController);
 
         // TODO move to debu
@@ -97,7 +97,7 @@ export class WizardGameScreenController extends ScreenController {
         this.lastUpdateTime = now;
 
         //update entities with delta from last frame
-        this.WizardplayerController.update(delta);
+        this.playerController.update(delta);
         this.WizardprojectileController.update(delta);
         
         //check collisions between entities (not boundaries)  
@@ -112,10 +112,10 @@ export class WizardGameScreenController extends ScreenController {
         if (this.animationFrameId) cancelAnimationFrame(this.animationFrameId);
 
         //remove player controls
-        this.WizardplayerController.unbindControls();
+        this.playerController.unbindControls();
 
         //remove collidables
-        this.collisionManager.unregister(this.WizardplayerController);
+        this.collisionManager.unregister(this.playerController);
         this.collisionManager.unregister(this.WizardprojectileController);
 
         //TODO: move to debug

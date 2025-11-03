@@ -1,4 +1,4 @@
-export class WizardPlayerModel {
+export class PlayerModel {
     public x: number;
     public y: number;
     public speed: number;

@@ -10,7 +10,6 @@
  */
 export function computeTightBoundingBoxForFrame(
     image: HTMLImageElement,
-    //anim
     frame: { x: number; y: number; width: number; height: number },
     alphaThreshold = 1,
     padding = 0

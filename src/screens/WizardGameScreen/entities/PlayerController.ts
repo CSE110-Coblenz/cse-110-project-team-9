@@ -1,21 +1,21 @@
-import type { WizardPlayerModel } from "./PlayerModel";
-import type { WizardPlayerViewer } from "./PlayerViewer";
+import type { PlayerModel } from "./PlayerModel";
+import type { PlayerViewer } from "./PlayerViewer";
 import type { Collidable, AABB } from "../CollisionManager";
 
-export class WizardPlayerController implements Collidable {
+export class PlayerController implements Collidable {
     private keys: Record<string, boolean> = {};
     private walkSound: HTMLAudioElement;
     private attackSound: HTMLAudioElement;
     private bowshootSound: HTMLAudioElement;
 
     //TODO: add audio files
-    constructor(private model: WizardPlayerModel, private view: WizardPlayerViewer) {
+    constructor(private model: PlayerModel, private view: PlayerViewer) {
         //NOTE: grabe 16 bit audio files and make them sound good with correct walking pace and or attacking pace
-        this.walkSound = new Audio("/8-bit-grass-footsteps-2-408574.mp3")
+        this.walkSound = new Audio("public/WizardMiniGame/Audio/8-bit-grass-footsteps-2-408574.mp3")
         //this.walkSound.loop = true;
-        this.attackSound = new Audio("/sword-slash-and-swing-185432.mp3")
+        this.attackSound = new Audio("public/WizardMiniGame/Audio/sword-slash-and-swing-185432.mp3")
 
-        this.bowshootSound = new Audio("/bow_release-85040.mp3")
+        this.bowshootSound = new Audio("public/WizardMiniGame/Audio/bow_release-85040.mp3")
     }
 
     /**

@@ -5,11 +5,10 @@ import { STAGE_WIDTH, STAGE_HEIGHT } from "../../constants";
 export class WizardGameScreenViewer implements View {
     private group: Konva.Group;
 
-    //place holder for other objects
     constructor() {
         this.group = new Konva.Group({ visible: false });
 
-        //background and other images
+        //Place holder for background
         const bg = new Konva.Rect({
             x: 0,
             y: 0,
