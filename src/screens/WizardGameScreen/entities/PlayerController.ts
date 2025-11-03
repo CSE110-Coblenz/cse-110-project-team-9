@@ -94,47 +94,25 @@ export class WizardPlayerController implements Collidable {
         this.model.x += dx * this.model.speed * deltaTime;
         this.model.y += dy * this.model.speed * deltaTime;
 
-        //TODO: delete or remove bounding window
-
-        // // Calculate new position
-        // const newX = this.model.x + dx * this.model.speed * deltaTime;
-        // const newY = this.model.y + dy * this.model.speed * deltaTime;
-        // // Get current bounding box for bounds checking
-        // const bbox = this.getBoundingBox();
-        // if (bbox) {
-        //     // Keep sprite inside screen bounds with small padding
-        //     const padding = 4;
-        //     this.model.x = Math.max(padding, Math.min(STAGE_WIDTH - bbox.width - padding, newX));
-        //     this.model.y = Math.max(padding, Math.min(STAGE_HEIGHT - bbox.height - padding, newY));
-        // } else {
-        //     // Fallback if no bbox
-        //     this.model.x = newX;
-        //     this.model.y = newY;
-        // }
-
         //actions and animation only one at a time
         if (dx !== 0 || dy !== 0) {
             this.view.playAnimation("walk");
             this.walkSound.play();
-            // if (this.walkSound.paused) {
-            //     this.walkSound.currentTime = 0;
-            //     this.walkSound.play();
-            // }
+
         } else if (this.keys["f"]) {
             this.view.playAnimation("attackslash");
             this.attackSound.play();
-            // if (this.attackSound.paused) {
-            //     this.attackSound.currentTime = 0;
-            //     this.attackSound.play();
-            // }
+
         } else if (this.keys["e"]) {
             this.view.playAnimation("attackdown");
             this.attackSound.play();
+
         } else if (this.keys["r"]) {
             this.view.playAnimation("attackbow");
             this.bowshootSound.play();
         } else {
             this.view.playAnimation("idle");
+            
         }
         this.view.render(this.model);
     }
