@@ -10,11 +10,9 @@ export class PlayerController implements Collidable {
 
     //TODO: add audio files
     constructor(private model: PlayerModel, private view: PlayerViewer) {
-        //NOTE: grabe 16 bit audio files and make them sound good with correct walking pace and or attacking pace
+        //TODO: grab correct foramt .100 seconds per frame for any given animation
         this.walkSound = new Audio("public/WizardMiniGame/Audio/8-bit-grass-footsteps-2-408574.mp3")
-        //this.walkSound.loop = true;
         this.attackSound = new Audio("public/WizardMiniGame/Audio/sword-slash-and-swing-185432.mp3")
-
         this.bowshootSound = new Audio("public/WizardMiniGame/Audio/bow_release-85040.mp3")
     }
 
@@ -30,7 +28,10 @@ export class PlayerController implements Collidable {
         return null;
     }
 
-    /** Optional collision handler called by the CollisionManager. */
+    /**
+     * check collision
+     * @param other
+     */
     public onCollision?(other: Collidable): void;
 
     /**

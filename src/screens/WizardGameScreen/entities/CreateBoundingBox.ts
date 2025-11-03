@@ -57,13 +57,6 @@ export function computeTightBoundingBoxForFrame(
         }
     }
 
-    //TODO: might remove since it will not happen
-    //should not happen but just in case there is no pixel are return full frame
-    if (maxX === -1) {
-        //there is no opaque pixel in this frame return full frame
-        return { x: 0, y: 0, width: frame.width, height: frame.height };
-    }
-
     //add padding and match pixelart bounds
     minX = Math.max(0, minX - padding);
     minY = Math.max(0, minY - padding);
@@ -83,10 +76,10 @@ export function computeAllAnimationBoundingBoxes(
     animations: Record<string, number[]>,
     alphaThreshold = 1,
     padding = 0
-    //TODO might remove Partial modifer since unlike to be null values
-): Partial<Record<string, { x: number; y: number; width: number; height: number }[]>> {
+
+): Record<string, { x: number; y: number; width: number; height: number }[]> {
     //string "walk" , [x, y, width, height]
-    const out: Partial<Record<string, { x: number; y: number; width: number; height: number }[]>> = {};
+    const out: Record<string, { x: number; y: number; width: number; height: number }[]> = {};
 
     for (const key of Object.keys(animations)) {
         const arr = animations[key];

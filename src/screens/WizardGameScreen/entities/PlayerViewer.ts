@@ -64,24 +64,29 @@ export class PlayerViewer {
      * @returns 
      */
     public getCurrentWorldBoundingBox(): { x: number; y: number; width: number; height: number } | null {
-        if (!this.sprite) return null;
-        const anim = this.currentAnimation;
-        const frames = this.frameBoundingBoxes[anim];
-        if (!frames || frames.length === 0) return null;
+        if(!this.sprite) return null; 
+        
+        const frames = this.frameBoundingBoxes[this.currentAnimation];
 
-        const frameIndex = typeof (this.sprite as any).frameIndex === 'function' ? (this.sprite as any).frameIndex() : 0;
-        const idx = Math.max(0, Math.min(frames.length - 1, frameIndex));
-        const frameBoundBox = frames[idx];
+        //TODO: fix partial null values in animations frame I have no clue
+        if (!frames) {
+            console.warn(`No frame bounding boxes for animation`);
+            return null;
+        }
 
-        const scaleX = (this.sprite.scaleX && typeof this.sprite.scaleX === 'function') ? (this.sprite.scaleX() as number) : 1;
-        const scaleY = (this.sprite.scaleY && typeof this.sprite.scaleY === 'function') ? (this.sprite.scaleY() as number) : 1;
+        const frameIndex = Math.max(0, Math.min(frames.length - 1, this.sprite.frameIndex()));
+        const frameBox = frames[frameIndex];
 
-        const worldX = (this.sprite.x && typeof this.sprite.x === 'function') ? (this.sprite.x() as number) + frameBoundBox.x * scaleX : frameBoundBox.x * scaleX;
-        const worldY = (this.sprite.y && typeof this.sprite.y === 'function') ? (this.sprite.y() as number) + frameBoundBox.y * scaleY : frameBoundBox.y * scaleY;
-        const worldW = frameBoundBox.width * scaleX;
-        const worldH = frameBoundBox.height * scaleY;
+        const scaleX = this.sprite.scaleX();
 
-        return { x: worldX, y: worldY, width: worldW, height: worldH };
+        const scaleY = this.sprite.scaleY();
+
+        const worldX = this.sprite.x() + frameBox.x * scaleX;
+        const worldY = this.sprite.y() + frameBox.y * scaleY;
+        const worldWidth = frameBox.width * scaleX;
+        const worldHeight = frameBox.height * scaleY;
+
+        return { x: worldX, y: worldY, width: worldWidth, height: worldHeight };
     }
 
     //TODO: interface move
