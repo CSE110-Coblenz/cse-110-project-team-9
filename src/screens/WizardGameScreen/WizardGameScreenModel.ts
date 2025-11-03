@@ -16,9 +16,7 @@ export class WizardGameScreenModel {
 /**
  * Notes:
  * perhaps increase screen size later
- * 
- * for the tower single player game AAHAHAhah
- * 
+ *
  * 
  * I am changing the game to be more of a survival shooter type game
  * since it no longer fits 1v1 mechanic since no multiplayer
@@ -38,7 +36,6 @@ export class WizardGameScreenModel {
  * have two projectiles for player one quadratic one linear
  * have a health system for the player
  * have a timer for the game session and math writing prompt
- * 
  * 
  * Animation notes
  * have idle, walk, attack for quad and linear
