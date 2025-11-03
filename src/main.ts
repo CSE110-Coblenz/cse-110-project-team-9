@@ -44,7 +44,7 @@ class App implements ScreenSwitcher {
 		switch (screen.type) {
 			case "WizardGame":
 				this.WizardGameController.startGame();
-				//TODO: return value wizard Game Exit();
+				//TODO: return point value wizard Game Exit();
 				break;
 
 			// case "home":
