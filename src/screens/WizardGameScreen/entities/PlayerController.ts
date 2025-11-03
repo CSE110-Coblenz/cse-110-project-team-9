@@ -1,14 +1,21 @@
-import type { WizardPlayerModel } from "./WizardPlayerModel";
-import type { WizardPlayerViewer } from "./WizardPlayerViewer";
+import type { WizardPlayerModel } from "./PlayerModel";
+import type { WizardPlayerViewer } from "./PlayerViewer";
 import type { Collidable, AABB } from "../CollisionManager";
 
 export class WizardPlayerController implements Collidable {
     private keys: Record<string, boolean> = {};
     private walkSound: HTMLAudioElement;
+    private attackSound: HTMLAudioElement;
+    private bowshootSound: HTMLAudioElement;
 
     //TODO: add audio files
     constructor(private model: WizardPlayerModel, private view: WizardPlayerViewer) {
+        //NOTE: grabe 16 bit audio files and make them sound good with correct walking pace and or attacking pace
         this.walkSound = new Audio("/8-bit-grass-footsteps-2-408574.mp3")
+        //this.walkSound.loop = true;
+        this.attackSound = new Audio("/sword-slash-and-swing-185432.mp3")
+
+        this.bowshootSound = new Audio("/bow_release-85040.mp3")
     }
 
     /**
@@ -42,22 +49,24 @@ export class WizardPlayerController implements Collidable {
         window.removeEventListener("keyup", (e) => this.handleKeyUp(e));
     }
 
+    //TODO: fucking refactor the key handling system to be cleaner
     /**
      * takes x input key to be true (pressed)
      * @param e keyboard event
      */
     private handleKeyDown = (e: KeyboardEvent) => {
-        if (["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","w","a","s","d","f"].includes(e.key)) {
+        if (["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","w","a","s","d","f","e","r"].includes(e.key)) {
             this.keys[e.key] = true;
         }
     }
 
+    //TODO: fix bug for weird case where keyup is not registered sometimes through capsLock
     /**
      * takes x input key to be false (not pressed)
      * @param e 
      */
     private handleKeyUp = (e: KeyboardEvent) => {
-        if (["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","w","a","s","d","f"].includes(e.key)) {
+        if (["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","w","a","s","d","f","e","r"].includes(e.key)) {
             this.keys[e.key] = false;
         }
     }
@@ -85,12 +94,45 @@ export class WizardPlayerController implements Collidable {
         this.model.x += dx * this.model.speed * deltaTime;
         this.model.y += dy * this.model.speed * deltaTime;
 
+        //TODO: delete or remove bounding window
+
+        // // Calculate new position
+        // const newX = this.model.x + dx * this.model.speed * deltaTime;
+        // const newY = this.model.y + dy * this.model.speed * deltaTime;
+        // // Get current bounding box for bounds checking
+        // const bbox = this.getBoundingBox();
+        // if (bbox) {
+        //     // Keep sprite inside screen bounds with small padding
+        //     const padding = 4;
+        //     this.model.x = Math.max(padding, Math.min(STAGE_WIDTH - bbox.width - padding, newX));
+        //     this.model.y = Math.max(padding, Math.min(STAGE_HEIGHT - bbox.height - padding, newY));
+        // } else {
+        //     // Fallback if no bbox
+        //     this.model.x = newX;
+        //     this.model.y = newY;
+        // }
+
         //actions and animation only one at a time
         if (dx !== 0 || dy !== 0) {
-            this.walkSound.play();
             this.view.playAnimation("walk");
+            this.walkSound.play();
+            // if (this.walkSound.paused) {
+            //     this.walkSound.currentTime = 0;
+            //     this.walkSound.play();
+            // }
         } else if (this.keys["f"]) {
-            this.view.playAnimation("attack");
+            this.view.playAnimation("attackslash");
+            this.attackSound.play();
+            // if (this.attackSound.paused) {
+            //     this.attackSound.currentTime = 0;
+            //     this.attackSound.play();
+            // }
+        } else if (this.keys["e"]) {
+            this.view.playAnimation("attackdown");
+            this.attackSound.play();
+        } else if (this.keys["r"]) {
+            this.view.playAnimation("attackbow");
+            this.bowshootSound.play();
         } else {
             this.view.playAnimation("idle");
         }
