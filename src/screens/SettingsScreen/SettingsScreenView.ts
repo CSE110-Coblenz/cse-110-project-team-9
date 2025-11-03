@@ -7,7 +7,8 @@ export class SettingsScreenView implements View {
 
 	private saveButton: Konva.Group;
 	private closeButton: Konva.Image;
-	private volumeBar: Konva.Rect;
+	private bgmslider: Konva.Group;
+	private soundeffectslider: Konva.Group;
 
 	constructor() {
 		this.group = new Konva.Group({ visible: false });
@@ -42,8 +43,8 @@ export class SettingsScreenView implements View {
 		});
 
         const settingsPanel_title = new Konva.Text({
-            x: STAGE_WIDTH / 2 - 50,
-            y: (STAGE_HEIGHT - SETTINGS_HEIGHT) / 2 + 20,
+            x: 350,
+            y: 170,
             text: "Settings",
             fontSize: 30,
             fontFamily: "HomeScreenFont",
@@ -56,16 +57,8 @@ export class SettingsScreenView implements View {
          * Volume Slider (Background Music & Sound Effects)
          */
 
-		this.volumeBar = new Konva.Rect({
-			x: (STAGE_WIDTH - SETTINGS_WIDTH) / 2 + 80,
-			y: (STAGE_HEIGHT - SETTINGS_HEIGHT) / 2 + 120,
-			width: 240,
-			height: 10,
-			fill: "gray",
-			cornerRadius: 5,
-		});
-
-		this.group.add(this.volumeBar);
+		this.bgmslider = this.createVolumeSlider("Background", 230, 250);
+		this.soundeffectslider = this.createVolumeSlider("Sound Effect", 230, 320);
 
         /**
          *  Save Button
@@ -73,8 +66,8 @@ export class SettingsScreenView implements View {
 
         this.saveButton = this.createTextButton(
 			"Save",
-			STAGE_WIDTH / 2 - 30,
-			(STAGE_HEIGHT + SETTINGS_HEIGHT) / 2 - 60,
+			370,
+			390,
 			30,
 			"HomeScreenFont",
 			"black"
@@ -88,8 +81,8 @@ export class SettingsScreenView implements View {
         closeButtonImg.src = "homescreen/images/closebutton.svg";
 
         this.closeButton = new Konva.Image({
-            x: (STAGE_WIDTH + SETTINGS_WIDTH) / 2 - 40,
-            y: (STAGE_HEIGHT - SETTINGS_HEIGHT) / 2 + 10,
+            x: 560,
+            y: 160,
             width: 30,
             height: 30,
             listening: true,
@@ -115,6 +108,7 @@ export class SettingsScreenView implements View {
 	/**
 	 * Helper Funtion — Creating text button (transparent background)
 	 */
+
 	private createTextButton(
 		text: string,
 		x: number,
@@ -161,6 +155,89 @@ export class SettingsScreenView implements View {
 		return buttonGroup;
 	}
 
+	/**
+	 * Helper Funtion — Creating Volume Slider
+	 */
+
+	private createVolumeSlider(label: string, x: number, y: number) {
+		const volumeSliderGroup = new Konva.Group({ x, y });
+	
+		// Label
+		const text = new Konva.Text({
+			text: label,
+			fontFamily: "HomeScreenFont",
+			fontSize: 18,
+			fill: "black",
+		});
+	
+		// Slider bar
+		const bar = new Konva.Rect({
+			x: 100,
+			y: 10,
+			width: 200,
+			height: 4,
+			fill: "grey",
+			cornerRadius: 2,
+		});
+	
+		// Filled area
+		const fill = new Konva.Rect({
+			x: bar.x(),
+			y: bar.y(),
+			width: bar.width() / 2, // default 50%
+			height: bar.height(),
+			fill: "black",
+			cornerRadius: 2,
+		});
+	
+		// Knob
+		const knob = new Konva.Circle({
+			x: bar.x() + bar.width() / 2,
+			y: bar.y() + bar.height() / 2,
+			radius: 8,
+			fill: "grey",
+			draggable: true,
+			dragBoundFunc: pos => {
+
+				const groupAbs = volumeSliderGroup.getAbsolutePosition();
+				const minX = bar.x() + groupAbs.x;
+				const maxX = bar.x() + bar.width() + groupAbs.x;
+				const fixedY = bar.y() + bar.height() / 2 + groupAbs.y;
+	
+				return {
+					x: Math.max(minX, Math.min(maxX, pos.x)),
+					y: fixedY,
+				};
+			},
+		});
+	
+		// Percentage text
+		const percent = new Konva.Text({
+			x: 330, // bar.x() + bar.width() + 10,
+			y: 5, // bar.y() - 5,
+			text: "50%",
+			fontFamily: "HomeScreenFont",
+			fontSize: 12,
+			fill: "black",
+		});
+	
+		volumeSliderGroup.add(text, bar, fill, knob, percent);
+		this.group.add(volumeSliderGroup);
+	
+		knob.on("dragmove", () => {
+			const knobAbs = knob.getAbsolutePosition();
+			const groupAbs = volumeSliderGroup.getAbsolutePosition();
+			const localX = knobAbs.x - groupAbs.x;
+	
+			let ratio = (localX - bar.x()) / bar.width();
+			ratio = Math.max(0, Math.min(1, ratio));
+			
+			fill.width(bar.width() * ratio);
+			percent.text(Math.round(ratio * 100) + "%");
+		});
+		return volumeSliderGroup;
+	}
+	
     /*
     * Getters
     */
@@ -173,8 +250,12 @@ export class SettingsScreenView implements View {
 		return this.saveButton;
 	}
 
-	getVolumeBar(): Konva.Rect {
-		return this.volumeBar;
+	getBgmSlider(): Konva.Group {
+		return this.bgmslider;
+	}
+
+	getSoundEffectSlider(): Konva.Group {
+		return this.soundeffectslider;
 	}
 	
 	getGroup(): Konva.Group {
