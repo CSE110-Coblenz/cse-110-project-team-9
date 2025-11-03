@@ -1,4 +1,4 @@
-export type WizardAnimation = "idle" | "walk" | "attack"; // | "jump" | "cast" | "die";
+export type WizardAnimation = "idle" | "walk" | "attackslash" | "attackdown" | "attackbow"; // | "jump" | "cast" | "die";
 
 // Each key matches a WizardAnimation type
 //[x, y, width, height] per frame
@@ -21,7 +21,7 @@ export const WIZARD_ANIMATIONS: Record<WizardAnimation, number[]> = {
         600, 100, 100, 100,
         700, 100, 100, 100,
     ],
-    attack: [
+    attackslash: [
         0, 200, 100, 100,
         100, 200, 100, 100,
         200, 200, 100, 100,
@@ -29,6 +29,24 @@ export const WIZARD_ANIMATIONS: Record<WizardAnimation, number[]> = {
         400, 200, 100, 100,
         500, 200, 100, 100,
     ],
+    attackdown: [
+        0, 300, 100, 100,
+        100, 300, 100, 100,
+        200, 300, 100, 100,
+        300, 300, 100, 100,
+        400, 300, 100, 100,
+        500, 300, 100, 100,
+    ],
+    attackbow: [
+        0, 400, 100, 100,
+        100, 400, 100, 100,
+        200, 400, 100, 100,
+        300, 400, 100, 100,
+        400, 400, 100, 100,
+        500, 400, 100, 100,
+        600, 400, 100, 100,
+        700, 400, 100, 100,
+    ]
     //jump: [],  Later additions
     //cast: [],
     //die: [],
