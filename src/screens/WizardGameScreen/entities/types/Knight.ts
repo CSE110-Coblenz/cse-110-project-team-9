@@ -1,6 +1,5 @@
-export type KnightAnimation = "idle" | "walk" | "attackslash" | "attackdown" | "attackbow"; // | "jump" | "cast" | "die";
-
-// Each key matches a WizardAnimation type
+export type KnightAnimation = "idle" | "walk" | "attackslash" | "attackdown" | "attackbow" | "hurt" | "die";
+// Each key matches a Knight Animation type
 //[x, y, width, height] per frame
 export const KNIGHT_ANIMATIONS: Record<KnightAnimation, number[]> = {
     idle: [
@@ -46,8 +45,24 @@ export const KNIGHT_ANIMATIONS: Record<KnightAnimation, number[]> = {
         500, 400, 100, 100,
         600, 400, 100, 100,
         700, 400, 100, 100,
-    ]
-    //jump: [],  Later additions
-    //cast: [],
-    //die: [],
+    ],
+    hurt: [
+        0, 500, 100, 100,
+        100, 500, 100, 100,
+        200, 500, 100, 100,
+        300, 500, 100, 100,
+        400, 500, 100, 100,
+    ],
+    die: [
+        0, 600, 100, 100,
+        100, 600, 100, 100,
+        200, 600, 100, 100,
+        300, 600, 100, 100,
+        400, 600, 100, 100,
+    ],
 };
+
+/**
+ * image atlas export
+ */
+export const Wizard = "public/WizardMiniGame/Sprites/Knight.png";
