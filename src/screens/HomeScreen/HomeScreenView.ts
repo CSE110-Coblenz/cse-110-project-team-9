@@ -13,9 +13,6 @@ export class HomeScreenView implements View {
 	constructor() {
 		this.group = new Konva.Group({ visible: true });
 
-		const layer = new Konva.Layer();
-		layer.add(this.group);
-
 		/** 
 		 * Homescreen Background Video 
 		 */
@@ -50,9 +47,9 @@ export class HomeScreenView implements View {
 		});
 
 		// Animation to update video frames
-		const anim = new Konva.Animation(function () {
+		const anim = new Konva.Animation(() => {
 			videoBackground.getLayer()?.batchDraw();
-		}, layer);
+		  });
 		
 		// Start the animation
 		anim.start();
@@ -83,10 +80,14 @@ export class HomeScreenView implements View {
 		 */
 
 		// Fade-In effect
+		this.group.add(this.gameTitle);
 		this.gameTitle.opacity(0);
-		this.gameTitle.to({
+		
+		requestAnimationFrame(() => {
+		  this.gameTitle.to({
 			opacity: 1,
 			duration: 3,
+		  });
 		});
 
 		/** 
@@ -108,6 +109,17 @@ export class HomeScreenView implements View {
 		);
 
 		this.group.add(this.homeStartButton, this.homeSettingsButton);
+
+		/**
+		 * Adding Audio
+		 */
+		// const audio = document.createElement("audio");
+		// audio.src = "/homescreen/audio/homescreen.mp3";
+		// audio.loop = true;
+		// audio.volume = 0.5;
+		// audio.play().catch((err) => {
+		// 	console.error("Audio playback failed:", err);
+		// });
 	}
 
 	/**
@@ -156,10 +168,14 @@ export class HomeScreenView implements View {
 		});
 
 		// Fade-In effect
+		this.group.add(buttonGroup);
 		buttonGroup.opacity(0);
-		buttonGroup.to({
+		
+		requestAnimationFrame(() => {
+		  buttonGroup.to({
 			opacity: 1,
 			duration: 3,
+		  });
 		});
 
 		this.group.add(buttonGroup);
