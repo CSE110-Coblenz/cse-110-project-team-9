@@ -1,14 +1,17 @@
 import Konva from "konva";
-import { WIZARD_ANIMATIONS, type WizardAnimation } from "./WizardAnimations";
+
+//Notice change module for player if need
+import { WIZARD_ANIMATIONS as ANIMATIONS, type WizardAnimation as Animation, Wizard as playerimg} from "./Wizard";
+
 import { PlayerModel } from "./PlayerModel";
 import { computeAllAnimationBoundingBoxes } from "./CreateBoundingBox";
 import { DebugBoundingBoxViewer } from "./DebugBoundingBoxViewer";
 
 export class PlayerViewer {
     private sprite: Konva.Sprite | null = null;
-    private currentAnimation: WizardAnimation = "idle";
+    private currentAnimation: Animation = "idle";
     // caches only the pixel bounding boxes per animation e.g. idle , walk, attack
-    private frameBoundingBoxes: Partial<Record<WizardAnimation, { x: number; y: number; width: number; height: number }[]>> = {};
+    private frameBoundingBoxes: Partial<Record<Animation, { x: number; y: number; width: number; height: number }[]>> = {};
     // opacity check for sprites
     private alphaThreshold = 1; 
     //add increase padding around pixel perfect bounding box
@@ -17,19 +20,19 @@ export class PlayerViewer {
     private debugViewer!: DebugBoundingBoxViewer;
 
     /**
-     * constructs the wizard sprite
+     * constructs sprite
      * @param group 
      */
     constructor(private group: Konva.Group) {
-        const wizard = new Image();
-        wizard.onload = () => {
+        const player = new Image();
+        player.onload = () => {
             this.sprite = new Konva.Sprite({
                 x: 150,
                 y: 60,
-                image: wizard,
+                image: player,
                 animation: this.currentAnimation,
                 //constant in a typescript from image atlas
-                animations: WIZARD_ANIMATIONS,
+                animations: ANIMATIONS,
                 frameRate: 10, //about .100 secondsd
                 frameIndex: 0,
                 scaleX: 4,
@@ -39,8 +42,9 @@ export class PlayerViewer {
             this.group.add(this.sprite);
 
             //compute bounding box for given character
-            this.frameBoundingBoxes = computeAllAnimationBoundingBoxes(wizard, WIZARD_ANIMATIONS as Record<string, number[]>, this.alphaThreshold, this.padding);
+            this.frameBoundingBoxes = computeAllAnimationBoundingBoxes(player, ANIMATIONS as Record<string, number[]>, this.alphaThreshold, this.padding);
 
+            //TODO: might move fix somewhere else
             //disable smoothing (I know the unknown is just context warning otherwise)
             const layer = this.group.getLayer();
             if (layer) {
@@ -54,7 +58,7 @@ export class PlayerViewer {
             this.debugViewer = new DebugBoundingBoxViewer(this.group);
         };
         //inside public file
-        wizard.src = "public/WizardMiniGame/Sprites/Wizard.png";
+        player.src = playerimg;
     }
 
     //TODO: interface move
@@ -78,7 +82,6 @@ export class PlayerViewer {
         const frameBox = frames[frameIndex];
 
         const scaleX = this.sprite.scaleX();
-
         const scaleY = this.sprite.scaleY();
 
         const worldX = this.sprite.x() + frameBox.x * scaleX;
@@ -101,9 +104,9 @@ export class PlayerViewer {
 
     /**
      * plays an animations through completion
-     * @param name wizardAnimations which is animations
+     * @param name grabs animation name
      */
-    public playAnimation(name: WizardAnimation): void {
+    public playAnimation(name: Animation): void {
         if (this.sprite && name !== this.currentAnimation) {
             this.sprite.animation(name);
             this.sprite.start();
@@ -115,7 +118,7 @@ export class PlayerViewer {
 
     /**
      * Renders parameters for controller movement x and y pos
-     * @param model wizard parmeters speed,x,y
+     * @param model player parmeters speed,x,y
      * @returns Nonexistent entity
      */
     public render(model: PlayerModel): void {

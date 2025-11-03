@@ -1,5 +1,4 @@
 export type WizardAnimation = "idle" | "walk" | "attackslash" | "attackdown" | "attackbow"; // | "jump" | "cast" | "die";
-
 // Each key matches a WizardAnimation type
 //[x, y, width, height] per frame
 export const WIZARD_ANIMATIONS: Record<WizardAnimation, number[]> = {
@@ -51,3 +50,4 @@ export const WIZARD_ANIMATIONS: Record<WizardAnimation, number[]> = {
     //cast: [],
     //die: [],
 };
+export const Wizard = "public/WizardMiniGame/Sprites/Wizard.png";
