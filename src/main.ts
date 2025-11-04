@@ -1,13 +1,16 @@
 import Konva from "konva";
 import type { ScreenSwitcher, Screen } from "./types";
-// import { HomeScreenController } from "./screens/HomeScreen/HomeScreenController";
+import { HomeScreenController } from "./screens/HomeScreen/HomeScreenController";
+import { SettingsScreenController } from "./screens/SettingsScreen/SettingsScreenController";
 import { STAGE_WIDTH, STAGE_HEIGHT } from "./constants";
+
 
 class App implements ScreenSwitcher {
 	private stage: Konva.Stage;
 	private layer: Konva.Layer;
 
-	// private homeController: HomeScreenController;
+	private homeController: HomeScreenController;
+	private settingsController: SettingsScreenController;
 
 	constructor(container: string) {
 		this.stage = new Konva.Stage({
@@ -21,28 +24,33 @@ class App implements ScreenSwitcher {
 		this.stage.add(this.layer);
 
 		// Initialize all screen controllers
-		// this.homeController = new HomeScreenController(this);
+		this.homeController = new HomeScreenController(this);
+		this.settingsController = new SettingsScreenController(this);
 
 		// Add all screen groups to the layer
-		// this.layer.add(this.homeController.getView().getGroup());
+		this.layer.add(this.homeController.getView().getGroup());
+		this.layer.add(this.settingsController.getView().getGroup());
 
 		// Draw the layer
 		this.layer.draw();
 
 		// Start with home screen visible
-		// this.homeController.getView().show();
+		this.homeController.getView().show();
 	}
 
 	switchToScreen(screen: Screen): void {
 
 		switch (screen.type) {
-			// case "home":
-			// 	this.homeController.show();
-			// 	break;
+			case "home":
+				this.homeController.show();
+				// Hide settings screen (Need for settings close button)
+				this.settingsController.hide();
+				break;
 
-            // case "char_select":
-            //     this.charSelectController.show();
-            //     break;
+			case "settings":
+				this.homeController.show();
+				this.settingsController.show();
+				break;
 		}
 	}
 }
