@@ -106,34 +106,7 @@ export class HomeScreenView implements View {
 			48
 		);
 
-		this.group.add(this.homeStartButton, this.homeSettingsButton);
-
-		/**
-		 * Adding Audio
-		 */
-		const audio = document.createElement("audio");
-		audio.src = "/homescreen/audio/medieval.mp3";
-		audio.loop = true;
-		audio.muted = true;
-		
-		const playPromise = audio.play();
-		
-		if (playPromise !== undefined) {
-		  playPromise
-			.then(() => {
-			  this.group.on("click", () => {
-				audio.muted = false;
-			  });
-			})
-			.catch((error) => {
-			  this.group.on("click", () => {
-				audio.play();
-				audio.muted = false;
-			  });
-			});
-		}
-		
-		
+		this.group.add(this.homeStartButton, this.homeSettingsButton);	
 	}
 
 	/**

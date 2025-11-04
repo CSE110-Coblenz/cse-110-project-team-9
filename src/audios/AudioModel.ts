@@ -5,10 +5,10 @@ export class AudioModel {
 
     private constructor() {
         this.sounds = {
-            bgm: new Audio("/audio/medieval.mp3"),
-            click: new Audio("/audio/click.mp3"),
+            bgm: new Audio("/homescreen/audio/medieval.mp3"),
         };
         this.sounds.bgm.loop = true;
+        this.sounds.bgm.volume = 0.5;
 
         const savedVolume = localStorage.getItem("volume");
         this.volume = savedVolume ? parseFloat(savedVolume) : 0.5;

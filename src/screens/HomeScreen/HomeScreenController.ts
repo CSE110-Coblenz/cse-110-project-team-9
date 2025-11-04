@@ -23,13 +23,18 @@ export class HomeScreenController extends ScreenController {
 		});
 
 		this.view.getStartButton().on("click", () => {
+			console.log("Click detected, playing BGM...");
 			alert("Game Started!");
+		});	
+
+		this.view.getGroup().on("click", () => {
+			this.audio.playBGM();
+			this.view.getGroup().off("click"); // 한 번만 실행되게
 		});
 
 		/**
 		 * Play background music
 		 */
-		this.audio.playBGM();
 	}
 
 	getView(): HomeScreenView {

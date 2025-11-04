@@ -29,15 +29,23 @@ export class AudioController {
     }
 
     /**
-     * Play & Stop function for BGM
+     * Play function for BGM
      */
 
     public playBGM(): void {
-        this.play("/homescreen/audio/medieval.mp3");
-    }
-
-    public stopBGM(): void {
-        this.stop("/homescreen/audio/medieval.mp3");
+        const bgm = this.model.sounds["bgm"];
+        if (!bgm) return;
+    
+        if (bgm.readyState < 2) {
+            bgm.load();
+        }
+    
+        const tryPlay = () => {
+            const promise = bgm.play();
+            promise;
+        };
+    
+        tryPlay();
     }
 
     /**
