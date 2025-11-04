@@ -112,7 +112,7 @@ export class HomeScreenView implements View {
 		 * Adding Audio
 		 */
 		const audio = document.createElement("audio");
-		audio.src = "/homescreen/audio/medieval-ambient-236809 (1).mp3";
+		audio.src = "/homescreen/audio/medieval.mp3";
 		audio.loop = true;
 		audio.muted = true;
 		
