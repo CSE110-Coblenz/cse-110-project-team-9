@@ -10,8 +10,14 @@ import { CollisionManager } from "./CollisionManager";
 import { PlayerModel } from "./entities/player/PlayerModel";
 import { PlayerViewer } from "./entities/player/PlayerViewer";
 import { PlayerController } from "./entities/player/PlayerController";
-//Player type
+//Enemy MVC
+import { EnemyModel } from "./entities/Enemy/EnemyModel";  
+import { EnemyViewer } from "./entities/Enemy/EnemyViewer";
+import { EnemyController } from "./entities/Enemy/EnemyController";
+//sprite factories
 import { PlayerFactory } from "./entities/player/PlayerFactory";
+import { EnemyFactory } from "./entities/Enemy/EnemyFactory";
+//sprite type
 import type { WizardAnimation } from "./entities/types/Wizard";
 import type { KnightAnimation } from "./entities/types/Knight";
 
@@ -22,6 +28,11 @@ export class WizardGameScreenController extends ScreenController {
     private playerModel: PlayerModel;
     private playerViewer: PlayerViewer<WizardAnimation | KnightAnimation>;
     private playerController: PlayerController<WizardAnimation | KnightAnimation>;
+
+    private enemyModel: EnemyModel;
+    private enemyViewer: EnemyViewer<WizardAnimation | KnightAnimation>;
+    private enemyController: EnemyController<WizardAnimation | KnightAnimation>;
+
 
     private collisionManager: CollisionManager;
 
@@ -39,8 +50,13 @@ export class WizardGameScreenController extends ScreenController {
 
         //player MVC
         this.playerModel = new PlayerModel();
-        this.playerViewer = PlayerFactory.create("knight",this.view.getGroup());
+        this.playerViewer = PlayerFactory.create("knight",this.view.getGroup(), this.playerModel);
         this.playerController = new PlayerController(this.playerModel, this.playerViewer);
+
+        //enemy MVC
+        this.enemyModel = new EnemyModel();
+        this.enemyViewer = EnemyFactory.create("knight",this.view.getGroup(), this.enemyModel);
+        this.enemyController = new EnemyController(this.enemyModel, this.enemyViewer);
 
         //collision betweene entities
         this.collisionManager = new CollisionManager();
@@ -54,6 +70,10 @@ export class WizardGameScreenController extends ScreenController {
                 if (this.playerViewer && typeof (this.playerViewer as any).toggleBoundingBox === 'function') {
                     (this.playerViewer as any).toggleBoundingBox(this.showBoundingBoxes);
                 }
+                //TODO: make more generic add to collision manager debug feature
+                if (this.enemyViewer && typeof (this.enemyViewer as any).toggleBoundingBox === 'function') {
+                    (this.enemyViewer as any).toggleBoundingBox(this.showBoundingBoxes);
+                }
             }
         };
     }
@@ -64,6 +84,7 @@ export class WizardGameScreenController extends ScreenController {
 
         //register collidables e.g. player for now. projectiles and blocks to added later
         this.collisionManager.register(this.playerController);
+        this.collisionManager.register(this.enemyController);
 
         // TODO move to debug functionality
         // add debug key listener (press 'b' to toggle pixel-perfect boundbox display)
@@ -83,6 +104,7 @@ export class WizardGameScreenController extends ScreenController {
 
         //update entities with delta from last frame
         this.playerController.update(delta);
+        this.enemyController.update(delta);
         
         //check collisions between entities (not boundaries)  
         this.collisionManager.update();
@@ -100,6 +122,7 @@ export class WizardGameScreenController extends ScreenController {
 
         //remove collidables
         this.collisionManager.unregister(this.playerController);
+        this.collisionManager.unregister(this.enemyController);
 
         //TODO: move to debug
         //remove debug key listener
