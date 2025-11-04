@@ -1,51 +1,37 @@
+// src/main.ts
 import Konva from "konva";
-import type { ScreenSwitcher, Screen } from "./types";
-// import { HomeScreenController } from "./screens/HomeScreen/HomeScreenController";
 import { STAGE_WIDTH, STAGE_HEIGHT } from "./constants";
+import { MathScreenView } from "./screens/MathScreen/MathScreenView";
 
-class App implements ScreenSwitcher {
-	private stage: Konva.Stage;
-	private layer: Konva.Layer;
+const stage = new Konva.Stage({
+  container: "container",
+  width: STAGE_WIDTH,
+  height: STAGE_HEIGHT,
+});
 
-	// private homeController: HomeScreenController;
+const layer = new Konva.Layer();
+stage.add(layer);
 
-	constructor(container: string) {
-		this.stage = new Konva.Stage({
-			container,
-			width: STAGE_WIDTH,
-			height: STAGE_HEIGHT,
-		});
+// make the view
+const view = new MathScreenView();
 
-		// Create a layer
-		this.layer = new Konva.Layer();
-		this.stage.add(this.layer);
+// ⬅️ use getGroup() now
+layer.add(view.getGroup());
+layer.draw();
 
-		// Initialize all screen controllers
-		// this.homeController = new HomeScreenController(this);
+// show the screen (uses your show() helper)
+view.show();
 
-		// Add all screen groups to the layer
-		// this.layer.add(this.homeController.getView().getGroup());
+// test content
+view.showEquation("Factor this: x² - 7x + 10");
+view.showEnterFactored();
 
-		// Draw the layer
-		this.layer.draw();
-
-		// Start with home screen visible
-		// this.homeController.getView().show();
-	}
-
-	switchToScreen(screen: Screen): void {
-
-		switch (screen.type) {
-			// case "home":
-			// 	this.homeController.show();
-			// 	break;
-
-            // case "char_select":
-            //     this.charSelectController.show();
-            //     break;
-		}
-	}
-}
-
-// Initialize the application
-new App("container");
+// optional: hook up check callback
+view.onCheck((answer) => {
+  if (answer === "(x-2)(x-5)") {
+    view.showFeedback("✅ correct", true);
+  } else {
+    view.showFeedback("❌ nope", false);
+  }
+  view.clearAnswer();
+});

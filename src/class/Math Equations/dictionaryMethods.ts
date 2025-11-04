@@ -122,5 +122,27 @@ export function generateRandomEntry(entries: mathDictEntry[]): { index: number; 
         return null; // No entries available
     }
     const randomIndex = Math.floor(Math.random() * entries.length);
-    return { index: randomIndex, entry: entries[randomIndex] };
+    const randomEntry = { index: randomIndex, entry: entries[randomIndex] };
+    return randomEntry;
+}
+
+/*
+Method Name: getQuestionInformation
+Description: This method calls the other formatting methods to retrieve all necessary information from a math dictionary entry.
+This method will return the equation, factored form, solutions, and points per question.
+Parameters: const randomEntry - an object representing a random math dictionary entry
+Returns: An object containing the equation, factored form, solutions, and points per question.
+*/
+export function getQuestionInformation(randomEntry: { index: number; entry: mathDictEntry }): { equation: string; factored: string; solutions: string[]; points: string } {
+    const equation = getEquationFromEntry(randomEntry.entry);
+    const factored = getFactoredFromEntry(randomEntry.entry);
+    const solutions = getSolutionsFromEntry(randomEntry.entry);
+    const points = pointPerQuestion(randomEntry.entry);
+
+    return {
+        equation,
+        factored,
+        solutions,
+        points
+    };
 }
