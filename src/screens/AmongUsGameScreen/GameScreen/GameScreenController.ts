@@ -105,8 +105,8 @@ export class AmongUsGameScreenController extends ScreenController {
 		} 
 		setTimeout(() => {
 			this.model.incrementIndex();
-			const currentPuzzle = this.model.getPuzzle();
-			this.view.renderPuzzle(currentPuzzle);
+			//const currentPuzzle = this.model.getPuzzle();
+			//this.view.renderPuzzle(currentPuzzle);
 		}, 500);
 
 	}
