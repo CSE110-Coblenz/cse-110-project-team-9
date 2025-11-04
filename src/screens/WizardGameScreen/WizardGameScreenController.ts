@@ -33,7 +33,6 @@ export class WizardGameScreenController extends ScreenController {
     private enemyViewer: EnemyViewer<WizardAnimation | KnightAnimation>;
     private enemyController: EnemyController<WizardAnimation | KnightAnimation>;
 
-
     private collisionManager: CollisionManager;
 
     private showBoundingBoxes = false;
