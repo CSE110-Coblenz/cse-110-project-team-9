@@ -13,9 +13,9 @@ export class PlayerController<Animation extends string> implements Collidable {
         //TODO: grab correct foramt .100 seconds per frame for any given animation
         //TODO: move this to knight.ts
         //TODO: convert to mp4 instead mp3 does not do milliseconds
-        this.walkSound = new Audio("public/WizardMiniGame/Audio/8-bit-grass-footsteps-2-408574.mp3")
-        this.attackSound = new Audio("public/WizardMiniGame/Audio/sword-slash-and-swing-185432.mp3")
-        this.bowshootSound = new Audio("public/WizardMiniGame/Audio/bow_release-85040.mp3")
+        this.walkSound = new Audio("/WizardMiniGame/Audio/8-bit-grass-footsteps-2-408574.mp3")
+        this.attackSound = new Audio("/WizardMiniGame/Audio/sword-slash-and-swing-185432.mp3")
+        this.bowshootSound = new Audio("/WizardMiniGame/Audio/bow_release-85040.mp3")
     }
 
     /**

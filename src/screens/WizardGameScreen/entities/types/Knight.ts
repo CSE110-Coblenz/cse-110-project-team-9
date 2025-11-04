@@ -69,7 +69,7 @@ export const KNIGHT_ANIMATIONS: Record<KnightAnimation, number[]> = {
 /**
  * image atlas export
  */
-export const knightSrc = "public/WizardMiniGame/Sprites/Knight.png";
+export const knightSrc = "/WizardMiniGame/Sprites/Knight.png";
 
 export const KNIGHT_BOUNDING_BOXES: Record<KnightAnimation, BoundingBox[]> = {} as any;
 

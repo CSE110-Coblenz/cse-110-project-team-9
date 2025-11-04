@@ -69,7 +69,7 @@ export const WIZARD_ANIMATIONS: Record<WizardAnimation, number[]> = {
 /**
  * image atlas export
  */
-export const wizardSrc = "public/WizardMiniGame/Sprites/Wizard.png";
+export const wizardSrc = "/WizardMiniGame/Sprites/Wizard.png";
 
 export const WIZARD_BOUNDING_BOXES: Record<WizardAnimation, BoundingBox[]> = {} as any;
 

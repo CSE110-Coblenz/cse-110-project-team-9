@@ -30,6 +30,9 @@ export class EnemyController<Animation extends string> implements Collidable {
             this.model.death();
             this.model.setAnimation("death");
         }
+
+
+        //TODO delete mvc
     }
 
     /**
