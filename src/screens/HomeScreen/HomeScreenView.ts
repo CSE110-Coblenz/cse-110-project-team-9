@@ -21,9 +21,7 @@ export class HomeScreenView implements View {
 		video.src = "/homescreen/video/homescreen_video.mp4";
 		video.load(); //
 		video.style.display = "none";
-		
 		video.muted = true;
-		video.setAttribute("muted", "true");
 
 		const videoBackground = new Konva.Image({
 			image: video,
@@ -113,13 +111,29 @@ export class HomeScreenView implements View {
 		/**
 		 * Adding Audio
 		 */
-		// const audio = document.createElement("audio");
-		// audio.src = "/homescreen/audio/homescreen.mp3";
-		// audio.loop = true;
-		// audio.volume = 0.5;
-		// audio.play().catch((err) => {
-		// 	console.error("Audio playback failed:", err);
-		// });
+		const audio = document.createElement("audio");
+		audio.src = "/homescreen/audio/medieval-ambient-236809 (1).mp3";
+		audio.loop = true;
+		audio.muted = true;
+		
+		const playPromise = audio.play();
+		
+		if (playPromise !== undefined) {
+		  playPromise
+			.then(() => {
+			  this.group.on("click", () => {
+				audio.muted = false;
+			  });
+			})
+			.catch((error) => {
+			  this.group.on("click", () => {
+				audio.play();
+				audio.muted = false;
+			  });
+			});
+		}
+		
+		
 	}
 
 	/**
