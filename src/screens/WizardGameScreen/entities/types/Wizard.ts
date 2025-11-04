@@ -1,5 +1,11 @@
-export type WizardAnimation = "idle" | "walk" | "attackslash" | "attackdown" | "attackbow"; // | "jump" | "cast" | "die";
-// Each key matches a Wizard Animation type
+import { computeAllAnimationBoundingBoxes } from "../CreateBoundingBox";
+//TODO: asesprite image atlas for this for now it is just a copy of Knight
+//animation types
+export type WizardAnimation = "idle" | "walk" | "attackslash" | "attackdown" | "attackbow" | "damage" | "death";
+
+//bounding box
+export type BoundingBox = { x: number; y: number; width: number; height: number };
+
 //[x, y, width, height] per frame
 export const WIZARD_ANIMATIONS: Record<WizardAnimation, number[]> = {
     idle: [
@@ -45,14 +51,32 @@ export const WIZARD_ANIMATIONS: Record<WizardAnimation, number[]> = {
         500, 400, 100, 100,
         600, 400, 100, 100,
         700, 400, 100, 100,
+    ],
+    damage: [
+        0, 500, 100, 100,
+        100, 500, 100, 100,
+        200, 500, 100, 100,
+        300, 500, 100, 100,
+    ],
+    death: [
+        0, 600, 100, 100,
+        100, 600, 100, 100,
+        200, 600, 100, 100,
+        300, 600, 100, 100,
     ]
-    //jump: [],  Later additions
-    //cast: [],
-    //die: [],
 };
 
 /**
  * image atlas export
  */
-//TODO: currently a place holder image until files are complete 
-export const Wizard = "public/WizardMiniGame/Sprites/Wizard.png";
+export const wizardSrc = "public/WizardMiniGame/Sprites/Wizard.png";
+
+export const WIZARD_BOUNDING_BOXES: Record<WizardAnimation, BoundingBox[]> = {} as any;
+
+//pre-computed bounding boxes
+const wizardImg = new Image();
+wizardImg.src = wizardSrc;
+wizardImg.onload = () => {
+    const boxes = computeAllAnimationBoundingBoxes(wizardImg, WIZARD_ANIMATIONS);
+    Object.assign(WIZARD_BOUNDING_BOXES, boxes);
+};

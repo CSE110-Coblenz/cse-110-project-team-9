@@ -1,5 +1,11 @@
-export type KnightAnimation = "idle" | "walk" | "attackslash" | "attackdown" | "attackbow" | "hurt" | "die";
-// Each key matches a Knight Animation type
+import { computeAllAnimationBoundingBoxes } from "../CreateBoundingBox";
+
+//animation types
+export type KnightAnimation = "idle" | "walk" | "attackslash" | "attackdown" | "attackbow" | "damage" | "death";
+
+//bounding box
+export type BoundingBox = { x: number; y: number; width: number; height: number };
+
 //[x, y, width, height] per frame
 export const KNIGHT_ANIMATIONS: Record<KnightAnimation, number[]> = {
     idle: [
@@ -46,25 +52,31 @@ export const KNIGHT_ANIMATIONS: Record<KnightAnimation, number[]> = {
         600, 400, 100, 100,
         700, 400, 100, 100,
     ],
-    hurt: [
+    damage: [
         0, 500, 100, 100,
         100, 500, 100, 100,
         200, 500, 100, 100,
         300, 500, 100, 100,
-        400, 500, 100, 100,
     ],
-    die: [
+    death: [
         0, 600, 100, 100,
         100, 600, 100, 100,
         200, 600, 100, 100,
         300, 600, 100, 100,
-        400, 600, 100, 100,
-    ],
+    ]
 };
 
 /**
  * image atlas export
  */
-export const Knight = "public/WizardMiniGame/Sprites/Knight.png";
+export const knightSrc = "public/WizardMiniGame/Sprites/Knight.png";
 
-//TODO: move creating dynamic bounding boxes here
+export const KNIGHT_BOUNDING_BOXES: Record<KnightAnimation, BoundingBox[]> = {} as any;
+
+//pre-computed bounding boxes
+const knightImg = new Image();
+knightImg.src = knightSrc;
+knightImg.onload = () => {
+    const boxes = computeAllAnimationBoundingBoxes(knightImg, KNIGHT_ANIMATIONS);
+    Object.assign(KNIGHT_BOUNDING_BOXES, boxes);
+};

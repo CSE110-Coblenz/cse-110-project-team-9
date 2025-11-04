@@ -2,15 +2,17 @@ import type { PlayerModel } from "./PlayerModel";
 import type { PlayerViewer } from "./PlayerViewer";
 import type { Collidable, AABB } from "../../CollisionManager";
 
-export class PlayerController<A extends string> implements Collidable {
+export class PlayerController<Animation extends string> implements Collidable {
     private keys: Record<string, boolean> = {};
     private walkSound: HTMLAudioElement;
+    //TODO: jump scare from sword slash fix audio normalization
     private attackSound: HTMLAudioElement;
     private bowshootSound: HTMLAudioElement;
 
-    constructor(private model: PlayerModel, private view: PlayerViewer<A>) {
+    constructor(private model: PlayerModel, private view: PlayerViewer<Animation>) {
         //TODO: grab correct foramt .100 seconds per frame for any given animation
         //TODO: move this to knight.ts
+        //TODO: convert to mp4 instead mp3 does not do milliseconds
         this.walkSound = new Audio("public/WizardMiniGame/Audio/8-bit-grass-footsteps-2-408574.mp3")
         this.attackSound = new Audio("public/WizardMiniGame/Audio/sword-slash-and-swing-185432.mp3")
         this.bowshootSound = new Audio("public/WizardMiniGame/Audio/bow_release-85040.mp3")
@@ -27,13 +29,12 @@ export class PlayerController<A extends string> implements Collidable {
         }
         return null;
     }
-
     /**
      * check collision
      * @param other
      */
     public onCollision?(other: Collidable): void;
-
+    //TODO: refactor input animations to be in the knight or wizard
     /**
      * add Listening functionality
      */
@@ -41,7 +42,6 @@ export class PlayerController<A extends string> implements Collidable {
         window.addEventListener("keydown", (e) => this.handleKeyDown(e));
         window.addEventListener("keyup", (e) => this.handleKeyUp(e));
     }
-
     /**
      * remove Listening functionality
      */
@@ -49,8 +49,6 @@ export class PlayerController<A extends string> implements Collidable {
         window.removeEventListener("keydown", (e) => this.handleKeyDown(e));
         window.removeEventListener("keyup", (e) => this.handleKeyUp(e));
     }
-
-    //TODO: fucking refactor the key handling system to be cleaner
     /**
      * takes x input key to be true (pressed)
      * @param e keyboard event
@@ -60,7 +58,6 @@ export class PlayerController<A extends string> implements Collidable {
             this.keys[e.key] = true;
         }
     }
-
     //TODO: fix bug for weird case where keyup is not registered sometimes through capsLock
     /**
      * takes x input key to be false (not pressed)
@@ -71,7 +68,6 @@ export class PlayerController<A extends string> implements Collidable {
             this.keys[e.key] = false;
         }
     }
-
     /**
      * after 
      * @param deltaTime different in time from last animation event
@@ -91,31 +87,27 @@ export class PlayerController<A extends string> implements Collidable {
             dy /= mag;
         }
         
-        //TODO: fix generic class removal
-
-        //speed on time about 150 pixel per second from last move
-        this.model.x += dx * this.model.speed * deltaTime;
-        this.model.y += dy * this.model.speed * deltaTime;
+        //speed on time about x(for given model) pixel per second from last move
+        this.model.move(dx * this.model.speed * deltaTime, dy * this.model.speed * deltaTime);
 
         //actions and animation only one at a time
         if (dx !== 0 || dy !== 0) {
-            this.view.playAnimation("walk" as A);
+            this.model.setAnimation("walk");
             this.walkSound.play();
 
         } else if (this.keys["f"]) {
-            this.view.playAnimation("attackslash" as A);
+            this.model.setAnimation("attackslash");
             this.attackSound.play();
 
         } else if (this.keys["e"]) {
-            this.view.playAnimation("attackdown" as A);
+            this.model.setAnimation("attackdown");
             this.attackSound.play();
 
         } else if (this.keys["r"]) {
-            this.view.playAnimation("attackbow" as A);
+            this.model.setAnimation("attackbow");
             this.bowshootSound.play();
         } else {
-            this.view.playAnimation("idle" as A);
-            
+            this.model.setAnimation("idle");            
         }
         this.view.render(this.model);
     }
