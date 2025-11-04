@@ -1,15 +1,17 @@
 import Konva from "konva";
 import type { ScreenSwitcher, Screen } from "./types";
-//import { HomeScreenController } from "./screens/HomeScreen/HomeScreenController";
-import  { WizardGameScreenController } from "./screens/WizardGameScreen/WizardGameScreenController";
+import { HomeScreenController } from "./screens/HomeScreen/HomeScreenController";
+import { SettingsScreenController } from "./screens/SettingsScreen/SettingsScreenController";
+import { WizardGameScreenController } from "./screens/WizardGameScreen/WizardGameScreenController";
 import { STAGE_WIDTH, STAGE_HEIGHT } from "./constants";
+
 
 class App implements ScreenSwitcher {
 	private stage: Konva.Stage;
 	private layer: Konva.Layer;
 
-	// private homeController: HomeScreenController;
-
+	private homeController: HomeScreenController;
+	private settingsController: SettingsScreenController;
 	private WizardGameController : WizardGameScreenController;
 
 	constructor(container: string) {
@@ -24,36 +26,38 @@ class App implements ScreenSwitcher {
 		this.stage.add(this.layer);
 
 		// Initialize all screen controllers
-		// this.homeController = new HomeScreenController(this);
+		this.homeController = new HomeScreenController(this);
+		this.settingsController = new SettingsScreenController(this);
 		this.WizardGameController = new WizardGameScreenController(this);
 
 		// Add all screen groups to the layer
-		// this.layer.add(this.homeController.getView().getGroup());
+		this.layer.add(this.homeController.getView().getGroup());
+		this.layer.add(this.settingsController.getView().getGroup());
 		this.layer.add(this.WizardGameController.getView().getGroup());
 
 		// Draw the layer
 		this.layer.draw();
 
 		// Start with home screen visible
-		// this.homeController.getView().show();
-		this.switchToScreen({ type: "WizardGame" });
+		this.switchToScreen({ type: "home" });
 	}
 
 	switchToScreen(screen: Screen): void {
 
 		switch (screen.type) {
+			case "home":
+				this.homeController.show();
+				// Hide settings screen (Need for settings close button)
+				this.settingsController.hide();
+				break;
+			case "settings":
+				this.homeController.show();
+				this.settingsController.show();
+				break;
 			case "WizardGame":
 				this.WizardGameController.startGame();
 				//TODO: return point value wizard Game Exit();
 				break;
-
-			// case "home":
-			// 	this.homeController.show();
-			// 	break;
-			
-			// case "char_select":
-            //     this.charSelectController.show();
-            //     break;
 		}
 	}
 }

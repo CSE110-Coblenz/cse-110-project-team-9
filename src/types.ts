@@ -7,9 +7,10 @@ export interface View {
 }
 
 export type Screen =
-	// | { type: "home" }
-	   | { type: "WizardGame"}
-	   | { type: "WizardResult"}
+    | { type: "WizardGame"}
+	| { type: "WizardResult"}
+	| { type: "home" }
+	| { type: "settings" }
 
 export abstract class ScreenController {
 	abstract getView(): View;
