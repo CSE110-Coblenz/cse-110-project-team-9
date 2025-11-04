@@ -11,12 +11,12 @@ import { PlayerModel } from "./entities/player/PlayerModel";
 import { PlayerViewer } from "./entities/player/PlayerViewer";
 import { PlayerController } from "./entities/player/PlayerController";
 //Enemy MVC
-import { EnemyModel } from "./entities/Enemy/EnemyModel";  
-import { EnemyViewer } from "./entities/Enemy/EnemyViewer";
-import { EnemyController } from "./entities/Enemy/EnemyController";
+import { EnemyModel } from "./entities/enemy/EnemyModel";  
+import { EnemyViewer } from "./entities/enemy/EnemyViewer";
+import { EnemyController } from "./entities/enemy/EnemyController";
 //sprite factories
 import { PlayerFactory } from "./entities/player/PlayerFactory";
-import { EnemyFactory } from "./entities/Enemy/EnemyFactory";
+import { EnemyFactory } from "./entities/enemy/EnemyFactory";
 //sprite type
 import type { WizardAnimation } from "./entities/types/Wizard";
 import type { KnightAnimation } from "./entities/types/Knight";
