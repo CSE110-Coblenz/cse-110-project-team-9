@@ -31,9 +31,9 @@ export class CollisionManager {
 		this.collidables = this.collidables.filter(x => x !== c);
 	}
 
+	//TODO: check local only not all entities
     /**
      * Processes collision detection among registered collidables
-     * TODO: optimize with region partitioning (fucking slow)
      */
 	public update() {
 		const list = this.collidables;
