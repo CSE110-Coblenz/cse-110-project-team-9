@@ -36,17 +36,20 @@ export class AudioController {
         const bgm = this.model.sounds["bgm"];
         if (!bgm) return;
     
-        if (bgm.readyState < 2) {
-            bgm.load();
-        }
+        bgm.muted = false;
+        if (bgm.readyState < 2) bgm.load();
     
         const tryPlay = () => {
-            const promise = bgm.play();
-            promise;
+            bgm.play().catch(() => {
+                document.body.addEventListener("click", () => {
+                    bgm.play();
+                    bgm.muted = false;
+                }, { once: true });
+            });
         };
-    
         tryPlay();
     }
+    
 
     /**
      * Change volume function

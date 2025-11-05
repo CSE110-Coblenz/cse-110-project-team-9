@@ -4,6 +4,10 @@ export class AudioModel {
     private volume: number;
 
     private constructor() {
+
+        // Reset volume when restarting the game
+        localStorage.removeItem("volume");
+
         this.sounds = {
             bgm: new Audio("/homescreen/audio/medieval.mp3"),
         };
@@ -20,7 +24,6 @@ export class AudioModel {
         this.applyVolume();
     }
     
-
     /**
      * @returns The singleton instance of AudioModel
      */
