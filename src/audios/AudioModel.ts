@@ -8,13 +8,18 @@ export class AudioModel {
             bgm: new Audio("/homescreen/audio/medieval.mp3"),
         };
         this.sounds.bgm.loop = true;
-        this.sounds.bgm.volume = 0.5;
-
+    
         const savedVolume = localStorage.getItem("volume");
-        this.volume = savedVolume ? parseFloat(savedVolume) : 0.5;
-
+        const parsedVolume = parseFloat(savedVolume ?? "0.5");
+        
+        // Validate volume
+        this.volume = !isFinite(parsedVolume) || parsedVolume < 0 || parsedVolume > 1
+            ? 0.5
+            : parsedVolume;
+    
         this.applyVolume();
     }
+    
 
     /**
      * @returns The singleton instance of AudioModel
