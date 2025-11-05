@@ -1,4 +1,3 @@
-import Konva from "konva";
 import { SettingsScreenView } from "./SettingsScreenView";
 import { ScreenController, ScreenSwitcher } from "../../types";
 import { AudioController } from "../../audios/AudioController";

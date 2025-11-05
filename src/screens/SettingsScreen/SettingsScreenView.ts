@@ -9,8 +9,6 @@ export class SettingsScreenView implements View {
 	private closeButton: Konva.Image;
 	private bgmslider: Konva.Group;
 	private soundeffectslider: Konva.Group;
-
-	// Callback for volume change
 	private onVolumeChange: ((ratio: number, type: "bgm" | "sfx") => void) | null = null;
 
 	constructor() {
@@ -248,7 +246,6 @@ export class SettingsScreenView implements View {
 		
 		return volumeSliderGroup;
 	}
-
 
 	// Callback Setter
 	public setVolumeChangeHandler(handler: (ratio: number, type: "bgm" | "sfx") => void): void {
