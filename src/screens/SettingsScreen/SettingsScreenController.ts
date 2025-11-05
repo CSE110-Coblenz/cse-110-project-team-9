@@ -15,7 +15,6 @@ export class SettingsScreenController extends ScreenController {
 		this.view = new SettingsScreenView();
 		this.audio = new AudioController();
 		this.currentVolume = this.audio.getVolume();
-		this.volumeHandlers();
 
 		/**
 		 * Button Event Listeners
@@ -24,23 +23,11 @@ export class SettingsScreenController extends ScreenController {
 		this.view.getCloseButton().on("click", () => {
 			this.screenSwitcher.switchToScreen({ type: "home" });
 		});
-	}
 
-	private volumeHandlers(): void {
-		const bgmSlider = this.view.getBgmSlider();
-		const knob = bgmSlider.findOne<Konva.Circle>('Circle')!;
-
-		knob.on('dragmove', () => {
-			const fill = bgmSlider.findOne<Konva.Rect>('Rect')!;
-			const ratio = fill.width() / 200;
-			this.audio.changeVolume(ratio);
-		});
-
-		const saveButton = this.view.getSaveButton();
-		saveButton.on('click', () => {
-			this.audio.play('click');
-			localStorage.setItem("volume", this.audio.getVolume().toString());
-			this.view.hide();
+		this.view.setVolumeChangeHandler((ratio, type) => {
+			if (type === "bgm") {
+				this.audio.changeVolume(ratio);
+			}
 		});
 	}
 
