@@ -6,6 +6,9 @@ export class SettingsScreenController extends ScreenController {
 	private view: SettingsScreenView;
 	private model: SettingsScreenModel;
 	private screenSwitcher: ScreenSwitcher;
+	private audio: AudioController;
+	private currentBgmVolume: number;
+	private currentSfxVolume: number;
 
 	constructor(screenSwitcher: ScreenSwitcher) {
 		super();
@@ -13,34 +16,44 @@ export class SettingsScreenController extends ScreenController {
 		this.model = new SettingsScreenModel();
 		this.view = new SettingsScreenView();
 		this.audio = new AudioController();
-		this.currentVolume = this.audio.getBgmVolume();
+		this.currentBgmVolume = this.audio.getBgmVolume();
+		this.currentSfxVolume = this.audio.getSfxVolume();
 
 		/**
 		 * Button Event Listeners
 		 */
 
-		this.view.getCloseButton().on("click", () => {
+		this.view.getSaveButton().on("click", () => {
+			localStorage.setItem("bgm_volume", this.audio.getBgmVolume().toString());
+			localStorage.setItem("sfx_volume", this.audio.getSfxVolume().toString());
+			alert("Settings saved!");
 			this.screenSwitcher.switchToScreen({ type: "home" });
 		});
 
 		this.view.setVolumeChangeHandler((ratio, type) => {
 			if (type === "bgm") {
 				this.audio.changeBgmVolume(ratio);
+			} else if (type === "sfx") {
+				this.audio.changeSfxVolume(ratio);
 			}
 		});
 	}
 
-	public onVolumeChange(newVolume: number): void {
+	public onBgmVolumeChange(newVolume: number): void {
         this.audio.changeBgmVolume(newVolume);
     }
 
-    public onSaveButtonClick(): void {
-        this.audio.playSFX("click");
+	public onSfxVolumeChange(newVolume: number): void {
+		this.audio.changeSfxVolume(newVolume);
+	}
+
+    public getCurrentBgmVolume(): number {
+        return this.currentBgmVolume;
     }
 
-    public getCurrentVolume(): number {
-        return this.currentVolume;
-    }
+	public getCurrentSfxVolume(): number {
+		return this.currentSfxVolume;
+	}
 
     /**
      * Get the view
