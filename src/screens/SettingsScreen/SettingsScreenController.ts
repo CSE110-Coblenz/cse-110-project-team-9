@@ -13,7 +13,7 @@ export class SettingsScreenController extends ScreenController {
 		this.screenSwitcher = screenSwitcher;
 		this.view = new SettingsScreenView();
 		this.audio = new AudioController();
-		this.currentVolume = this.audio.getVolume();
+		this.currentVolume = this.audio.getBgmVolume();
 
 		/**
 		 * Button Event Listeners
@@ -25,17 +25,17 @@ export class SettingsScreenController extends ScreenController {
 
 		this.view.setVolumeChangeHandler((ratio, type) => {
 			if (type === "bgm") {
-				this.audio.changeVolume(ratio);
+				this.audio.changeBgmVolume(ratio);
 			}
 		});
 	}
 
 	public onVolumeChange(newVolume: number): void {
-        this.audio.changeVolume(newVolume);
+        this.audio.changeBgmVolume(newVolume);
     }
 
     public onSaveButtonClick(): void {
-        this.audio.play("click");
+        this.audio.playSFX("click");
     }
 
     public getCurrentVolume(): number {
