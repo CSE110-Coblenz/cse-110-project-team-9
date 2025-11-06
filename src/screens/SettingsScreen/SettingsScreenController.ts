@@ -12,15 +12,35 @@ export class SettingsScreenController extends ScreenController {
 		this.screenSwitcher = screenSwitcher;
 		this.model = new SettingsScreenModel();
 		this.view = new SettingsScreenView();
+		this.audio = new AudioController();
+		this.currentVolume = this.audio.getBgmVolume();
+
+		/**
+		 * Button Event Listeners
+		 */
 
 		this.view.getCloseButton().on("click", () => {
 			this.screenSwitcher.switchToScreen({ type: "home" });
 		});
 
-		const settings_bgmslider = this.view.getBgmSlider();
-		const settings_soundeffectslider = this.view.getSoundEffectSlider();
-
+		this.view.setVolumeChangeHandler((ratio, type) => {
+			if (type === "bgm") {
+				this.audio.changeBgmVolume(ratio);
+			}
+		});
 	}
+
+	public onVolumeChange(newVolume: number): void {
+        this.audio.changeBgmVolume(newVolume);
+    }
+
+    public onSaveButtonClick(): void {
+        this.audio.playSFX("click");
+    }
+
+    public getCurrentVolume(): number {
+        return this.currentVolume;
+    }
 
     /**
      * Get the view

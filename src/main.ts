@@ -4,6 +4,7 @@ import { HomeScreenController } from "./screens/HomeScreen/HomeScreenController"
 import { SettingsScreenController } from "./screens/SettingsScreen/SettingsScreenController";
 import { WizardGameScreenController } from "./screens/WizardGameScreen/WizardGameScreenController";
 import { STAGE_WIDTH, STAGE_HEIGHT } from "./constants";
+import { AudioController } from "./audios/AudioController";
 
 
 class App implements ScreenSwitcher {
@@ -13,6 +14,8 @@ class App implements ScreenSwitcher {
 	private homeController: HomeScreenController;
 	private settingsController: SettingsScreenController;
 	private WizardGameController : WizardGameScreenController;
+
+	private audio: AudioController;
 
 	constructor(container: string) {
 		this.stage = new Konva.Stage({
@@ -24,6 +27,9 @@ class App implements ScreenSwitcher {
 		// Create a layer
 		this.layer = new Konva.Layer();
 		this.stage.add(this.layer);
+
+		// Initialize AudioController
+		this.audio = new AudioController();
 
 		// Initialize all screen controllers
 		this.homeController = new HomeScreenController(this);
@@ -39,20 +45,27 @@ class App implements ScreenSwitcher {
 		this.layer.draw();
 
 		// Start with home screen visible
-		this.switchToScreen({ type: "home" });
+		this.homeController.getView().show();
+
+		// Play home BGM
+		this.audio.playBGM("home_bgm");
 	}
 
 	switchToScreen(screen: Screen): void {
+
+		this.audio.stopBGM();
 
 		switch (screen.type) {
 			case "home":
 				this.homeController.show();
 				// Hide settings screen (Need for settings close button)
 				this.settingsController.hide();
+				this.audio.replaceBGM("home_bgm", "/homescreen/audio/medieval.mp3");
 				break;
 			case "settings":
 				this.homeController.show();
 				this.settingsController.show();
+				this.audio.stopBGM();
 				break;
 			case "WizardGame":
 				this.WizardGameController.startGame();
