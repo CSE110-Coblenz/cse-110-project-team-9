@@ -49,10 +49,6 @@ class App implements ScreenSwitcher {
 
 	switchToScreen(screen: Screen): void {
 
-		if (screen.type === "settings") {
-			this.audio.stopBGM();
-		}
-
 		switch (screen.type) {
 			case "home":
 				this.homeController.show();
