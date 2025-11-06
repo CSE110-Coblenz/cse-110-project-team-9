@@ -53,7 +53,9 @@ class App implements ScreenSwitcher {
 
 	switchToScreen(screen: Screen): void {
 
-		this.audio.stopBGM();
+		if (screen.type === "settings") {
+			this.audio.stopBGM();
+		}
 
 		switch (screen.type) {
 			case "home":
@@ -65,7 +67,6 @@ class App implements ScreenSwitcher {
 			case "settings":
 				this.homeController.show();
 				this.settingsController.show();
-				this.audio.stopBGM();
 				break;
 			case "WizardGame":
 				this.WizardGameController.startGame();
