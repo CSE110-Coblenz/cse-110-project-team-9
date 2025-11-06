@@ -11,21 +11,26 @@ export class AudioController {
     }
 
     /**
-     * Play & Stop function for SOUND EFFECT
+     * Play function for SOUND EFFECT
      * @param name : string - filename of the .mp3/.mp4
      */
 
-    public play(name: string): void {
-        const sound = this.model.sounds[name];
-        if (sound) sound.play();
-    }
+    public playSFX(name: string): void {
+        const sfx = this.model.sounds[name];
+        if (!sfx) return;
 
-    public stop(name: string): void {
-        const sound = this.model.sounds[name];
-        if (sound) {
-            sound.pause();
-            sound.currentTime = 0;
-        }
+        sfx.muted = false;
+        if (sfx.readyState < 2) sfx.load();
+
+        const tryPlay = () => {
+            sfx.play().catch(() => {
+                document.body.addEventListener("click", () => {
+                    sfx.play();
+                    sfx.muted = false;
+                }, { once: true });
+            });
+        };
+        tryPlay();
     }
 
     /**

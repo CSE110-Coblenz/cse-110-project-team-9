@@ -23,9 +23,15 @@ export class HomeScreenController extends ScreenController {
 			this.screenSwitcher.switchToScreen({ type: "settings" });
 		});
 
+		this.view.getSettingsButton().on("mouseenter", () => {
+			this.audio.playSFX("click");
+		});
+
 		this.view.getStartButton().on("click", () => {
+			this.audio.playSFX("sfx");
 			alert("Game Started!");
-		});	
+		});
+		
 
 		/**
 		 * Play background music (BGM) on first user interaction

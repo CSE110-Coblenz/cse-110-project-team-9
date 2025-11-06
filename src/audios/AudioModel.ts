@@ -9,18 +9,28 @@ export class AudioModel {
         localStorage.removeItem("volume");
 
         this.sounds = {
-            bgm: new Audio("/homescreen/audio/medieval.mp3"),
+            home_bgm: new Audio("/homescreen/audio/medieval.mp3"),
+            click_sfx: new Audio("/homescreen/audio/click.mp3"),
         };
+
         this.sounds.bgm.loop = true;
     
-        const savedVolume = localStorage.getItem("volume");
-        const parsedVolume = parseFloat(savedVolume ?? "0.5");
+        const savedBgmVolume = localStorage.getItem("bgmvolume");
+        const parsedBgmVolume = parseFloat(savedBgmVolume ?? "0.5");
+
+        const savedSfxVolume = localStorage.getItem("sfxvolume");
+        const parsedSfxVolume = parseFloat(savedSfxVolume ?? "0.5");
         
-        // Validate volume
-        this.volume = !isFinite(parsedVolume) || parsedVolume < 0 || parsedVolume > 1
+        // Validate volume (BGM)
+        this.volume = !isFinite(parsedBgmVolume) || parsedBgmVolume < 0 || parsedBgmVolume > 1
             ? 0.5
-            : parsedVolume;
-    
+            : parsedBgmVolume;
+        
+        // Validate volume (SFX)
+        this.volume = !isFinite(parsedSfxVolume) || parsedSfxVolume < 0 || parsedSfxVolume > 1
+            ? 0.5
+            : parsedSfxVolume;
+
         this.applyVolume();
     }
     
