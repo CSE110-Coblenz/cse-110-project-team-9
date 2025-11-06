@@ -76,6 +76,7 @@ export class AudioController {
     public replaceBGM(key: string, path: string): void {
         this.stopBGM();
         this.model.registerSound(key, path, true, true);
+        this.playBGM(key);
     }
 
     /**
