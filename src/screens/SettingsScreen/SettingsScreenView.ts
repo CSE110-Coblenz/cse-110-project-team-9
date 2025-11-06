@@ -6,7 +6,6 @@ export class SettingsScreenView implements View {
 	private group: Konva.Group;
 
 	private saveButton: Konva.Group;
-	private closeButton: Konva.Image;
 	private bgmslider: Konva.Group;
 	private soundeffectslider: Konva.Group;
 	private onVolumeChange: ((ratio: number, type: "bgm" | "sfx") => void) | null = null;
@@ -58,8 +57,8 @@ export class SettingsScreenView implements View {
          * Volume Slider (Background Music & Sound Effects)
          */
 
-		this.bgmslider = this.createVolumeSlider("Background", 230, 250);
-		this.soundeffectslider = this.createVolumeSlider("Sound Effect", 230, 320);
+		this.bgmslider = this.createVolumeSlider("BGM", 230, 250);
+		this.soundeffectslider = this.createVolumeSlider("SFX", 230, 320);
 
         /**
          *  Save Button
@@ -73,37 +72,6 @@ export class SettingsScreenView implements View {
 			"HomeScreenFont",
 			"black"
 		);
-
-		/**
-         *  Close Button (X)
-         */
-
-        const closeButtonImg = new Image();
-        closeButtonImg.src = "homescreen/images/closebutton.svg";
-
-        this.closeButton = new Konva.Image({
-            x: 560,
-            y: 160,
-            width: 30,
-            height: 30,
-            listening: true,
-            image: undefined,
-        });
-
-        closeButtonImg.onload = () => {
-            this.closeButton.image(closeButtonImg);
-            
-            this.closeButton.on('mouseover', function (e) {
-                e.target.getStage()!.container().style.cursor = 'pointer';
-            });
-            
-            this.closeButton.on('mouseout', function (e) {
-                e.target.getStage()!.container().style.cursor = 'default';
-            });
-
-            this.group.add(this.closeButton);
-            this.closeButton.moveToTop();
-        };
 	}
 
 	/**
@@ -240,7 +208,7 @@ export class SettingsScreenView implements View {
 			percent.text(Math.round(ratio * 100) + "%");
 		
 			if (this.onVolumeChange) {
-				this.onVolumeChange(ratio, label === "Background" ? "bgm" : "sfx");
+				this.onVolumeChange(ratio, label === "BGM" ? "bgm" : "sfx");
 			}
 		});
 		
@@ -255,10 +223,6 @@ export class SettingsScreenView implements View {
     /*
     * Getters
     */
-
-	getCloseButton(): Konva.Image {
-		return this.closeButton;
-	}
 
 	getSaveButton(): Konva.Group {
 		return this.saveButton;
