@@ -56,17 +56,9 @@ class App implements ScreenSwitcher {
 		this.settingsController.hide();
 		this.WizardGameController.hide();
 
-		//TODO: figure out why we are doing this
-		if (screen.type === "settings") {
-			this.audio.stopBGM();
-		}
-
 		switch (screen.type) {
 			case "home":
 				this.homeController.show();
-				//TODO: I wanna move this
-				this.audio.playBGM("home_bgm");
-				this.audio.replaceBGM("home_bgm", "/homescreen/audio/medieval.mp3");
 				break;
 
 			case "settings":
