@@ -1,6 +1,6 @@
 import type { WizardProjectileModel } from './ProjectileModel';
 import type { WizardProjectileViewer } from './ProjectileViewer';
-import type { Collidable, AABB } from '../CollisionManager';
+import type { Collidable, AABB } from './CollisionManager';
 
 export class WizardProjectileController implements Collidable {
     public alive = true;

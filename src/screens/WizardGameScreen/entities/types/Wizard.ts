@@ -1,4 +1,4 @@
-import { computeAllAnimationBoundingBoxes } from "../CreateBoundingBox";
+import { computeAllAnimationBoundingBoxes } from "./CreateBoundingBox";
 //TODO: asesprite image atlas for this for now it is just a copy of Knight
 //animation types
 export type WizardAnimation = "idle" | "walk" | "attackslash" | "attackdown" | "attackbow" | "damage" | "death";

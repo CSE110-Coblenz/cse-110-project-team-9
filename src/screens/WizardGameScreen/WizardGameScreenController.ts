@@ -5,7 +5,7 @@ import type { ScreenSwitcher } from "../../types";
 import { WizardGameScreenModel } from "./WizardGameScreenModel";
 import { WizardGameScreenViewer } from "./WizardGameScreenViewer";
 //Collision Manager
-import { CollisionManager } from "./CollisionManager";
+import { CollisionManager } from "./entities/CollisionManager";
 //Player MVC
 import { PlayerModel } from "./entities/player/PlayerModel";
 import { PlayerViewer } from "./entities/player/PlayerViewer";

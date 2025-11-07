@@ -1,4 +1,4 @@
-import { computeAllAnimationBoundingBoxes } from "../CreateBoundingBox";
+import { computeAllAnimationBoundingBoxes } from "./CreateBoundingBox";
 
 //animation types
 export type KnightAnimation = "idle" | "walk" | "attackslash" | "attackdown" | "attackbow" | "damage" | "death";

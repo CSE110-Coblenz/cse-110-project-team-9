@@ -1,6 +1,6 @@
 import type { EnemyModel } from "./EnemyModel";
 import { EnemyViewer } from "./EnemyViewer";
-import type { Collidable, AABB } from "../../CollisionManager";
+import type { Collidable, AABB } from "../CollisionManager";
 
 export class EnemyController<Animation extends string> implements Collidable {
     private keys: Record<string, boolean> = {};

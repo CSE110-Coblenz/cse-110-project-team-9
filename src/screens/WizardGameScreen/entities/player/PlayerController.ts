@@ -1,6 +1,6 @@
 import type { PlayerModel } from "./PlayerModel";
 import type { PlayerViewer } from "./PlayerViewer";
-import type { Collidable, AABB } from "../../CollisionManager";
+import type { Collidable, AABB } from "../CollisionManager";
 
 export class PlayerController<Animation extends string> implements Collidable {
     private keys: Record<string, boolean> = {};
