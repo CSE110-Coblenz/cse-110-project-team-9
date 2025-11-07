@@ -53,6 +53,7 @@ class App implements ScreenSwitcher {
 
 	switchToScreen(screen: Screen): void {
 
+		//TODO: figure out why we are doing this
 		if (screen.type === "settings") {
 			this.audio.stopBGM();
 		}
