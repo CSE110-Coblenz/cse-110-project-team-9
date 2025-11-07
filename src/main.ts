@@ -4,7 +4,7 @@ import { HomeScreenController } from "./screens/HomeScreen/HomeScreenController"
 import { SettingsScreenController } from "./screens/SettingsScreen/SettingsScreenController";
 import { WizardGameScreenController } from "./screens/WizardGameScreen/WizardGameScreenController";
 import { STAGE_WIDTH, STAGE_HEIGHT } from "./constants";
-import { AudioController } from "./audios/AudioController";
+import { AudioController } from "./audio/AudioController";
 
 
 class App implements ScreenSwitcher {
@@ -44,19 +44,17 @@ class App implements ScreenSwitcher {
 		// Draw the layer
 		this.layer.draw();
 
-		// Start with home screen visible
-		this.homeController.getView().show();
-
 		// Play home BGM
-		this.audio.playBGM("home_bgm");
+		//this.audio.playBGM("home_bgm");
+		this.switchToScreen({ type: "home" });
 	}
 
 	switchToScreen(screen: Screen): void {
 
 		//TODO: figure out why we are doing this
-		if (screen.type === "settings") {
-			this.audio.stopBGM();
-		}
+		// if (screen.type === "settings") {
+		// 	this.audio.stopBGM();
+		// }
 
 		switch (screen.type) {
 			case "home":
@@ -76,6 +74,3 @@ class App implements ScreenSwitcher {
 		}
 	}
 }
-
-// Initialize the application
-new App("container");

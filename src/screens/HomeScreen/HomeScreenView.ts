@@ -21,9 +21,7 @@ export class HomeScreenView implements View {
 		video.src = "/homescreen/video/homescreen_video.mp4";
 		video.load(); //
 		video.style.display = "none";
-		
 		video.muted = true;
-		video.setAttribute("muted", "true");
 
 		const videoBackground = new Konva.Image({
 			image: video,
@@ -108,18 +106,7 @@ export class HomeScreenView implements View {
 			48
 		);
 
-		this.group.add(this.homeStartButton, this.homeSettingsButton);
-
-		/**
-		 * Adding Audio
-		 */
-		// const audio = document.createElement("audio");
-		// audio.src = "/homescreen/audio/homescreen.mp3";
-		// audio.loop = true;
-		// audio.volume = 0.5;
-		// audio.play().catch((err) => {
-		// 	console.error("Audio playback failed:", err);
-		// });
+		this.group.add(this.homeStartButton, this.homeSettingsButton);	
 	}
 
 	/**

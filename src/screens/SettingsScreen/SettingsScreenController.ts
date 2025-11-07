@@ -1,10 +1,9 @@
 import { SettingsScreenView } from "./SettingsScreenView";
-import { SettingsScreenModel } from "./SettingsScreenModel";
 import { ScreenController, ScreenSwitcher } from "../../types";
+import { AudioController } from "../../audio/AudioController";
 
 export class SettingsScreenController extends ScreenController {
 	private view: SettingsScreenView;
-	private model: SettingsScreenModel;
 	private screenSwitcher: ScreenSwitcher;
 	private audio: AudioController;
 	private currentBgmVolume: number;
@@ -13,7 +12,6 @@ export class SettingsScreenController extends ScreenController {
 	constructor(screenSwitcher: ScreenSwitcher) {
 		super();
 		this.screenSwitcher = screenSwitcher;
-		this.model = new SettingsScreenModel();
 		this.view = new SettingsScreenView();
 		this.audio = new AudioController();
 		this.currentBgmVolume = this.audio.getBgmVolume();

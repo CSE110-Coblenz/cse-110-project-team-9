@@ -8,6 +8,7 @@ export class SettingsScreenView implements View {
 	private saveButton: Konva.Group;
 	private bgmslider: Konva.Group;
 	private soundeffectslider: Konva.Group;
+	private onVolumeChange: ((ratio: number, type: "bgm" | "sfx") => void) | null = null;
 
 	constructor() {
 		this.group = new Konva.Group({ visible: false });
@@ -193,21 +194,30 @@ export class SettingsScreenView implements View {
 		this.group.add(volumeSliderGroup);
 	
 		knob.on("dragmove", () => {
-			const knobAbs = knob.getAbsolutePosition();
-			const groupAbs = volumeSliderGroup.getAbsolutePosition();
-			const localX = knobAbs.x - groupAbs.x;
-	
-			let ratio = (localX - bar.x()) / bar.width();
-			ratio = Math.max(0, Math.min(1, ratio));
+
+			const pointerPosition = volumeSliderGroup.getRelativePointerPosition();
+			if (!pointerPosition) return;
+
+			const localX = pointerPosition.x;
+			const barWidth = bar.width();
 			
-			fill.width(bar.width() * ratio);
+			let ratio = (localX - bar.x()) / barWidth;
+			ratio = Math.max(0, Math.min(1, ratio));
+		
+			fill.width(barWidth * ratio);
 			percent.text(Math.round(ratio * 100) + "%");
 		
 			if (this.onVolumeChange) {
 				this.onVolumeChange(ratio, label === "BGM" ? "bgm" : "sfx");
 			}
 		});
+		
 		return volumeSliderGroup;
+	}
+
+	// Callback Setter
+	public setVolumeChangeHandler(handler: (ratio: number, type: "bgm" | "sfx") => void): void {
+		this.onVolumeChange = handler;
 	}
 	
     /*
