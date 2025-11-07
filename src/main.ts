@@ -1,9 +1,11 @@
 import Konva from "konva";
 import type { ScreenSwitcher, Screen } from "./types";
+import { STAGE_WIDTH, STAGE_HEIGHT } from "./constants";
+
 import { HomeScreenController } from "./screens/HomeScreen/HomeScreenController";
 import { SettingsScreenController } from "./screens/SettingsScreen/SettingsScreenController";
 import { WizardGameScreenController } from "./screens/WizardGameScreen/WizardGameScreenController";
-import { STAGE_WIDTH, STAGE_HEIGHT } from "./constants";
+
 import { AudioController } from "./audio/AudioController";
 
 
@@ -44,33 +46,47 @@ class App implements ScreenSwitcher {
 		// Draw the layer
 		this.layer.draw();
 
-		// Play home BGM
-		//this.audio.playBGM("home_bgm");
+		//initial start
 		this.switchToScreen({ type: "home" });
 	}
 
 	switchToScreen(screen: Screen): void {
 
+		this.homeController.hide();
+		this.settingsController.hide();
+		this.WizardGameController.hide();
+
 		//TODO: figure out why we are doing this
-		// if (screen.type === "settings") {
-		// 	this.audio.stopBGM();
-		// }
+		if (screen.type === "settings") {
+			this.audio.stopBGM();
+		}
 
 		switch (screen.type) {
 			case "home":
 				this.homeController.show();
-				// Hide settings screen (Need for settings close button)
-				this.settingsController.hide();
+				//TODO: I wanna move this
+				this.audio.playBGM("home_bgm");
 				this.audio.replaceBGM("home_bgm", "/homescreen/audio/medieval.mp3");
 				break;
+
 			case "settings":
-				this.homeController.show();
 				this.settingsController.show();
 				break;
-			case "WizardGame":
+
+			case "wizardminigame":
 				this.WizardGameController.startGame();
-				//TODO: return point value wizard Game Exit();
+				break;
+		}
+	}
+
+	layerOnScreen(screen: Screen): void {
+		switch (screen.type) {
+			case "settings":
+				this.settingsController.show();
 				break;
 		}
 	}
 }
+
+// Initialize the application
+new App("container");

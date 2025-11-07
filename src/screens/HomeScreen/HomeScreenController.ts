@@ -18,22 +18,19 @@ export class HomeScreenController extends ScreenController {
 		/**
 		 * Button Event Listeners
 		 */
-
 		this.view.getSettingsButton().on("click", () => {
-			this.screenSwitcher.switchToScreen({ type: "settings" });
 			this.audio.playSFX("click_sfx");
+			this.screenSwitcher.layerOnScreen({ type: "settings" });
 		});
 
 		this.view.getStartButton().on("click", () => {
 			this.audio.playSFX("click_sfx");
-			alert("Game Started!");
+			this.screenSwitcher.switchToScreen({ type: "wizardminigame" });
 		});
 		
-
 		/**
 		 * Play background music (BGM) on first user interaction
 		 */
-
 		this.view.getGroup().on("click", () => {
 			this.audio.playBGM("home_bgm");
 			this.view.getGroup().off("click");

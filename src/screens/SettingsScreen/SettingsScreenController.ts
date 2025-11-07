@@ -24,7 +24,7 @@ export class SettingsScreenController extends ScreenController {
 		this.view.getSaveButton().on("click", () => {
 			localStorage.setItem("bgm_volume", this.audio.getBgmVolume().toString());
 			localStorage.setItem("sfx_volume", this.audio.getSfxVolume().toString());
-			alert("Settings saved!");
+			this.audio.playSFX("click_sfx");
 			this.screenSwitcher.switchToScreen({ type: "home" });
 		});
 

@@ -7,8 +7,7 @@ export interface View {
 }
 
 export type Screen =
-    | { type: "WizardGame"}
-	| { type: "WizardResult"}
+    | { type: "wizardminigame"}
 	| { type: "home" }
 	| { type: "settings" }
 
@@ -26,4 +25,5 @@ export abstract class ScreenController {
 
 export interface ScreenSwitcher {
 	switchToScreen(screen: Screen): void;
+	layerOnScreen(screen: Screen): void;
 }
