@@ -1,22 +1,22 @@
 import { NodeType, MainGameScreenModel } from "../MainGameScreen/MainGameScreenModel";
-//import { MainGameScreenView } from "../MainGameScreen/MainGameScreenView";
-//import screenswitcher
+import { MainGameScreenView } from "../MainGameScreen/MainGameScreenView";
+import { ScreenController, ScreenSwitcher } from "../../types"
 
 
-export class MainGameScreenController {
-    private gameModel: MainGameScreenModel;
-    //private gameView: MainGameScreenView;
-    //private screenSwitcher: ScreenSwitcher;
+export class MainGameScreenController extends ScreenController {
+
+    private view: MainGameScreenView;
+    private screenSwitcher: ScreenSwitcher;
+    private gameModel: MainGameScreenModel = new MainGameScreenModel(["player1"]);
 
     private readonly BOARD_LENGTH = 40;
 
-    constructor(gameModel: MainGameScreenModel
-        //gameView: MainGameScreenView,
-        //screenSwitcher: ScreenSwitcher
-    ){
-        this.gameModel = gameModel;
-        //this.gameView = gameView;
-        //this.screenSwitcher = screenSwitcher;
+    constructor(screenSwitcher: ScreenSwitcher){
+        
+        super();
+
+        this.view = new MainGameScreenView();
+        this.screenSwitcher = screenSwitcher;
     }
 
     public diceRoll(): number {
@@ -61,6 +61,7 @@ export class MainGameScreenController {
         console.log(`Advancing to player ${nextPlayerID}.`);
     }
 
+    public getView(): MainGameScreenView {
+        return this.view;
+    }
 }
-
-
