@@ -1,0 +1,66 @@
+import { NodeType, MainGameScreenModel } from "../MainGameScreen/MainGameScreenModel";
+//import { MainGameScreenView } from "../MainGameScreen/MainGameScreenView";
+//import screenswitcher
+
+
+export class MainGameScreenController {
+    private gameModel: MainGameScreenModel;
+    //private gameView: MainGameScreenView;
+    //private screenSwitcher: ScreenSwitcher;
+
+    private readonly BOARD_LENGTH = 40;
+
+    constructor(gameModel: MainGameScreenModel
+        //gameView: MainGameScreenView,
+        //screenSwitcher: ScreenSwitcher
+    ){
+        this.gameModel = gameModel;
+        //this.gameView = gameView;
+        //this.screenSwitcher = screenSwitcher;
+    }
+
+    public diceRoll(): number {
+        return Math.floor(Math.random() * 6) + 1;
+    }
+
+    public onPlayerRoll(){
+        const roll = this.diceRoll();
+        console.log(`Player rolled a ${roll}.`);
+
+        const currentPlayerID = this.gameModel.getCurrentPlayerID();
+        const currentPosition = this.gameModel.getPlayerPosition(currentPlayerID);
+
+        const newPosition = (currentPosition + roll) % this.BOARD_LENGTH;
+        console.log("Player moved to position " + (newPosition + 1));
+        this.gameModel.setPlayerPosition(currentPlayerID, newPosition); // newPosition is 0-indexed
+        this.triggerNodeEvent(currentPlayerID, newPosition + 1); // getNodeType is 1-indexed
+    }
+
+    public triggerNodeEvent(playerID: string, nodeIndex: number): void {
+        const nodeType = this.gameModel.getNodeType(nodeIndex); 
+        switch (nodeType){
+            case NodeType.EASY_QUESTION:
+            case NodeType.MEDIUM_QUESTION:
+            case NodeType.HARD_QUESTION:
+                //switch to main screen controller to switch to question screen
+                console.log(`Player ${playerID} landed on a question node at position ${nodeIndex}.`);
+                break;
+            case NodeType.MINIGAME:
+                //switch to main screen controller to switch to minigame screen
+                console.log(`Player ${playerID} landed on a minigame node at position ${nodeIndex}.`);
+                break;
+            default:
+                throw new Error("Unknown node type encountered.");
+        }
+    }
+
+    public advanceToNextPlayer(): void {
+        this.gameModel.advanceToNextPlayer();
+
+        const nextPlayerID = this.gameModel.getCurrentPlayerID();
+        console.log(`Advancing to player ${nextPlayerID}.`);
+    }
+
+}
+
+
