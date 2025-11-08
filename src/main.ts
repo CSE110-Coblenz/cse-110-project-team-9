@@ -41,10 +41,7 @@ class App implements ScreenSwitcher {
 		this.layer.draw();
 
 		// Start with home screen visible
-		this.homeController.getView().show();
-
-		// Play home BGM
-		this.audio.playBGM("home_bgm");
+		this.switchToScreen({ type: "home" });
 	}
 
 	switchToScreen(screen: Screen): void {
@@ -54,7 +51,6 @@ class App implements ScreenSwitcher {
 				this.homeController.show();
 				// Hide settings screen (Need for settings close button)
 				this.settingsController.hide();
-				this.audio.replaceBGM("home_bgm", "/homescreen/audio/medieval.mp3");
 				break;
 
 			case "settings":
