@@ -6,14 +6,14 @@ export class AudioModel {
 
     private constructor() {
 
-        // Reset volume when restarting the game
+        // // Reset volume when restarting the game
         // localStorage.removeItem("bgmvolume");
         // localStorage.removeItem("sfxvolume");
     
-        const savedBgmVolume = parseFloat(localStorage.getItem("bgm_volume") ?? "0.5");
+        const savedBgmVolume = 0.5;
         this.bgmVolume = this.validateVolume(savedBgmVolume);
 
-        const savedSfxVolume = parseFloat(localStorage.getItem("sfx_volume") ?? "0.5");
+        const savedSfxVolume = 0.5;
         this.sfxVolume = this.validateVolume(savedSfxVolume);
 
         // Intial volume (HomeScreen)
@@ -46,21 +46,21 @@ export class AudioModel {
      * @param overwrite Whether to overwrite an existing sound with the same key
      */
 
-    public registerSound(key: string, path: string, loop: boolean = false, overwrite = false): void {
+    // public registerSound(key: string, path: string, loop: boolean = false, overwrite = false): void {
         
-        if (!this.sounds[key] || overwrite) {
+    //     if (!this.sounds[key] || overwrite) {
             
-            const audio = new Audio(path);
+    //         const audio = new Audio(path);
             
-            // Set if the sound should loop or not
-            audio.loop = loop;
+    //         // Set if the sound should loop or not
+    //         audio.loop = loop;
 
-            // If the key includes "bgm", set volume to bgmVolume, else sfxVolume
-            audio.volume = key.includes("bgm") ? this.bgmVolume : this.sfxVolume;
+    //         // If the key includes "bgm", set volume to bgmVolume, else sfxVolume
+    //         audio.volume = key.includes("bgm") ? this.bgmVolume : this.sfxVolume;
 
-            this.sounds[key] = audio;
-        }
-    }
+    //         this.sounds[key] = audio;
+    //     }
+    // }
 
     /**
      * Getter and Setter for volume

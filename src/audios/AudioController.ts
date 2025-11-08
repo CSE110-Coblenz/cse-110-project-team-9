@@ -73,11 +73,11 @@ export class AudioController {
      * Replace BGM function
      */
 
-    public replaceBGM(key: string, path: string): void {
-        this.stopBGM();
-        this.model.registerSound(key, path, true, true);
-        this.playBGM(key);
-    }
+    // public replaceBGM(key: string, path: string): void {
+    //     this.stopBGM();
+    //     this.model.registerSound(key, path, true, true);
+    //     this.playBGM(key);
+    // }
 
     /**
      * Change volume function
