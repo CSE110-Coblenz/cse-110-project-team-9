@@ -2,6 +2,7 @@ import Konva from "konva";
 import type { ScreenSwitcher, Screen } from "./types";
 import { HomeScreenController } from "./screens/HomeScreen/HomeScreenController";
 import { SettingsScreenController } from "./screens/SettingsScreen/SettingsScreenController";
+import { MainGameScreenController } from "./screens/MainGameScreen/MainGameScreenController";
 import { STAGE_WIDTH, STAGE_HEIGHT } from "./constants";
 import { AudioController } from "./audios/AudioController";
 
@@ -12,6 +13,7 @@ class App implements ScreenSwitcher {
 
 	private homeController: HomeScreenController;
 	private settingsController: SettingsScreenController;
+	private mainGameController: MainGameScreenController;
 
 	private audio: AudioController;
 
@@ -32,10 +34,12 @@ class App implements ScreenSwitcher {
 		// Initialize all screen controllers
 		this.homeController = new HomeScreenController(this);
 		this.settingsController = new SettingsScreenController(this);
+		this.mainGameController = new MainGameScreenController(this);
 
 		// Add all screen groups to the layer
 		this.layer.add(this.homeController.getView().getGroup());
 		this.layer.add(this.settingsController.getView().getGroup());
+		this.layer.add(this.mainGameController.getView().getGroup());
 
 		// Draw the layer
 		this.layer.draw();
@@ -56,6 +60,12 @@ class App implements ScreenSwitcher {
 			case "settings":
 				this.homeController.show();
 				this.settingsController.show();
+				break;
+
+			case "mainGame":
+				this.homeController.hide();
+				this.settingsController.hide();
+				this.mainGameController.show();
 				break;
 		}
 	}
