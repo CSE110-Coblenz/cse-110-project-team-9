@@ -61,6 +61,10 @@ export class MainGameScreenView implements View {
     return;
   }
 
+  getTiles(): Konva.Rect[] {
+    return this.tiles;
+  }
+
   getGroup(): Konva.Group {
     return this.group;
   }

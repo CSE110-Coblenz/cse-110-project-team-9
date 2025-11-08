@@ -17,7 +17,15 @@ export class MainGameScreenController extends ScreenController {
 
         this.view = new MainGameScreenView();
         this.screenSwitcher = screenSwitcher;
+
+        const tiles = this.view.getTiles();
+
+        // tiles[0].on("click", () => this.screenSwitcher.switchToScreen({ type: "wizard" }));
+        // tiles[1].on("click", () => this.screenSwitcher.switchToScreen({ type: "amongus" }));
+        // tiles[2].on("click", () => this.screenSwitcher.switchToScreen({ type: "basicQuestion1" }));
+        // tiles[3].on("click", () => this.screenSwitcher.switchToScreen({ type: "basicQuestion2" }));
     }
+
 
     public diceRoll(): number {
         return Math.floor(Math.random() * 6) + 1;
