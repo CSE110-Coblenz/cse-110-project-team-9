@@ -3,6 +3,7 @@ import type { ScreenSwitcher, Screen } from "./types";
 import { HomeScreenController } from "./screens/HomeScreen/HomeScreenController";
 import { SettingsScreenController } from "./screens/SettingsScreen/SettingsScreenController";
 import { STAGE_WIDTH, STAGE_HEIGHT } from "./constants";
+import { AudioController } from "./audios/AudioController";
 
 
 class App implements ScreenSwitcher {
@@ -11,6 +12,8 @@ class App implements ScreenSwitcher {
 
 	private homeController: HomeScreenController;
 	private settingsController: SettingsScreenController;
+
+	private audio: AudioController;
 
 	constructor(container: string) {
 		this.stage = new Konva.Stage({
@@ -22,6 +25,9 @@ class App implements ScreenSwitcher {
 		// Create a layer
 		this.layer = new Konva.Layer();
 		this.stage.add(this.layer);
+
+		// Initialize AudioController
+		this.audio = new AudioController();
 
 		// Initialize all screen controllers
 		this.homeController = new HomeScreenController(this);
@@ -35,7 +41,7 @@ class App implements ScreenSwitcher {
 		this.layer.draw();
 
 		// Start with home screen visible
-		this.homeController.getView().show();
+		this.switchToScreen({ type: "home" });
 	}
 
 	switchToScreen(screen: Screen): void {
