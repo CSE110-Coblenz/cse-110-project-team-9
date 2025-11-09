@@ -33,10 +33,13 @@ export class MainGameScreenController extends ScreenController {
         return Math.floor(Math.random() * 6) + 1;
     }
 
-    public onPlayerRoll(){
+    public async onPlayerRoll(){
+        this.view.disableRollButton();
+
         const roll = this.diceRoll();
         console.log(`Player rolled a ${roll}.`);
         this.view.displayRollResult(roll);
+        await this.view.animatePlayerPieceRoll(roll);
 
         const currentPlayerID = this.gameModel.getCurrentPlayerID();
         const currentPosition = this.gameModel.getPlayerPosition(currentPlayerID);
@@ -45,6 +48,8 @@ export class MainGameScreenController extends ScreenController {
         console.log("Player moved to position " + (newPosition + 1));
         this.gameModel.setPlayerPosition(currentPlayerID, newPosition); // newPosition is 0-indexed
         this.triggerNodeEvent(currentPlayerID, newPosition + 1); // getNodeType is 1-indexed
+
+        this.view.enableRollButton();
     }
 
     public triggerNodeEvent(playerID: string, nodeIndex: number): void {
