@@ -46,7 +46,8 @@ export class MainGameScreenController extends ScreenController {
 
     public triggerNodeEvent(playerID: string, nodeIndex: number): void {
         const nodeType = this.gameModel.getNodeType(nodeIndex); 
-        switch (nodeType){
+        switch (nodeType)
+        {
             case NodeType.EASY_QUESTION:
             case NodeType.MEDIUM_QUESTION:
             case NodeType.HARD_QUESTION:
