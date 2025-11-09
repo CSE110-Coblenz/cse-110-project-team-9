@@ -27,12 +27,16 @@ export class AmongUsMenuScreenView implements View {
 			y: 0,
 			width: STAGE_WIDTH,
 			height: STAGE_HEIGHT,
-			fillLinearGradientStartPoint: { x: 0, y: 0 },
-			fillLinearGradientEndPoint: { x: 0, y: STAGE_HEIGHT },
-			fillLinearGradientColorStops: [0, "rgba(0,0,0,0)", 1, "rgba(255,0,0,0.5)"],
+			fillLinearGradientStartPoint: { 
+				x: 0, y: 0 
+			},
+			fillLinearGradientEndPoint: { 
+				x: 0, y: STAGE_HEIGHT 
+			},
+			fillLinearGradientColorStops: [0, "rgba(0,155,255,0.7)", 1, "rgba(100,0,100,0.5)"],
 		});
 		this.group.add(overlay);
-		overlay.moveToBottom();
+		overlay.moveToTop();
 
 		// Title text
 		const title = new Konva.Text({
