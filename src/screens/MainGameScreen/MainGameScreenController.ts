@@ -1,12 +1,13 @@
 import { NodeType, MainGameScreenModel } from "../MainGameScreen/MainGameScreenModel";
 //import { MainGameScreenView } from "../MainGameScreen/MainGameScreenView";
-//import screenswitcher
+import {App} from "../../main";
+import type {ScreenSwitcher} from "../../types";
 
 
 export class MainGameScreenController {
     private gameModel: MainGameScreenModel;
     //private gameView: MainGameScreenView;
-    //private screenSwitcher: ScreenSwitcher;
+    //private 
 
     private readonly BOARD_LENGTH = 40;
 
@@ -38,7 +39,8 @@ export class MainGameScreenController {
 
     public triggerNodeEvent(playerID: string, nodeIndex: number): void {
         const nodeType = this.gameModel.getNodeType(nodeIndex); 
-        switch (nodeType){
+        switch (nodeType)
+        {
             case NodeType.EASY_QUESTION:
             case NodeType.MEDIUM_QUESTION:
             case NodeType.HARD_QUESTION:
