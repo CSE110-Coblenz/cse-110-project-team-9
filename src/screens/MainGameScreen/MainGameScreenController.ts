@@ -7,7 +7,7 @@ export class MainGameScreenController extends ScreenController {
 
     private view: MainGameScreenView;
     private screenSwitcher: ScreenSwitcher;
-    private gameModel: MainGameScreenModel = new MainGameScreenModel(["player1"]);
+    private gameModel: MainGameScreenModel = new MainGameScreenModel(["default"]);
 
     private readonly BOARD_LENGTH = 40;
 
@@ -15,7 +15,7 @@ export class MainGameScreenController extends ScreenController {
         
         super();
 
-        this.view = new MainGameScreenView();
+        this.view = new MainGameScreenView(this.gameModel);
         this.screenSwitcher = screenSwitcher;
 
         this.view.onPlayerRoll(() => this.onPlayerRoll());
@@ -59,15 +59,22 @@ export class MainGameScreenController extends ScreenController {
             case NodeType.EASY_QUESTION:
             case NodeType.MEDIUM_QUESTION:
             case NodeType.HARD_QUESTION:
-                //switch to main screen controller to switch to question screen
-                console.log(`Player ${playerID} landed on a question node at position ${nodeIndex}.`);
+                this.view.displayNodeEvent("You landed on a Question tile!");
+                const newQuestionScore = this.gameModel.getPlayerScore("default") + 5;
+                this.gameModel.setPlayerScore("default", newQuestionScore);
+                this.view.updateScoreDisplay(newQuestionScore);
                 break;
             case NodeType.MINIGAME:
-                //switch to main screen controller to switch to minigame screen
-                console.log(`Player ${playerID} landed on a minigame node at position ${nodeIndex}.`);
+                this.view.displayNodeEvent("You landed on a Minigame tile!");
+                const newMinigameScore = this.gameModel.getPlayerScore("default") + 10;
+                this.gameModel.setPlayerScore("default", newMinigameScore);
+                this.view.updateScoreDisplay(newMinigameScore);
+                break;
+            case NodeType.START:
+                // No action needed for the start tile
                 break;
             default:
-                throw new Error("Unknown node type encountered.");
+                console.warn(`Unknown node type encountered at index ${nodeIndex}.`);
         }
     }
 
