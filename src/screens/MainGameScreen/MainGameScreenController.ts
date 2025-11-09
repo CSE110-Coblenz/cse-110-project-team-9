@@ -18,6 +18,8 @@ export class MainGameScreenController extends ScreenController {
         this.view = new MainGameScreenView();
         this.screenSwitcher = screenSwitcher;
 
+        this.view.onPlayerRoll(() => this.onPlayerRoll());
+
         const tiles = this.view.getTiles();
 
         // tiles[0].on("click", () => this.screenSwitcher.switchToScreen({ type: "wizard" }));
@@ -34,6 +36,7 @@ export class MainGameScreenController extends ScreenController {
     public onPlayerRoll(){
         const roll = this.diceRoll();
         console.log(`Player rolled a ${roll}.`);
+        this.view.displayRollResult(roll);
 
         const currentPlayerID = this.gameModel.getCurrentPlayerID();
         const currentPosition = this.gameModel.getPlayerPosition(currentPlayerID);

@@ -5,6 +5,8 @@ import { STAGE_WIDTH, STAGE_HEIGHT } from "../../constants";
 export class MainGameScreenView implements View {
     private group: Konva.Group;
     private tiles: Konva.Rect[] = [];
+    private diceRollButton: Konva.Group;
+    private diceResultText: Konva.Text;
 
     constructor() {
         this.group = new Konva.Group({ visible: false });
@@ -17,6 +19,18 @@ export class MainGameScreenView implements View {
         fill: "#f5f5dc",
         });
         this.group.add(background);
+
+        const titleText = new Konva.Text({
+            x: 0,
+            y: 20,
+            width: STAGE_WIDTH,
+            text: "main game board",
+            fontSize: 30,
+            fontStyle: 'bold',
+            fill: '#333',
+            align: 'center'
+        });
+        this.group.add(titleText);
 
         const nodeSize = 100;
         const startX = STAGE_WIDTH / 2 - (nodeSize * 2 + 45);
@@ -55,6 +69,47 @@ export class MainGameScreenView implements View {
         });
         this.group.add(label);
         });
+
+        // Dice Roll Button
+        this.diceRollButton = new Konva.Group({
+            x: STAGE_WIDTH - 150,
+            y: STAGE_HEIGHT - 80,
+        });
+
+        const buttonRect = new Konva.Rect({
+            width: 120,
+            height: 50,
+            fill: "#ff7675",
+            cornerRadius: 10,
+            shadowBlur: 5,
+            name: 'buttonRect' // Give it a name to find it easily
+        });
+
+        const buttonText = new Konva.Text({
+            text: "Roll Dice",
+            fontSize: 18,
+            fontStyle: "bold",
+            fill: "white",
+            width: 120,
+            height: 50,
+            align: "center",
+            verticalAlign: "middle",
+            listening: false, // Make the text ignore mouse events
+        });
+
+        this.diceRollButton.add(buttonRect, buttonText);
+        this.group.add(this.diceRollButton);
+
+        // Dice Result Text
+        this.diceResultText = new Konva.Text({
+            x: STAGE_WIDTH / 2 - 50,
+            y: 50,
+            fontSize: 24,
+            fontStyle: "bold",
+            fill: "#333",
+            visible: false,
+        });
+        this.group.add(this.diceResultText);
     }
 
     movePlayerToTile(index: number): void {
@@ -75,5 +130,32 @@ export class MainGameScreenView implements View {
 
     hide(): void {
         this.group.visible(false);
+    }
+
+    onPlayerRoll(callback: () => void): void {
+        // The event listener must be on a shape with a visible area (the rectangle),
+        // not the group itself, which is just an invisible container.
+        const buttonRect = this.diceRollButton.findOne('.buttonRect');
+        if (buttonRect) {
+            buttonRect.on("click tap", () => {
+				callback();
+            });
+        }
+    }
+
+    displayRollResult(result: number): void {
+        this.diceResultText.text(`You rolled a ${result}!`);
+        // Explicitly move the text to the top of the drawing order within its group.
+        this.diceResultText.moveToTop();
+        this.diceResultText.visible(true);
+
+        // We must redraw the layer to show the change in visibility.
+        this.group.getLayer()?.batchDraw();
+
+        setTimeout(() => {
+            this.diceResultText.visible(false);
+            // We also need to redraw after hiding it.
+            this.group.getLayer()?.batchDraw();
+        }, 3000); // Hide the text after 3 seconds
     }
 }
