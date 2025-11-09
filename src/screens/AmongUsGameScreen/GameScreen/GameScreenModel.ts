@@ -1,3 +1,5 @@
+import { STAGE_HEIGHT, STAGE_WIDTH } from "../../../constants";
+
 /**
  * GameScreenModel - Manages game state
  */
@@ -8,8 +10,38 @@ export class AmongUsGameScreenModel {
 	private size = 3;
 	private puzzles: Puzzle[] = [];
 
+	private playerX = STAGE_WIDTH / 2;
+	private playerY = STAGE_HEIGHT / 2;
+	private playerSpeed = 45;
+
 	constructor() {
 		this.puzzleGenerator();
+	}
+
+	getPlayerPosition(): { x: number; y: number } {
+		return { 
+			x: this.playerX, 
+			y: this.playerY 
+		};
+	}
+
+	setPlayerPosition(x: number, y: number): void {
+		const halfW = 90;
+		const halfH = 90;
+		this.playerX = Math.max(halfW, Math.min(STAGE_WIDTH - halfW, x));
+		this.playerY = Math.max(halfH, Math.min(STAGE_HEIGHT - halfH, y));
+	}
+
+	movePlayerBy(dx: number, dy: number): void {
+		this.setPlayerPosition(this.playerX + dx, this.playerY + dy);
+	}
+
+	getPlayerSpeed(): number {
+		return this.playerSpeed;
+	}
+
+	setPlayerSpeed(speed: number): void {
+		this.playerSpeed = speed;
 	}
 
 	puzzleGenerator() : void {
@@ -70,7 +102,6 @@ export class AmongUsGameScreenModel {
 		this.score++;
 	}
 	
-
 	/**
 	 * Get current score
 	 */

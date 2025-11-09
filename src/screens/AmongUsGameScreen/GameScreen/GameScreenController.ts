@@ -19,6 +19,10 @@ export class AmongUsGameScreenController extends ScreenController {
 	private wrongSound: HTMLAudioElement;
 	private	clickSound: HTMLAudioElement;
 
+	private keysDown = new Set<string>();
+	private rafId: number | null = null;
+	private lastFrameTime = 0;
+
 	constructor(screenSwitcher: ScreenSwitcher) {
 		super();
 		this.screenSwitcher = screenSwitcher;
@@ -49,7 +53,50 @@ export class AmongUsGameScreenController extends ScreenController {
 
 		this.backgroundSound.loop = true;
 		this.backgroundSound.play();
+
+		window.addEventListener("keydown", this.onKeyDown);
+		window.addEventListener("keyup", this.onKeyUp);
+		this.lastFrameTime = performance.now();
+		this.rafId = requestAnimationFrame(this.gameLoop);
 	}
+
+	private stopGameInput(): void {
+		window.removeEventListener("keydown", this.onKeyDown);
+		window.removeEventListener("keyup", this.onKeyUp);
+		if (this.rafId !== null) cancelAnimationFrame(this.rafId);
+		this.rafId = null;
+	}
+
+	private gameLoop = (now: number) => {
+		const dt = (now - this.lastFrameTime) / 1000; // seconds
+		this.lastFrameTime = now;
+
+		// calculate movement vector
+		let dx = 0, dy = 0;
+		if (this.keysDown.has("w")) dy -= 1;
+		if (this.keysDown.has("s")) dy += 1;
+		if (this.keysDown.has("a")) dx -= 1;
+		if (this.keysDown.has("d")) dx += 1;
+
+		if (dx !== 0 || dy !== 0) {
+			// normalize diagonal movement
+			const len = Math.hypot(dx, dy) || 1;
+			dx = dx / len;
+			dy = dy / len;
+
+			const speed = this.model.getPlayerSpeed(); // pixels/sec
+			const deltaX = dx * speed * dt;
+			const deltaY = dy * speed * dt;
+
+			// update model and view
+			this.model.movePlayerBy(deltaX, deltaY);
+			const pos = this.model.getPlayerPosition();
+			this.view.setRoguePosition(pos.x, pos.y);
+		}
+
+		// continue loop
+		this.rafId = requestAnimationFrame(this.gameLoop);
+	};
 
 	/**
 	 * Start the countdown timer
@@ -110,6 +157,21 @@ export class AmongUsGameScreenController extends ScreenController {
 		}, 500);
 
 	}
+
+	private onKeyDown = (e: KeyboardEvent) => {
+		const key = e.key.toLowerCase();
+		if (["w","a","s","d"].includes(key)) {
+			e.preventDefault();
+			this.keysDown.add(key);
+		}
+	};
+
+	private onKeyUp = (e: KeyboardEvent) => {
+		const key = e.key.toLowerCase();
+		if (["w","a","s","d"].includes(key)) {
+			this.keysDown.delete(key);
+		}
+	};
 
 	/**
 	 * End the game

@@ -7,12 +7,12 @@ import { STAGE_WIDTH, STAGE_HEIGHT } from "../../../constants.ts";
  */
 export class AmongUsGameScreenView implements View {
 	private group: Konva.Group;
-	private Image: Konva.Image | Konva.Circle | null = null;
 	private scoreText: Konva.Text;
 	private timerText: Konva.Text;
 	private questionText: Konva.Text;
 	private optionButtons: Konva.Group[] = [];
 	private onOptionClick: (optionIndex: number) => void;
+	private rogueImage?: Konva.Image;
 
 	/**
 	 * Helper to load an image and create a Konva.Sprite with provided animations.
@@ -61,10 +61,8 @@ export class AmongUsGameScreenView implements View {
 			this.group.getLayer()?.draw();
 		});
 
-
-		// Object animations (frame rectangles listed as [x,y,width,height,...])
-		const animations = {
-			rotate: [
+		const bladeAnimations = {
+			idle: [
 				0, 0, 48, 48,
 				0, 48, 48, 48,
 				0, 96, 48, 48,
@@ -72,18 +70,8 @@ export class AmongUsGameScreenView implements View {
 			],
 		};
 
-		// scull animations (3 frames)
-		const scullAnimations = {
-			rotate: [
-				0, 0, 48, 48,
-				0, 48, 48, 48,
-				0, 96, 48, 48,
-			],
-		};
-		
-		// monster animations (multiple frames, different frame size)
 		const monsterAnimations = {
-			rotate: [
+			idle: [
 				0, 0, 36, 64,
 				0, 64, 36, 64,
 				0, 128, 36, 64,
@@ -93,6 +81,14 @@ export class AmongUsGameScreenView implements View {
 			],
 		};
 
+		const scullAnimations = {
+			idle: [
+				0, 0, 48, 48,
+				0, 48, 48, 48,
+				0, 96, 48, 48,
+			],
+		};
+		
 		const rogueAnimations = {
 			idle: [
 				0, 0, 128, 128,
@@ -115,54 +111,29 @@ export class AmongUsGameScreenView implements View {
 			]
 		};
 
-		const knightAnimations = { //15 128 x 128
-			idle: [
-				0, 0, 128, 128,
-				128, 0, 128, 128,
-				256, 0, 128, 128,
-				384, 0, 128, 128,
-				512, 0, 128, 128,
-				640, 0, 128, 128,
-				768, 0, 128, 128,
-				896, 0, 128, 128,
-				1024, 0, 128, 128,
-				1152, 0, 128, 128,
-				1280, 0, 128, 128,
-				1408, 0, 128, 128,
-			]
-		};
-
 		// Create the sprites using the helper to avoid repeating identical logic
 		this.createAnimatedSprite(
 			"AmongUsMiniGame/Objects/Rotating_blades.png",
-			animations,
+			bladeAnimations,
 			STAGE_WIDTH / 2 - 200,
 			STAGE_HEIGHT / 2,
-			{ scaleX: 3, scaleY: 3, frameRate: 12, offsetX: 24, offsetY: 24 }
-		);
-
-		this.createAnimatedSprite(
-			"AmongUsMiniGame/Objects/scull.png",
-			scullAnimations,
-			STAGE_WIDTH / 2,
-			STAGE_HEIGHT / 2,
-			{ scaleX: 3, scaleY: 3, frameRate: 12, offsetX: 24, offsetY: 24 }
+			{ scaleX: 3, scaleY: 3, frameRate: 12, offsetX: 0, offsetY: 0 }
 		);
 
 		this.createAnimatedSprite(
 			"AmongUsMiniGame/Objects/Flasks_monsters.png",
 			monsterAnimations,
+			STAGE_WIDTH / 2,
+			STAGE_HEIGHT / 2,
+			{ scaleX: 3, scaleY: 3, frameRate: 12, offsetX: 0, offsetY: 0 }
+		);
+
+		this.createAnimatedSprite(
+			"AmongUsMiniGame/Objects/scull.png",
+			scullAnimations,
 			STAGE_WIDTH / 2 + 200,
 			STAGE_HEIGHT / 2,
-			{ scaleX: 3, scaleY: 3, frameRate: 12, offsetX: 18, offsetY: 32 }
-		);
-		
-		this.createAnimatedSprite(
-			"AmongUsMiniGame/Sprites/Knight/Idle/spritesheet.png",
-			knightAnimations,
-			STAGE_WIDTH / 2 - 50,
-			STAGE_HEIGHT / 2 - 50,
-			{ scaleX: 2, scaleY: 2, frameRate: 8, offsetX: 64, offsetY: 64 }
+			{ scaleX: 3, scaleY: 3, frameRate: 12, offsetX: 0, offsetY: 0 }
 		);
 
 		this.createAnimatedSprite(
@@ -173,7 +144,6 @@ export class AmongUsGameScreenView implements View {
 			{ scaleX: 2, scaleY: 2, frameRate: 8, offsetX: 64, offsetY: 64 }
 		);
 
-		// Score display (top-left)
 		this.scoreText = new Konva.Text({
 			x: 20,
 			y: 20,
@@ -184,7 +154,6 @@ export class AmongUsGameScreenView implements View {
 		});
 		this.group.add(this.scoreText);
 
-		// Timer display (top-right)
 		this.timerText = new Konva.Text({
 			x: STAGE_WIDTH - 150,
 			y: 20,
@@ -206,6 +175,33 @@ export class AmongUsGameScreenView implements View {
 			width: STAGE_WIDTH,
 		});
 		this.group.add(this.questionText);
+
+		Konva.Image.fromURL("AmongUsMiniGame/Sprites/Rogue/Idle/idle1.png", (image) => {
+			image.x(STAGE_WIDTH / 2);
+			image.y(STAGE_HEIGHT / 2);
+			this.rogueImage = image;
+			this.group.add(this.rogueImage);
+			this.group.getLayer()?.draw();
+		});
+	}
+
+	setRoguePosition(x: number, y: number): void {
+		if (!this.rogueImage) return;
+		this.rogueImage.x(x);
+		this.rogueImage.y(y);
+		this.group.getLayer()?.batchDraw();
+	}
+
+	moveRogueBy(dx: number, dy: number): void {
+		if (!this.rogueImage) return;
+		this.rogueImage.x(this.rogueImage.x() + dx);
+		this.rogueImage.y(this.rogueImage.y() + dy);
+		this.group.getLayer()?.batchDraw();
+	}
+
+	getRoguePosition(): { x: number; y: number } | null {
+		if (!this.rogueImage) return null;
+		return { x: this.rogueImage.x(), y: this.rogueImage.y() };
 	}
 
 	/**
@@ -291,6 +287,9 @@ export class AmongUsGameScreenView implements View {
 		this.group.getLayer()?.draw();
 	}
 
+	/**
+	 * Get the Konva group
+	 */
 	getGroup(): Konva.Group {
 		return this.group;
 	}
