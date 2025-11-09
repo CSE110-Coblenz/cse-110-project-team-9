@@ -7,7 +7,9 @@ export interface View {
 }
 
 export type Screen =
-	// | { type: "home" }
+	| { type: "home" }
+	| { type: "settings" }
+	| { type: "mainGame" };
 
 export abstract class ScreenController {
 	abstract getView(): View;
