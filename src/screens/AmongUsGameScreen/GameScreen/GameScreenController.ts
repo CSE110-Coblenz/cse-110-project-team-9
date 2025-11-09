@@ -78,21 +78,16 @@ export class AmongUsGameScreenController extends ScreenController {
 		if (this.keysDown.has("a")) dx -= 1;
 		if (this.keysDown.has("d")) dx += 1;
 
+		const player = this.model.getPlayer();
+
 		if (dx !== 0 || dy !== 0) {
-			// normalize diagonal movement
-			const len = Math.hypot(dx, dy) || 1;
-			dx = dx / len;
-			dy = dy / len;
-
-			const speed = this.model.getPlayerSpeed(); // pixels/sec
-			const deltaX = dx * speed * dt;
-			const deltaY = dy * speed * dt;
-
-			// update model and view
-			this.model.movePlayerBy(deltaX, deltaY);
-			const pos = this.model.getPlayerPosition();
-			this.view.setRoguePosition(pos.x, pos.y);
+			player.move(dx, dy, dt);
+		} else {
+			player.stop();
 		}
+
+		const { x, y } = player.getPosition();
+		this.view.setRoguePosition(x, y);
 
 		// continue loop
 		this.rafId = requestAnimationFrame(this.gameLoop);
@@ -102,7 +97,6 @@ export class AmongUsGameScreenController extends ScreenController {
 	 * Start the countdown timer
 	 */
 	private startTimer(): void {
-		// TODO: Task 3 - Implement countdown timer using setInterval
 		let timeRemaining = GAME_DURATION;
 		let timerId = setInterval(() => {
 			timeRemaining = timeRemaining - 1;
@@ -120,7 +114,6 @@ export class AmongUsGameScreenController extends ScreenController {
 	 * Stop the timer
 	 */
 	private stopTimer(): void {
-		// TODO: Task 3 - Stop the timer using clearInterval
 		if(!(this.gameTimer == null)) {
 			clearInterval(this.gameTimer);
 			this.gameTimer = null;
@@ -178,6 +171,7 @@ export class AmongUsGameScreenController extends ScreenController {
 	 */
 	private endGame(): void {
 		this.stopTimer();
+		this.stopGameInput();
 
 		// Switch to results screen with final score
 		this.screenSwitcher.switchToScreen({

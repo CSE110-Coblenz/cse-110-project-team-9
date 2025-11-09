@@ -176,7 +176,7 @@ export class AmongUsGameScreenView implements View {
 		});
 		this.group.add(this.questionText);
 
-		Konva.Image.fromURL("AmongUsMiniGame/Sprites/Rogue/Idle/idle1.png", (image) => {
+		Konva.Image.fromURL("AmongUsMiniGame/Sprites/Rogue/Hurt/hurt1.png", (image) => {
 			image.x(STAGE_WIDTH / 2);
 			image.y(STAGE_HEIGHT / 2);
 			this.rogueImage = image;
