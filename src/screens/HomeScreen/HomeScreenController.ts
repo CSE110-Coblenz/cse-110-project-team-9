@@ -41,6 +41,11 @@ export class HomeScreenController extends ScreenController {
 		});
 	}
 
+	hide(): void {
+		this.audio.stopBGM();
+		this.view.hide();
+	}
+
 	getView(): HomeScreenView {
 		return this.view;
 	}
