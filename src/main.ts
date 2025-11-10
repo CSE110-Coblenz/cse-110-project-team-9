@@ -2,6 +2,7 @@ import Konva from "konva";
 import type { ScreenSwitcher, Screen } from "./types";
 import { HomeScreenController } from "./screens/HomeScreen/HomeScreenController";
 import { SettingsScreenController } from "./screens/SettingsScreen/SettingsScreenController";
+import { LinearScreenController } from "./screens/LinearScreen/LinearScreenController";
 import { STAGE_WIDTH, STAGE_HEIGHT } from "./constants";
 
 
@@ -11,6 +12,7 @@ class App implements ScreenSwitcher {
 
 	private homeController: HomeScreenController;
 	private settingsController: SettingsScreenController;
+	private linearController: LinearScreenController;
 
 	constructor(container: string) {
 		this.stage = new Konva.Stage({
@@ -26,10 +28,12 @@ class App implements ScreenSwitcher {
 		// Initialize all screen controllers
 		this.homeController = new HomeScreenController(this);
 		this.settingsController = new SettingsScreenController(this);
+		this.linearController = new LinearScreenController(this);
 
 		// Add all screen groups to the layer
 		this.layer.add(this.homeController.getView().getGroup());
 		this.layer.add(this.settingsController.getView().getGroup());
+		this.layer.add(this.linearController.getView().getGroup());
 
 		// Draw the layer
 		this.layer.draw();
@@ -45,11 +49,19 @@ class App implements ScreenSwitcher {
 				this.homeController.show();
 				// Hide settings screen (Need for settings close button)
 				this.settingsController.hide();
+				this.linearController.hide();
 				break;
 
 			case "settings":
 				this.homeController.show();
 				this.settingsController.show();
+				this.linearController.hide();
+				break;
+			
+			case "linear_screen":
+				this.linearController.show();
+				this.homeController.hide();
+				this.settingscontroller.hide();
 				break;
 		}
 	}
