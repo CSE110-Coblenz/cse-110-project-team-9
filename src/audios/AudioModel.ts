@@ -6,15 +6,8 @@ export class AudioModel {
 
     private constructor() {
 
-        // // Reset volume when restarting the game
-        // localStorage.removeItem("bgmvolume");
-        // localStorage.removeItem("sfxvolume");
-    
-        const savedBgmVolume = 0.5;
-        this.bgmVolume = this.validateVolume(savedBgmVolume);
-
-        const savedSfxVolume = 0.5;
-        this.sfxVolume = this.validateVolume(savedSfxVolume);
+        this.bgmVolume = 0.5;
+        this.sfxVolume = 0.5;
 
         // Intial volume (HomeScreen)
         this.sounds = {
@@ -46,21 +39,21 @@ export class AudioModel {
      * @param overwrite Whether to overwrite an existing sound with the same key
      */
 
-    // public registerSound(key: string, path: string, loop: boolean = false, overwrite = false): void {
+    public registerSound(key: string, path: string, loop: boolean = false, overwrite = false): void {
         
-    //     if (!this.sounds[key] || overwrite) {
+        if (!this.sounds[key] || overwrite) {
             
-    //         const audio = new Audio(path);
+            const audio = new Audio(path);
             
-    //         // Set if the sound should loop or not
-    //         audio.loop = loop;
+            // Set if the sound should loop or not
+            audio.loop = loop;
 
-    //         // If the key includes "bgm", set volume to bgmVolume, else sfxVolume
-    //         audio.volume = key.includes("bgm") ? this.bgmVolume : this.sfxVolume;
+            // If the key includes "bgm", set volume to bgmVolume, else sfxVolume
+            audio.volume = key.includes("bgm") ? this.bgmVolume : this.sfxVolume;
 
-    //         this.sounds[key] = audio;
-    //     }
-    // }
+            this.sounds[key] = audio;
+        }
+    }
 
     /**
      * Getter and Setter for volume
@@ -69,13 +62,11 @@ export class AudioModel {
 
     public setBgmVolume(volume: number): void {
         this.bgmVolume = this.validateVolume(volume);
-        localStorage.setItem("bgm_volume", this.bgmVolume.toString());
         this.applyVolume();
     }
 
     public setSfxVolume(volume: number): void {
         this.sfxVolume = this.validateVolume(volume);
-        localStorage.setItem("sfx_volume", this.sfxVolume.toString());
         this.applyVolume();
     }
 

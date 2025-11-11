@@ -5,6 +5,7 @@ import { AudioController } from "../../audios/AudioController";
 export class HomeScreenController extends ScreenController {
 	private view: HomeScreenView;
 	private screenSwitcher: ScreenSwitcher;
+
 	private audio: AudioController;
 
 	constructor(screenSwitcher: ScreenSwitcher, audio: AudioController) {
