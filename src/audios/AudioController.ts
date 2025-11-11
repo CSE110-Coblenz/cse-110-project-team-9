@@ -19,7 +19,9 @@ export class AudioController {
     
         bgm.muted = false;
         bgm.currentTime = 0;
-        bgm.play();
+        bgm.play().catch((err) => {
+		    console.error("Background Music Error", err);
+		});
     }
 
     /**
@@ -32,7 +34,9 @@ export class AudioController {
 
         sfx.muted = false;
         sfx.currentTime = 0;
-        sfx.play();
+        sfx.play().catch((err) => {
+			console.error("Sound Effect Error", err);
+		});;
     }
 
     /**
@@ -70,13 +74,17 @@ export class AudioController {
     }
 
     /**
-     * Getter for volume
+     * Getter for music volume
      * @returns The current volume level
      */
     public getBgmVolume(): number {
         return this.model.getBgmVolume();
     }
 
+    /**
+     * Getter for sfx volume
+     * @returns the current volume level
+     */
     public getSfxVolume(): number {
         return this.model.getSfxVolume();
     }
