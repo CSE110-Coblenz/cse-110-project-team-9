@@ -10,6 +10,14 @@ export interface mathDictEntry{
     points: string; //index 3
 }
 
+//Reads the dictionaryfile and loads 
+export async function readMathDictionary(): Promise<string[]> {
+  const filePath = resolve("src/class/MathEquations/mathDictionary.txt");
+  const data = await readFile(filePath, "utf8");
+  const lines = data.split("\n").map(line => line.trim()).filter(Boolean);
+  return lines;
+}
+
 //Dictionary Functions
 
 /*
@@ -145,4 +153,19 @@ export function getQuestionInformation(randomEntry: { index: number; entry: math
         solutions,
         points
     };
+}
+/*
+Method Name: showFeedback
+Method name: This method takes in the user's answer and displays feedback indicating whether the answer is correct or incorrect.
+This compares the user's answer to the correct answer and provides appropriate feedback.
+Parameters: the user's answer as a string and a boolean indicating correctness
+Returns: a feedback message to be displayed to the user
+*/
+
+export function showFeedback(message: string, isCorrect: boolean) {
+    if(isCorrect) {
+        return `✅ ${message}`;
+    } else {
+        return `❌ ${message}`;
+    }
 }

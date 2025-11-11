@@ -17,6 +17,7 @@ export class MathScreenView {
   // Stores the current input from the user as a string
   private currentInput = "";
   private isTyping = false;
+
   private onCheckCallback: ((answer: string) => void) | null = null;
 
   constructor() {
@@ -166,6 +167,10 @@ export class MathScreenView {
     window.addEventListener("keydown", (e) => this.handleKey(e));
   }
 
+  public setOnCheck(cb: (answer: string) => void): void {
+    this.onCheckCallback = cb;
+  }
+
   // Public Methods
   showEquation(equation: string) {
     this.questionText.text(equation);
@@ -179,7 +184,8 @@ export class MathScreenView {
   }
 
   showEnterSolutions() {
-    this.directionsText.text("Now enter the solution(s), e.g. 2, 5 and press Check solution.");
+    //keeps text aligned 
+    this.directionsText.text("Now enter the solution(s), e.g. 2, 5 and press Check.");
     this.updateLayer();
   }
 
@@ -187,6 +193,12 @@ export class MathScreenView {
   Feedback method to show if the user's answer was correct or incorrect
   To be implemented 
   */
+
+  public showFeedback(msg: string, good: boolean) {
+    this.feedbackText.text(msg);
+    this.feedbackText.fill(good ? "lightgreen" : "pink");
+    this.updateLayer();
+  }
 
   clearAnswer() {
     this.currentInput = "";
@@ -209,11 +221,29 @@ export class MathScreenView {
     this.updateLayer();
   }
 
-
   private handleCheck() {
     if (this.onCheckCallback) {
       this.onCheckCallback(this.currentInput.trim());
     }
+  }
+
+  private handleKey(e: KeyboardEvent) {
+    if (!this.isTyping) return;
+
+    if (e.key === "Enter") {
+      this.isTyping = false;
+      this.answerRect.stroke("black");
+      if (this.onCheckCallback) {
+        this.onCheckCallback(this.currentInput.trim());
+      }
+    } else if (e.key === "Backspace") {
+      this.currentInput = this.currentInput.slice(0, -1);
+    } else if (e.key.length === 1) {
+      this.currentInput += e.key;
+    }
+
+    this.answerText.text(this.currentInput);
+    this.updateLayer();
   }
 
   // Method Name: updateLayer
