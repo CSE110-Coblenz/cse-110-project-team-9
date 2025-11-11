@@ -8,6 +8,7 @@ export class MainGameScreenView implements View {
     private tiles: Konva.Circle[] = [];
     private tileLabels: Konva.Text[] = [];
     private diceRollButton: Konva.Group;
+    private settingsButton: Konva.Group;
     private scoreText: Konva.Text;
     private nodeEventText: Konva.Text;
     private diceResultText: Konva.Text;
@@ -112,6 +113,36 @@ export class MainGameScreenView implements View {
 
         this.diceRollButton.add(buttonRect, buttonText);
         this.group.add(this.diceRollButton);
+
+        // Settings Button
+        this.settingsButton = new Konva.Group({
+            x: 30,
+            y: STAGE_HEIGHT - 80,
+        });
+
+        const settingsButtonRect = new Konva.Rect({
+            width: 120,
+            height: 50,
+            fill: "#808080", // Grey color
+            cornerRadius: 10,
+            shadowBlur: 5,
+            name: 'settingsButtonRect'
+        });
+
+        const settingsButtonText = new Konva.Text({
+            text: "Settings",
+            fontSize: 18,
+            fontStyle: "bold",
+            fill: "white",
+            width: 120,
+            height: 50,
+            align: "center",
+            verticalAlign: "middle",
+            listening: false,
+        });
+
+        this.settingsButton.add(settingsButtonRect, settingsButtonText);
+        this.group.add(this.settingsButton);
 
         // Dice Result Text
         this.diceResultText = new Konva.Text({
@@ -277,6 +308,10 @@ export class MainGameScreenView implements View {
 
     getTiles(): Konva.Circle[] {
         return this.tiles;
+    }
+
+    getSettingsButton(): Konva.Group {
+        return this.settingsButton;
     }
 
     getGroup(): Konva.Group {

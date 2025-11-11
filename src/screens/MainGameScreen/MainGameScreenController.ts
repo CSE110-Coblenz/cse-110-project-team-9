@@ -19,6 +19,10 @@ export class MainGameScreenController extends ScreenController {
         this.screenSwitcher = screenSwitcher;
 
         this.view.onPlayerRoll(() => this.onPlayerRoll());
+        this.view.getSettingsButton().on("click", () => {
+            console.log("going to settings screen");
+            // this.screenSwitcher.switchToScreen({ type: "settings" });
+        });
 
         const tiles = this.view.getTiles();
 
