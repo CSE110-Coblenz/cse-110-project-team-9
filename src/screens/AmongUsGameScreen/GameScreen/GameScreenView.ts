@@ -3,6 +3,7 @@ import type { View } from "../../../types.ts";
 import { STAGE_WIDTH, STAGE_HEIGHT } from "../../../constants.ts";
 import { Obstacle } from "./_Entity/EntityObstacle.ts";
 import { PuzzleModel } from "./_Puzzle/PuzzleModel.ts";
+import { PuzzleView } from "./_Puzzle/PuzzleView.ts";
 import { PlayerSprite } from "./_Entity/EntityPlayer.ts";
 
 /**
@@ -12,9 +13,7 @@ export class AmongUsGameScreenView implements View {
 	private group: Konva.Group;
 	private scoreText: Konva.Text;
 	private timerText: Konva.Text;
-	private questionText: Konva.Text;
-	private feedbackText: Konva.Text;
-	private optionButtons: Konva.Group[] = [];
+	private puzzleView: PuzzleView;
 	private onOptionClick: (optionIndex: number) => void;
 	private onObstacleClick?: (p: PuzzleModel | null) => void;
 	private player?: PlayerSprite;
@@ -61,31 +60,8 @@ export class AmongUsGameScreenView implements View {
 		});
 		this.group.add(this.timerText);
 
-		this.questionText = new Konva.Text({
-			x: 0,
-			y: STAGE_HEIGHT / 1.1,
-			text: "		x + y = ?",
-			fontSize: 32,
-			fontFamily: "Serif",
-			fill: "red",
-			align: "left",
-			width: STAGE_WIDTH,
-		});
-		this.group.add(this.questionText);
-
-		this.feedbackText = new Konva.Text({
-			x: STAGE_WIDTH / 2,
-			y: STAGE_HEIGHT / 2,
-			text: "",
-			fontSize: 48,
-			fontFamily: "Serif",
-			fill: "white",
-			align: "center",
-			visible: false,
-		});
-		this.feedbackText.offsetX(this.feedbackText.width() / 2);
-		this.group.add(this.feedbackText);
-		this.feedbackText.moveToTop();
+		// Puzzle-specific UI is delegated to PuzzleView
+		this.puzzleView = new PuzzleView(this.group, this.onOptionClick);
 
 		// create player sprite and attach when ready
 		this.player = new PlayerSprite(this.group, STAGE_WIDTH / 2, STAGE_HEIGHT / 2, { scale: 2, frameRate: 8, onReady: () => {
@@ -137,54 +113,10 @@ export class AmongUsGameScreenView implements View {
 	}
 
 	/**
-	 * Render a puzzle question and options
+	 * Render a puzzle question and options (delegated to PuzzleView)
 	 */
 	renderPuzzle(puzzle: { question: string; options: string[] }): void {
-		// Update question
-		this.questionText.text(puzzle.question);
-
-		// Clear old options
-		this.optionButtons.forEach((btn) => btn.destroy());
-		this.optionButtons = [];
-
-		const startY = 300;
-		const buttonSpacing = 80;
-
-		// Create option buttons
-		puzzle.options.forEach((optionText, index) => {
-			const buttonGroup = new Konva.Group();
-
-			const buttonRect = new Konva.Rect({
-				x: STAGE_WIDTH / 2 - 150,
-				y: startY + index * buttonSpacing,
-				width: 300,
-				height: 50,
-				fill: "black",
-				stroke: "purple",
-				strokeWidth: 2,
-				cornerRadius: 10,
-			});
-
-			const buttonLabel = new Konva.Text({
-				x: STAGE_WIDTH / 2,
-				y: startY + index * buttonSpacing + 12,
-				text: optionText,
-				fontSize: 20,
-				fontFamily: "Serif",
-				fill: "white",
-				align: "center",
-			});
-			buttonLabel.offsetX(buttonLabel.width() / 2);
-
-			buttonGroup.add(buttonRect);
-			buttonGroup.add(buttonLabel);
-			buttonGroup.on("click", () => this.onOptionClick(index));
-
-			this.group.add(buttonGroup);
-			this.optionButtons.push(buttonGroup);
-		});
-
-		this.group.getLayer()?.draw();
+		this.puzzleView.render(puzzle);
 	}
 
 	/**
@@ -227,27 +159,9 @@ export class AmongUsGameScreenView implements View {
 	}
 
 	/**
-	 * Hide the puzzle and show feedback
+	 * Hide the puzzle and show feedback (delegated to PuzzleView)
 	 */
 	hidePuzzle(feedback: string): void {
-		// Hide question and options
-		this.questionText.visible(false);
-		this.optionButtons.forEach((btn) => btn.visible(false));
-
-		// Show feedback
-		this.feedbackText.text(feedback);
-		this.feedbackText.offsetX(this.feedbackText.width() / 2);
-		this.feedbackText.moveToTop();
-		this.feedbackText.visible(true);
-
-		this.group.getLayer()?.draw();
-
-		// Auto-hide feedback after 1.5 seconds
-		setTimeout(() => {
-			this.feedbackText.visible(false);
-			this.questionText.visible(true);
-			this.optionButtons.forEach((btn) => btn.visible(true));
-			this.group.getLayer()?.draw();
-		}, 1500);
+		this.puzzleView.hide(feedback);
 	}
 }

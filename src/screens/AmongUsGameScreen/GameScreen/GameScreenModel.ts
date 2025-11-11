@@ -1,41 +1,28 @@
 import { PuzzleModel } from "./_Puzzle/PuzzleModel.ts";
 
 /**
- * GameScreenModel - Manages game state
+ * AmongUsGameScreenModel - Manages game-level state only
+ * Responsible for: game progression (score, puzzle index, completion)
+ * NOT responsible for: puzzle evaluation (that's PuzzleModel's job)
  */
 export class AmongUsGameScreenModel {
 	private score = 0;
 	private isComplete = false;
 	private index = 0;
-	private size = 3;
 	private puzzles: PuzzleModel[] = [];
 	
 	constructor() {
-		this.puzzleGenerator();
+		this.puzzles = PuzzleModel.createDefaultPuzzles();
 	}
-	puzzleGenerator() : void {
-		this.puzzles = [
-			new PuzzleModel({ id: 1, question: "Balance the mechanism: 1 + 1 = ?", options: [2, 3, 4], correctIndex: 0 }),
-			new PuzzleModel({ id: 2, question: "Adjust the gears: 2 x 5 = ?", options: [10, 11, 12], correctIndex: 0 }),
-			new PuzzleModel({ id: 3, question: "Release the lock: 10 - 5 = ?", options: [5, 6, 7], correctIndex: 0 }),
-		];
-	}
-	puzzleEvaluator(option : number) : boolean {
-		const current = this.getPuzzle();
-		const isCorrect = current.evaluate(option);
-		if(isCorrect) {
-			this.incrementScore();
-			this.incrementIndex();
-			if(this.index >= this.size) {
-				this.isComplete = true;
-			}
-		}
-		return isCorrect;
-	}
+
 	/**
 	 * Get the current puzzle
+	 * @throws Error if index is out of bounds
 	 */
 	getPuzzle(): PuzzleModel {
+		if (this.index < 0 || this.index >= this.puzzles.length) {
+			throw new Error(`Puzzle index ${this.index} out of bounds (puzzles: ${this.puzzles.length})`);
+		}
 		return this.puzzles[this.index];
 	}
 
@@ -47,42 +34,46 @@ export class AmongUsGameScreenModel {
 	}
 
 	/**
-	 * Increment index when correct
+	 * Move to the next puzzle
 	 */
-	incrementIndex() : void {
+	incrementIndex(): void {
 		this.index++;
+		if (this.index >= this.puzzles.length) {
+			this.isComplete = true;
+		}
 	}
 
 	/**
-	 * Increment score when lemon is clicked
+	 * Increment score when a puzzle is solved
 	 */
-	incrementScore() : void {
+	incrementScore(): void {
 		this.score++;
 	}
 	
 	/**
 	 * Get current score
 	 */
-	getScore() : number {
+	getScore(): number {
 		return this.score;
 	}
 
 	/**
 	 * Is the game finished?
 	 */
-	getIsComplete() : boolean {
+	getIsComplete(): boolean {
 		return this.isComplete;
 	}
 
 	/**
 	 * Reset game state for a new game
 	 */
-	reset() : void {
+	reset(): void {
 		this.score = 0;
 		this.isComplete = false;
 		this.index = 0;
-		this.size = 3;
-		this.puzzleGenerator();
+		this.puzzles = PuzzleModel.createDefaultPuzzles();
+		// Reset all puzzles
+		this.puzzles.forEach(p => p.reset());
 	}
 }
 

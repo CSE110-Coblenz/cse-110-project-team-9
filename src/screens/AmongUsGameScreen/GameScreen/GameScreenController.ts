@@ -125,7 +125,9 @@ export class AmongUsGameScreenController extends ScreenController {
 	};
 
 	private handleClick(option: number): void {
-		let isCorrect = this.model.puzzleEvaluator(option);
+		// Evaluate the current puzzle using PuzzleModel
+		const currentPuzzle = this.model.getPuzzle();
+		const isCorrect = currentPuzzle.evaluate(option);
 		this.clickSound.play();
 		
 		const feedbackMessage = isCorrect ? "Correct!" : "Wrong!";
@@ -134,15 +136,19 @@ export class AmongUsGameScreenController extends ScreenController {
 		if(isCorrect) {
 			this.correctSound.play();
 			this.correctSound.currentTime = 0;
+			// Update game progression on correct answer
+			this.model.incrementScore();
+			this.model.incrementIndex();
+			this.view.updateScore(this.model.getScore());
 		} else {
 			this.wrongSound.play();
 			this.wrongSound.currentTime = 0;
 		}
+
 		if(this.model.getIsComplete()) {
 			setTimeout(() => this.endGame(), 1500);
 			return;
 		} 
-		// Note: puzzleEvaluator already increments index on correct answer
 		// Wait before showing next puzzle so user sees feedback
 		setTimeout(() => {
 			const nextPuzzle = this.model.getPuzzle();
