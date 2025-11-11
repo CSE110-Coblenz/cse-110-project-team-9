@@ -1,4 +1,4 @@
-import { Player } from "./_Entity/EntityPlayer";
+import { PuzzleModel } from "./_Puzzle/PuzzleModel.ts";
 
 /**
  * GameScreenModel - Manages game state
@@ -8,46 +8,21 @@ export class AmongUsGameScreenModel {
 	private isComplete = false;
 	private index = 0;
 	private size = 3;
-	private puzzles: Puzzle[] = [];
-
-	private player: Player;
-
+	private puzzles: PuzzleModel[] = [];
+	
 	constructor() {
-		this.player = new Player();
 		this.puzzleGenerator();
 	}
-
-	getPlayer(): Player {
-		return this.player;
-	}
-
 	puzzleGenerator() : void {
 		this.puzzles = [
-			{
-				indexPuzzle: 1,
-				indexOption: 1,
-				puzzle: "Balance the mechanism: 1 + 1 = ?",
-				options: [2, 3, 4],
-
-			},
-			{
-				indexPuzzle: 2,
-				indexOption: 1,
-				puzzle: "Adjust the gears: 2 x 5 = ?",
-				options: [10, 11, 12],
-			},
-			{
-				indexPuzzle: 3,
-				indexOption: 1,
-				puzzle: "Release the lock: 10 - 5 = ?",
-				options: [5, 6, 7],
-			},
+			new PuzzleModel({ id: 1, question: "Balance the mechanism: 1 + 1 = ?", options: [2, 3, 4], correctIndex: 0 }),
+			new PuzzleModel({ id: 2, question: "Adjust the gears: 2 x 5 = ?", options: [10, 11, 12], correctIndex: 0 }),
+			new PuzzleModel({ id: 3, question: "Release the lock: 10 - 5 = ?", options: [5, 6, 7], correctIndex: 0 }),
 		];
 	}
-
 	puzzleEvaluator(option : number) : boolean {
-		let current = this.getPuzzle();
-		let isCorrect = option === current.options[current.indexOption];
+		const current = this.getPuzzle();
+		const isCorrect = current.evaluate(option);
 		if(isCorrect) {
 			this.incrementScore();
 			this.incrementIndex();
@@ -57,12 +32,18 @@ export class AmongUsGameScreenModel {
 		}
 		return isCorrect;
 	}
-
 	/**
 	 * Get the current puzzle
 	 */
-	getPuzzle() : Puzzle {
+	getPuzzle(): PuzzleModel {
 		return this.puzzles[this.index];
+	}
+
+	/**
+	 * Return the full puzzles array
+	 */
+	getPuzzles(): PuzzleModel[] {
+		return this.puzzles;
 	}
 
 	/**
@@ -105,9 +86,4 @@ export class AmongUsGameScreenModel {
 	}
 }
 
-interface Puzzle {
-	indexPuzzle: number;
-	indexOption: number;
-	puzzle: string;
-	options: number[];
-}
+

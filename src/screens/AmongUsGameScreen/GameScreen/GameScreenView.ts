@@ -1,6 +1,9 @@
 import Konva from "konva";
 import type { View } from "../../../types.ts";
 import { STAGE_WIDTH, STAGE_HEIGHT } from "../../../constants.ts";
+import { Obstacle } from "./_Entity/EntityObstacle.ts";
+import { PuzzleModel } from "./_Puzzle/PuzzleModel.ts";
+import { PlayerSprite } from "./_Entity/EntityPlayer.ts";
 
 /**
  * GameScreenView - Renders the game UI using Konva
@@ -10,45 +13,18 @@ export class AmongUsGameScreenView implements View {
 	private scoreText: Konva.Text;
 	private timerText: Konva.Text;
 	private questionText: Konva.Text;
+	private feedbackText: Konva.Text;
 	private optionButtons: Konva.Group[] = [];
 	private onOptionClick: (optionIndex: number) => void;
-	private rogueImage?: Konva.Image;
+	private onObstacleClick?: (p: PuzzleModel | null) => void;
+	private player?: PlayerSprite;
+	private obstacles: Obstacle[] = [];
 
-	/**
-	 * Helper to load an image and create a Konva.Sprite with provided animations.
-	 * options: scaleX, scaleY, frameRate, offsetX, offsetY
-	 */
-	private createAnimatedSprite(imagePath: string, animations: Record<string, number[]>,
-	x: number, y: number, options?: { scaleX?: number; scaleY?: number; frameRate?: number; offsetX?: number; offsetY?: number }) {
-		const img = new Image();
-		img.onload = () => {
-			const sprite = new Konva.Sprite({
-				x,
-				y,
-				scaleX: options?.scaleX ?? 1,
-				scaleY: options?.scaleY ?? 1,
-				image: img,
-				animation: Object.keys(animations)[0] ?? 'default',
-				animations,
-				frameRate: options?.frameRate ?? 12,
-				frameIndex: 0,
-			});
 
-			// Apply offsets if provided (useful to center the sprite)
-			if (options?.offsetX !== undefined) sprite.offsetX(options.offsetX);
-			if (options?.offsetY !== undefined) sprite.offsetY(options.offsetY);
-
-			this.group.add(sprite);
-			sprite.start();
-			this.group.getLayer()?.draw();
-		};
-		img.src = imagePath;
-		return img; // return img in case caller wants to keep reference
-	}
-
-	constructor(onOptionClick: (optionIndex: number) => void) {
+	constructor(onOptionClick: (optionIndex: number) => void, onObstacleClick?: (p: PuzzleModel | null) => void) {
 		this.group = new Konva.Group({ visible: false });
 		this.onOptionClick = onOptionClick;
+		this.onObstacleClick = onObstacleClick;
 
 		// Background
 		Konva.Image.fromURL("AmongUsMiniGame/Background/1/terrace.png", (background) => {
@@ -61,88 +37,9 @@ export class AmongUsGameScreenView implements View {
 			this.group.getLayer()?.draw();
 		});
 
-		const bladeAnimations = {
-			idle: [
-				0, 0, 48, 48,
-				0, 48, 48, 48,
-				0, 96, 48, 48,
-				0, 144, 48, 48,
-			],
-		};
 
-		const monsterAnimations = {
-			idle: [
-				0, 0, 36, 64,
-				0, 64, 36, 64,
-				0, 128, 36, 64,
-				0, 192, 36, 64,
-				0, 256, 36, 64,
-				0, 320, 36, 64,
-			],
-		};
 
-		const scullAnimations = {
-			idle: [
-				0, 0, 48, 48,
-				0, 48, 48, 48,
-				0, 96, 48, 48,
-			],
-		};
-		
-		const rogueAnimations = {
-			idle: [
-				0, 0, 128, 128,
-				128, 0, 128, 128,
-				256, 0, 128, 128,
-				384, 0, 128, 128,
-				512, 0, 128, 128,
-				640, 0, 128, 128,
-				768, 0, 128, 128,
-				896, 0, 128, 128,
-				1024, 0, 128, 128,
-				1152, 0, 128, 128,
-				1280, 0, 128, 128,
-				1408, 0, 128, 128,
-				1536, 0, 128, 128,
-				1664, 0, 128, 128,
-				1792, 0, 128, 128,
-				1920, 0, 128, 128,
-				2048, 0, 128, 128,
-			]
-		};
-
-		// Create the sprites using the helper to avoid repeating identical logic
-		this.createAnimatedSprite(
-			"AmongUsMiniGame/Objects/Rotating_blades.png",
-			bladeAnimations,
-			STAGE_WIDTH / 2 - 200,
-			STAGE_HEIGHT / 2,
-			{ scaleX: 3, scaleY: 3, frameRate: 12, offsetX: 0, offsetY: 0 }
-		);
-
-		this.createAnimatedSprite(
-			"AmongUsMiniGame/Objects/Flasks_monsters.png",
-			monsterAnimations,
-			STAGE_WIDTH / 2,
-			STAGE_HEIGHT / 2,
-			{ scaleX: 3, scaleY: 3, frameRate: 12, offsetX: 0, offsetY: 0 }
-		);
-
-		this.createAnimatedSprite(
-			"AmongUsMiniGame/Objects/scull.png",
-			scullAnimations,
-			STAGE_WIDTH / 2 + 200,
-			STAGE_HEIGHT / 2,
-			{ scaleX: 3, scaleY: 3, frameRate: 12, offsetX: 0, offsetY: 0 }
-		);
-
-		this.createAnimatedSprite(
-			"AmongUsMiniGame/Sprites/Rogue/Idle/spritesheet.png",
-			rogueAnimations,
-			STAGE_WIDTH / 2 - 50,
-			STAGE_HEIGHT / 2 + 50,
-			{ scaleX: 2, scaleY: 2, frameRate: 8, offsetX: 64, offsetY: 64 }
-		);
+		// Obstacles are created by the controller via addObstacle()
 
 		this.scoreText = new Konva.Text({
 			x: 20,
@@ -176,32 +73,67 @@ export class AmongUsGameScreenView implements View {
 		});
 		this.group.add(this.questionText);
 
-		Konva.Image.fromURL("AmongUsMiniGame/Sprites/Rogue/Hurt/hurt1.png", (image) => {
-			image.x(STAGE_WIDTH / 2);
-			image.y(STAGE_HEIGHT / 2);
-			this.rogueImage = image;
-			this.group.add(this.rogueImage);
-			this.group.getLayer()?.draw();
+		this.feedbackText = new Konva.Text({
+			x: STAGE_WIDTH / 2,
+			y: STAGE_HEIGHT / 2,
+			text: "",
+			fontSize: 48,
+			fontFamily: "Serif",
+			fill: "white",
+			align: "center",
+			visible: false,
 		});
+		this.feedbackText.offsetX(this.feedbackText.width() / 2);
+		this.group.add(this.feedbackText);
+		this.feedbackText.moveToTop();
+
+		// create player sprite and attach when ready
+		this.player = new PlayerSprite(this.group, STAGE_WIDTH / 2, STAGE_HEIGHT / 2, { scale: 2, frameRate: 8, onReady: () => {
+			this.group.getLayer()?.draw();
+		}});
+	}
+
+	/**
+	 * Create an obstacle and add it to the view. Returns the created Obstacle.
+	 */
+	addObstacle(id: number, x: number, y: number, puzzle: PuzzleModel | null): import("./_Entity/EntityObstacle.ts").Obstacle {
+		const ob = new Obstacle(id, x, y, puzzle, this.group, (p) => {
+			if (this.onObstacleClick) this.onObstacleClick(p);
+		});
+		this.obstacles.push(ob);
+		// Bring player to front so it renders above obstacles
+		if (this.player) {
+			this.player.moveToTop();
+		}
+		return ob;
 	}
 
 	setRoguePosition(x: number, y: number): void {
-		if (!this.rogueImage) return;
-		this.rogueImage.x(x);
-		this.rogueImage.y(y);
-		this.group.getLayer()?.batchDraw();
+		if (!this.player) return;
+		this.player.setPosition(x, y);
 	}
 
 	moveRogueBy(dx: number, dy: number): void {
-		if (!this.rogueImage) return;
-		this.rogueImage.x(this.rogueImage.x() + dx);
-		this.rogueImage.y(this.rogueImage.y() + dy);
-		this.group.getLayer()?.batchDraw();
+		if (!this.player) return;
+		this.player.moveBy(dx, dy);
+		// set animation state
+		this.player.setMoving(dx !== 0 || dy !== 0);
+		if (dx !== 0) this.player.setDirection(dx < 0);
 	}
 
 	getRoguePosition(): { x: number; y: number } | null {
-		if (!this.rogueImage) return null;
-		return { x: this.rogueImage.x(), y: this.rogueImage.y() };
+		if (!this.player) return null;
+		return this.player.getPosition();
+	}
+
+	setRogueMoving(isMoving: boolean): void {
+		if (!this.player) return;
+		this.player.setMoving(isMoving);
+	}
+
+	setRogueDirection(facingLeft: boolean): void {
+		if (!this.player) return;
+		this.player.setDirection(facingLeft);
 	}
 
 	/**
@@ -292,5 +224,30 @@ export class AmongUsGameScreenView implements View {
 	 */
 	getGroup(): Konva.Group {
 		return this.group;
+	}
+
+	/**
+	 * Hide the puzzle and show feedback
+	 */
+	hidePuzzle(feedback: string): void {
+		// Hide question and options
+		this.questionText.visible(false);
+		this.optionButtons.forEach((btn) => btn.visible(false));
+
+		// Show feedback
+		this.feedbackText.text(feedback);
+		this.feedbackText.offsetX(this.feedbackText.width() / 2);
+		this.feedbackText.moveToTop();
+		this.feedbackText.visible(true);
+
+		this.group.getLayer()?.draw();
+
+		// Auto-hide feedback after 1.5 seconds
+		setTimeout(() => {
+			this.feedbackText.visible(false);
+			this.questionText.visible(true);
+			this.optionButtons.forEach((btn) => btn.visible(true));
+			this.group.getLayer()?.draw();
+		}, 1500);
 	}
 }

@@ -2,7 +2,8 @@ import { ScreenController } from "../../../types.ts";
 import type { ScreenSwitcher } from "../../../types.ts";
 import { AmongUsGameScreenModel } from "./GameScreenModel.ts";
 import { AmongUsGameScreenView } from "./GameScreenView.ts";
-import { GAME_DURATION } from "../../../constants.ts";
+import { PuzzleModel } from "./_Puzzle/PuzzleModel.ts";
+import { GAME_DURATION, STAGE_WIDTH, STAGE_HEIGHT } from "../../../constants.ts";
 
 /**
  * GameScreenController - Coordinates game logic between Model and View
@@ -23,12 +24,14 @@ export class AmongUsGameScreenController extends ScreenController {
 	private rafId: number | null = null;
 	private lastFrameTime = 0;
 
+	private static readonly PLAYER_SPEED = 45;
+
 	constructor(screenSwitcher: ScreenSwitcher) {
 		super();
 		this.screenSwitcher = screenSwitcher;
 
 		this.model = new AmongUsGameScreenModel();
-		this.view = new AmongUsGameScreenView((option: number) => this.handleClick(option));
+	this.view = new AmongUsGameScreenView((option: number) => this.handleClick(option), (puzzle) => this.handleObstacleClick(puzzle));
 
 		this.backgroundSound = new Audio("AmongUsMiniGame/Audio/background-music.mp3");
 		this.timerSound = new Audio("AmongUsMiniGame/Audio/timer-beep.mp3");
@@ -49,6 +52,14 @@ export class AmongUsGameScreenController extends ScreenController {
 		this.view.updateTimer(GAME_DURATION);
 		this.view.show();
 
+		// Create obstacles for each puzzle so clicking them opens the puzzle
+		const puzzles = this.model.getPuzzles();
+		puzzles.forEach((p, idx) => {
+			const x = STAGE_WIDTH / 2 - 200 + idx * 200;
+			const y = STAGE_HEIGHT / 2;
+			this.view.addObstacle(idx + 1, x, y, p);
+		});
+
 		this.startTimer();
 
 		this.backgroundSound.loop = true;
@@ -58,6 +69,23 @@ export class AmongUsGameScreenController extends ScreenController {
 		window.addEventListener("keyup", this.onKeyUp);
 		this.lastFrameTime = performance.now();
 		this.rafId = requestAnimationFrame(this.gameLoop);
+	}
+
+	/**
+	 * Start the countdown timer
+	 */
+	private startTimer(): void {
+		let timeRemaining = GAME_DURATION;
+		let timerId = setInterval(() => {
+			timeRemaining = timeRemaining - 1;
+			this.view.updateTimer(timeRemaining);		
+			if(timeRemaining <= 0) {
+				this.endGame();
+			}
+		}, 1000);
+		this.gameTimer = timerId;
+		this.timerSound.loop = true;
+		this.timerSound.play();
 	}
 
 	private stopGameInput(): void {
@@ -78,77 +106,59 @@ export class AmongUsGameScreenController extends ScreenController {
 		if (this.keysDown.has("a")) dx -= 1;
 		if (this.keysDown.has("d")) dx += 1;
 
-		const player = this.model.getPlayer();
-
 		if (dx !== 0 || dy !== 0) {
-			player.move(dx, dy, dt);
-		} else {
-			player.stop();
-		}
+			// normalize diagonal movement
+			const len = Math.hypot(dx, dy) || 1;
+			dx = dx / len;
+			dy = dy / len;
 
-		const { x, y } = player.getPosition();
-		this.view.setRoguePosition(x, y);
+			const deltaX = dx * AmongUsGameScreenController.PLAYER_SPEED * dt;
+			const deltaY = dy * AmongUsGameScreenController.PLAYER_SPEED * dt;
+
+			this.view.moveRogueBy(deltaX, deltaY);
+		} else {
+			this.view.setRogueMoving(false);
+		}
 
 		// continue loop
 		this.rafId = requestAnimationFrame(this.gameLoop);
 	};
 
-	/**
-	 * Start the countdown timer
-	 */
-	private startTimer(): void {
-		let timeRemaining = GAME_DURATION;
-		let timerId = setInterval(() => {
-			timeRemaining = timeRemaining - 1;
-			this.view.updateTimer(timeRemaining);		
-			if(timeRemaining <= 0) {
-				this.endGame();
-			}
-		}, 1000);
-		this.gameTimer = timerId;
-		this.timerSound.loop = true;
-		this.timerSound.play();
-	}
-
-	/**
-	 * Stop the timer
-	 */
-	private stopTimer(): void {
-		if(!(this.gameTimer == null)) {
-			clearInterval(this.gameTimer);
-			this.gameTimer = null;
-		}
-		
-		this.backgroundSound.pause();
-		this.timerSound.pause();
-	}
-
-	/**
-	 * Handle click event
-	 */
 	private handleClick(option: number): void {
 		let isCorrect = this.model.puzzleEvaluator(option);
 		this.clickSound.play();
+		
+		const feedbackMessage = isCorrect ? "Correct!" : "Wrong!";
+		this.view.hidePuzzle(feedbackMessage);
+		
 		if(isCorrect) {
 			this.correctSound.play();
 			this.correctSound.currentTime = 0;
-			this.model.incrementScore();
-			this.view.updateScore(this.model.getScore());
-
 		} else {
 			this.wrongSound.play();
 			this.wrongSound.currentTime = 0;
 		}
 		if(this.model.getIsComplete()) {
-			this.endGame();
+			setTimeout(() => this.endGame(), 1500);
 			return;
 		} 
+		// Note: puzzleEvaluator already increments index on correct answer
+		// Wait before showing next puzzle so user sees feedback
 		setTimeout(() => {
-			this.model.incrementIndex();
-			//const currentPuzzle = this.model.getPuzzle();
-			//this.view.renderPuzzle(currentPuzzle);
-		}, 500);
+			const nextPuzzle = this.model.getPuzzle();
+			this.view.renderPuzzle({ 
+				question: nextPuzzle.getQuestion(), 
+				options: nextPuzzle.getOptions().map(o => String(o)) 
+			});
+		}, 1500);
 
+	}
+
+	private handleObstacleClick(puzzle: PuzzleModel | null): void {
+		if (!puzzle) return;
+		const question = puzzle.getQuestion();
+		const options = puzzle.getOptions().map(o => String(o));
+		this.view.renderPuzzle({ question, options });
 	}
 
 	private onKeyDown = (e: KeyboardEvent) => {
@@ -165,6 +175,19 @@ export class AmongUsGameScreenController extends ScreenController {
 			this.keysDown.delete(key);
 		}
 	};
+
+	/**
+	 * Stop the timer
+	 */
+	private stopTimer(): void {
+		if(!(this.gameTimer == null)) {
+			clearInterval(this.gameTimer);
+			this.gameTimer = null;
+		}
+		
+		this.backgroundSound.pause();
+		this.timerSound.pause();
+	}
 
 	/**
 	 * End the game

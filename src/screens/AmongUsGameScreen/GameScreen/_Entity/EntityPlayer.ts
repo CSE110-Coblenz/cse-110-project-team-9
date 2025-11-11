@@ -1,69 +1,127 @@
-// src/game/entities/Player.ts
-import { STAGE_HEIGHT, STAGE_WIDTH } from "../../../../constants";
+import Konva from "konva";
 
-export class Player {
-	private x: number;
-	private y: number;
-	private speed: number;
-	private state: "idle" | "walk" = "idle";
-	private direction: "up" | "down" | "left" | "right" = "down";
+export class PlayerSprite {
+    private sprite!: Konva.Sprite;
+    private idleImg!: HTMLImageElement;
+    private walkImg!: HTMLImageElement;
+    private isReady = false;
+    private facingLeft = false;
 
-	constructor(startX = STAGE_WIDTH / 2, startY = STAGE_HEIGHT / 2, speed = 45) {
-		this.x = startX;
-		this.y = startY;
-		this.speed = speed;
-	}
+    // animations assume frames are arranged horizontally in each spritesheet
+    private static readonly IDLE_ANIM = [
+        0, 0, 128, 128,
+        128, 0, 128, 128,
+        256, 0, 128, 128,
+        384, 0, 128, 128,
+        512, 0, 128, 128,
+        640, 0, 128, 128,
+    ];
 
-	getPosition() {
-		return { x: this.x, y: this.y };
-	}
+    private static readonly WALK_ANIM = [
+        0, 0, 128, 128,
+        128, 0, 128, 128,
+        256, 0, 128, 128,
+        384, 0, 128, 128,
+        512, 0, 128, 128,
+        640, 0, 128, 128,
+    ];
 
-	move(dx: number, dy: number, dt: number) {
-		const len = Math.hypot(dx, dy) || 1;
-		const normX = dx / len;
-		const normY = dy / len;
-		this.x += normX * this.speed * dt;
-		this.y += normY * this.speed * dt;
+    constructor(parentGroup: Konva.Group, x: number, y: number, options?: { scale?: number; frameRate?: number; onReady?: (p: PlayerSprite) => void }) {
+        // Load both images
+        this.idleImg = new Image();
+        this.walkImg = new Image();
 
-		this.state = "walk";
-		if (Math.abs(dx) > Math.abs(dy)) {
-			this.direction = dx > 0 ? "right" : "left";
-		} else {
-			this.direction = dy > 0 ? "down" : "up";
-		}
+        let loaded = 0;
+        const checkReady = () => {
+            loaded++;
+            if (loaded >= 2) this.createSprite(parentGroup, x, y, options);
+        };
 
-		// clamp position inside stage
-		const half = 90;
-		this.x = Math.max(half, Math.min(STAGE_WIDTH - half, this.x));
-		this.y = Math.max(half, Math.min(STAGE_HEIGHT - half, this.y));
-	}
+        this.idleImg.onload = checkReady;
+        this.walkImg.onload = checkReady;
 
-	stop() {
-		this.state = "idle";
-	}
+        this.idleImg.src = "AmongUsMiniGame/Sprites/Rogue/Idle/idle.png";
+        this.walkImg.src = "AmongUsMiniGame/Sprites/Rogue/Walk/walk.png";
+    }
 
-	getSpeed() {
-		return this.speed;
-	}
+    private createSprite(parentGroup: Konva.Group, x: number, y: number, options?: { scale?: number; frameRate?: number; onReady?: (p: PlayerSprite) => void }) {
+        const animations: Record<string, number[]> = {
+            idle: PlayerSprite.IDLE_ANIM,
+            walk: PlayerSprite.WALK_ANIM,
+        };
 
-	setSpeed(newSpeed: number) {
-		this.speed = newSpeed;
-	}
+        this.sprite = new Konva.Sprite({
+            x,
+            y,
+            image: this.idleImg,
+            animations,
+            animation: 'idle',
+            frameRate: options?.frameRate ?? 8,
+            scaleX: options?.scale ?? 2,
+            scaleY: options?.scale ?? 2,
+            frameIndex: 0,
+        });
 
-	getState() {
-		return this.state;
-	}
+        // center origin
+        this.sprite.offsetX(64);
+        this.sprite.offsetY(64);
 
-	getDirection() {
-		return this.direction;
-	}
+        parentGroup.add(this.sprite);
+        this.sprite.start();
+        this.isReady = true;
+        options?.onReady?.(this);
+        parentGroup.getLayer()?.draw();
+    }
 
-	setDirection(dir: "up" | "down" | "left" | "right") {
-		this.direction = dir;
-	}
+    setMoving(isMoving: boolean): void {
+        if (!this.isReady) return;
+        if (isMoving) {
+            // switch to walk image + animation
+            this.sprite.image(this.walkImg as any);
+            this.sprite.animation('walk');
+            this.sprite.frameRate(12);
+        } else {
+            this.sprite.image(this.idleImg as any);
+            this.sprite.animation('idle');
+            this.sprite.frameRate(8);
+        }
+        this.sprite.start();
+    }
 
-	getSprite(): string {
-		if (this.state === "walk") return `/assets/sprites/player/walk_${this.direction}.png`;
-		return `/assets/sprites/player/idle_${this.direction}.png`;
-	}
+    setDirection(left: boolean): void {
+        if (!this.isReady) return;
+        if (this.facingLeft === left) return;
+        this.facingLeft = left;
+        const scale = Math.abs(this.sprite.scaleX() || 1);
+        this.sprite.scaleX(left ? -scale : scale);
+    }
+
+    moveBy(dx: number, dy: number): void {
+        if (!this.isReady) return;
+        this.sprite.x(this.sprite.x() + dx);
+        this.sprite.y(this.sprite.y() + dy);
+        this.sprite.getLayer()?.batchDraw();
+    }
+
+    setPosition(x: number, y: number): void {
+        if (!this.isReady) return;
+        this.sprite.x(x);
+        this.sprite.y(y);
+        this.sprite.getLayer()?.batchDraw();
+    }
+
+    getPosition(): { x: number; y: number } | null {
+        if (!this.isReady) return null;
+        return { x: this.sprite.x(), y: this.sprite.y() };
+    }
+
+        moveToTop(): void {
+            if (!this.isReady) return;
+            this.sprite.moveToTop();
+            this.sprite.getLayer()?.draw();
+        }
+
+    destroy(): void {
+        this.sprite?.destroy();
+    }
 }
