@@ -42,7 +42,6 @@ export class AudioModel {
     public registerSound(key: string, path: string, loop: boolean = false, overwrite = false): void {
         
         if (!this.sounds[key] || overwrite) {
-            
             const audio = new Audio(path);
             
             // Set if the sound should loop or not
@@ -59,14 +58,13 @@ export class AudioModel {
      * Getter and Setter for volume
      * @param volume A number between 0.0 and 1.0
      */
-
     public setBgmVolume(volume: number): void {
-        this.bgmVolume = this.validateVolume(volume);
+        this.bgmVolume = volume;
         this.applyVolume();
     }
 
     public setSfxVolume(volume: number): void {
-        this.sfxVolume = this.validateVolume(volume);
+        this.sfxVolume = volume;
         this.applyVolume();
     }
 
@@ -81,7 +79,6 @@ export class AudioModel {
     /**
      * Apply the current volume to all sounds
      */
-
     private applyVolume(): void {
         for (const key in this.sounds) {
             if (key.includes("bgm")) {
@@ -92,11 +89,11 @@ export class AudioModel {
         }
     }
 
-    /**
-     * Validate volume
-     */
+    // /**
+    //  * Validate volume
+    //  */
 
-    private validateVolume(volume: number): number {
-        return !isFinite(volume) || volume < 0 || volume > 1 ? 0.5 : volume;
-    }
+    // private validateVolume(volume: number): number {
+    //     return !isFinite(volume) || volume < 0 || volume > 1 ? 0.5 : volume;
+    // }
 }

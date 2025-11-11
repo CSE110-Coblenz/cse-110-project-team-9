@@ -19,6 +19,7 @@ export class AudioController {
     
         bgm.muted = false;
         bgm.currentTime = 0;
+        //TODO: catch play request paused to catch errors
         bgm.play();
     }
 
@@ -29,9 +30,10 @@ export class AudioController {
     public playSFX(key: string): void {
         const sfx = this.model.sounds[key];
         if (!sfx) return;
-
+        //TODO: if the sound effect is already playing then keep it running??
         sfx.muted = false;
         sfx.currentTime = 0;
+        //TODO: catch play request paused to catch errors
         sfx.play();
     }
 

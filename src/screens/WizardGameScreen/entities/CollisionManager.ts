@@ -55,6 +55,22 @@ export class CollisionManager {
         //check if boxes a and b overlap in 2D space
 		return !(b.x > a.x + a.width || b.x + b.width < a.x || b.y > a.y + a.height || b.y + b.height < a.y);
 	}
+
+	// layer.on('dragmove', function (e) {
+	// 	var target = e.target;
+	// 	var targetRect = e.target.getClientRect();
+	// 	layer.children.forEach(function (group) {
+	// 		// do not check intersection with itself
+	// 		if (group === target) {
+	// 		return;
+	// 		}
+	// 		if (haveIntersection(group.getClientRect(), targetRect)) {
+	// 		group.findOne('.fillShape').fill('red');
+	// 		} else {
+	// 		group.findOne('.fillShape').fill('grey');
+	// 		}
+	// 	});
+	// });
 }
 
 
