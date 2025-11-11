@@ -7,18 +7,18 @@ export class HomeScreenController extends ScreenController {
 	private screenSwitcher: ScreenSwitcher;
 	private audio: AudioController;
 
-	constructor(screenSwitcher: ScreenSwitcher) {
+	constructor(screenSwitcher: ScreenSwitcher, private audio: AudioController) {
 		
 		super();
 
 		this.screenSwitcher = screenSwitcher;
         this.view = new HomeScreenView();
-		this.audio = new AudioController();
-
+		this.audio = audio;
+		
 		/**
 		 * Button Event Listeners
 		 */
-
+		
 		this.view.getSettingsButton().on("click", () => {
 			this.audio.playSFX("click_sfx");
 			this.screenSwitcher.switchToScreen({ type: "settings" });
