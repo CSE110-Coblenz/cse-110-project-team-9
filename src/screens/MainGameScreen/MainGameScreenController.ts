@@ -1,22 +1,25 @@
 import { NodeType, MainGameScreenModel } from "../MainGameScreen/MainGameScreenModel";
 import { MainGameScreenView } from "../MainGameScreen/MainGameScreenView";
 import { ScreenController, ScreenSwitcher } from "../../types"
+import { AudioController } from "../../audios/AudioController";
 
 
 export class MainGameScreenController extends ScreenController {
 
+    private audio: AudioController;
     private view: MainGameScreenView;
     private screenSwitcher: ScreenSwitcher;
     private gameModel: MainGameScreenModel = new MainGameScreenModel(["default"]);
 
     private readonly BOARD_LENGTH = 40;
 
-    constructor(screenSwitcher: ScreenSwitcher){
+    constructor(screenSwitcher: ScreenSwitcher, audio: AudioController){
         
         super();
 
         this.view = new MainGameScreenView(this.gameModel);
         this.screenSwitcher = screenSwitcher;
+        this.audio = audio;
 
         this.view.onPlayerRoll(() => this.onPlayerRoll());
         this.view.getSettingsButton().on("click", () => {

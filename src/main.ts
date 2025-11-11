@@ -32,9 +32,9 @@ class App implements ScreenSwitcher {
 		this.audio = new AudioController();
 
 		// Initialize all screen controllers
-		this.homeController = new HomeScreenController(this);
-		this.settingsController = new SettingsScreenController(this);
-		this.mainGameController = new MainGameScreenController(this);
+		this.homeController = new HomeScreenController(this, this.audio);
+		this.settingsController = new SettingsScreenController(this, this.audio);
+		this.mainGameController = new MainGameScreenController(this, this.audio);
 
 		// Add all screen groups to the layer
 		this.layer.add(this.homeController.getView().getGroup());

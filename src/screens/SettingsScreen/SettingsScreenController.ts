@@ -9,11 +9,11 @@ export class SettingsScreenController extends ScreenController {
 	private currentBgmVolume: number;
 	private currentSfxVolume: number;
 
-	constructor(screenSwitcher: ScreenSwitcher) {
+	constructor(screenSwitcher: ScreenSwitcher, audio: AudioController) {
 		super();
 		this.screenSwitcher = screenSwitcher;
 		this.view = new SettingsScreenView();
-		this.audio = new AudioController();
+		this.audio = audio;
 		this.currentBgmVolume = this.audio.getBgmVolume();
 		this.currentSfxVolume = this.audio.getSfxVolume();
 
