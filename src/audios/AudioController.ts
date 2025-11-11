@@ -19,6 +19,7 @@ export class AudioController {
     
         bgm.muted = false;
         bgm.currentTime = 0;
+        //TODO: fix catch error for google chrome errors
         bgm.play().catch((err) => {
 		    console.error("Background Music Error", err);
 		});
@@ -34,6 +35,7 @@ export class AudioController {
 
         sfx.muted = false;
         sfx.currentTime = 0;
+        //TODO: fix catch error for goole chrome errors
         sfx.play().catch((err) => {
 			console.error("Sound Effect Error", err);
 		});;

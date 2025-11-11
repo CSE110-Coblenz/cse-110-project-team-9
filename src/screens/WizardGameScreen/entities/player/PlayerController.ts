@@ -1,22 +1,16 @@
 import type { PlayerModel } from "./PlayerModel";
 import type { PlayerViewer } from "./PlayerViewer";
 import type { Collidable, AABB } from "../CollisionManager";
+import { AudioController } from "../../../../audios/AudioController";
 
 export class PlayerController<Animation extends string> implements Collidable {
-    private keys: Record<string, boolean> = {};
-    private walkSound: HTMLAudioElement;
-    //TODO: jump scare from sword slash fix audio normalization
-    private attackSound: HTMLAudioElement;
-    private bowshootSound: HTMLAudioElement;
+    private keys: Record<string, boolean> = {};    
 
-    constructor(private model: PlayerModel, private view: PlayerViewer<Animation>) {
-        //TODO: grab correct foramt .100 seconds per frame for any given animation
-        //TODO: move this to knight.ts
-        //TODO: convert to mp4 instead mp3 does not do milliseconds
-        this.walkSound = new Audio("/wizardminigame/audio/8-bit-grass-footsteps-2-408574.mp3")
-        this.attackSound = new Audio("/wizardminigame/audio/sword-slash-and-swing-185432.mp3")
-        this.bowshootSound = new Audio("/wizardminigame/audio/bow_release-85040.mp3")
-    }
+    constructor(
+        private model: PlayerModel, 
+        private view: PlayerViewer<Animation>,
+        private audio: AudioController
+    ) {}
 
     /**
      * Return the player's current bounding box in world coordinates, or null if not available.
@@ -34,7 +28,6 @@ export class PlayerController<Animation extends string> implements Collidable {
      * @param other
      */
     public onCollision?(other: Collidable): void;
-    //TODO: refactor input animations to be in the knight or wizard
     /**
      * add Listening functionality
      */
@@ -58,7 +51,6 @@ export class PlayerController<Animation extends string> implements Collidable {
             this.keys[e.key] = true;
         }
     }
-    //TODO: fix bug for weird case where keyup is not registered sometimes through capsLock
     /**
      * takes x input key to be false (not pressed)
      * @param e 
@@ -93,19 +85,23 @@ export class PlayerController<Animation extends string> implements Collidable {
         //actions and animation only one at a time
         if (dx !== 0 || dy !== 0) {
             this.model.setAnimation("walk");
-            this.walkSound.play();
+            //TODO: broken audio
+            this.audio.playSFX("walk");
 
         } else if (this.keys["f"]) {
             this.model.setAnimation("attackslash");
-            this.attackSound.play();
+            //TODO: broken audio
+            this.audio.playSFX("attackslash");
 
         } else if (this.keys["e"]) {
             this.model.setAnimation("attackdown");
-            this.attackSound.play();
+            //TODO: broken audio
+            this.audio.playSFX("attackdown");
 
         } else if (this.keys["r"]) {
             this.model.setAnimation("attackbow");
-            this.bowshootSound.play();
+            //TODO: broken audio
+            this.audio.playSFX("attackbow");
         } else {
             this.model.setAnimation("idle");            
         }

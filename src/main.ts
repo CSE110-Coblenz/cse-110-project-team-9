@@ -80,8 +80,6 @@ class App implements ScreenSwitcher {
 				break;
 
 			case "mainGame":
-				this.homeController.hide();
-				this.settingsController.hide();
 				this.mainGameController.show();
 				break;
 		}

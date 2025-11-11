@@ -1,13 +1,16 @@
 import type { EnemyModel } from "./EnemyModel";
-import { EnemyViewer } from "./EnemyViewer";
+import type { EnemyViewer } from "./EnemyViewer";
 import type { Collidable, AABB } from "../CollisionManager";
+import { AudioController } from "../../../../audios/AudioController";
 
 export class EnemyController<Animation extends string> implements Collidable {
     private keys: Record<string, boolean> = {};
 
-    constructor(private model: EnemyModel, private view: EnemyViewer<Animation>) {
-
-    }
+    constructor(
+        private model: EnemyModel, 
+        private view: EnemyViewer<Animation>,
+        private audio: AudioController
+    ) {}
 
     /**
      * Return the player's current bounding box in world coordinates, or null if not available.
@@ -30,9 +33,7 @@ export class EnemyController<Animation extends string> implements Collidable {
             this.model.death();
             this.model.setAnimation("death");
         }
-
-
-        //TODO delete mvc
+        //TODO: Delete MVC
     }
 
     /**
@@ -41,6 +42,5 @@ export class EnemyController<Animation extends string> implements Collidable {
      */
     update(deltaTime: number) {
         this.view.render(this.model);
-
     }
 }

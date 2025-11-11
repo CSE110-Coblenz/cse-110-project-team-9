@@ -1,10 +1,10 @@
 import { computeAllAnimationBoundingBoxes } from "./CreateBoundingBox";
 
+//image atlas export
+export const knightSrc = "/wizardminigame/sprites/Knight.png";
+
 //animation types
 export type KnightAnimation = "idle" | "walk" | "attackslash" | "attackdown" | "attackbow" | "damage" | "death";
-
-//bounding box
-export type BoundingBox = { x: number; y: number; width: number; height: number };
 
 //[x, y, width, height] per frame
 export const KNIGHT_ANIMATIONS: Record<KnightAnimation, number[]> = {
@@ -66,12 +66,19 @@ export const KNIGHT_ANIMATIONS: Record<KnightAnimation, number[]> = {
     ]
 };
 
-/**
- * image atlas export
- */
-export const knightSrc = "/wizardminigame/sprites/Knight.png";
+//TODO: grab correct foramt .100 seconds per frame for any given animation
+//TODO: convert to mp4 instead mp3 does not do milliseconds
+export const KNIGHT_AUDIO = {
+    walk: "/wizardminigame/audio/8-bit-grass-footsteps-2-408574.mp3",
+    attackbow: "/wizardminigame/audio/bow_release-85040.mp3",
+    attackslash: "/wizardminigame/audio/sword-slash-and-swing-185432.mp3",
+    attackdown: "/wizardminigame/audio/sword-slash-and-swing-185432.mp3",
+    damage: "/wizardminigame/audio/x",
+    death: "/wizardminigame/audio/x",
+};
 
-export const KNIGHT_BOUNDING_BOXES: Record<KnightAnimation, BoundingBox[]> = {} as any;
+//bounding box for collision frames
+export const KNIGHT_BOUNDING_BOXES: Record<KnightAnimation, { x: number; y: number; width: number; height: number }[] > = {} as any;
 
 //pre-computed bounding boxes
 const knightImg = new Image();

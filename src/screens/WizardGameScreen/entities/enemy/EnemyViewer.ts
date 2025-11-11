@@ -117,6 +117,10 @@ export class EnemyViewer<Animation extends string> {
         const box = this.getCurrentWorldBoundingBox();
         this.debugViewer.updateBox(box);
     }
+
+    public debugBoundingBox(show: boolean) {
+        this.toggleBoundingBox(show);
+    }
 }
 
 

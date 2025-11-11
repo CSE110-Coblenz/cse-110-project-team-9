@@ -1,6 +1,11 @@
 import Konva from 'konva';
+
+//Enemy MVC
 import { EnemyViewer } from './EnemyViewer';
-import type { EnemyModel } from './EnemyModel';
+import { EnemyModel } from './EnemyModel'; 
+import { EnemyController } from './EnemyController';
+
+import { AudioController } from '../../../../audios/AudioController';
 
 //Types of assets
 import { wizardSrc, WIZARD_ANIMATIONS, type WizardAnimation, WIZARD_BOUNDING_BOXES } from "../types/Wizard";
@@ -8,26 +13,39 @@ import { knightSrc, KNIGHT_ANIMATIONS, type KnightAnimation, KNIGHT_BOUNDING_BOX
 
 export type EnemyType = "wizard" | "knight";
 
-//TODO: clean up with player factory as well please
+/**
+ * creation and instantiated of enemy class 
+ */
 export class EnemyFactory {
-    static create(type: EnemyType, group: Konva.Group, model: EnemyModel): EnemyViewer<any> {
+    static create(
+        type: EnemyType, 
+        group: Konva.Group,
+        audio: AudioController
+    ): EnemyController<any> {
+        const model = new EnemyModel(300, 60, 150);
+        let viewer: EnemyViewer<any>;
+
         switch(type) {
             case "wizard":
-                return new EnemyViewer<WizardAnimation>(
+                viewer =  new EnemyViewer<WizardAnimation>(
                     group,
-                    { image: wizardSrc, animations: WIZARD_ANIMATIONS},
+                    { image: wizardSrc, animations: WIZARD_ANIMATIONS },
                     model,
-                    WIZARD_BOUNDING_BOXES
-                )
+                    WIZARD_BOUNDING_BOXES,
+                );
+                break;
             case "knight":
-                return new EnemyViewer<KnightAnimation>(
+                viewer = new EnemyViewer<KnightAnimation>(
                     group,
-                    { image: knightSrc, animations: KNIGHT_ANIMATIONS},
+                    { image: knightSrc, animations: KNIGHT_ANIMATIONS },
                     model,
-                    KNIGHT_BOUNDING_BOXES
-                )
+                    KNIGHT_BOUNDING_BOXES,
+                );
+                break;
             default:
-                throw new Error('unknown player type: ${type}');
+                throw new Error('unknown player type');
         }
+
+        return new EnemyController(model, viewer, audio);
     }
 }

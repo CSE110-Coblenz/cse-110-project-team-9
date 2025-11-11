@@ -21,12 +21,12 @@ export class HomeScreenController extends ScreenController {
 		
 		this.view.getSettingsButton().on("click", () => {
 			this.audio.playSFX("click_sfx");
-			this.screenSwitcher.switchToScreen({ type: "settings" });
+			this.screenSwitcher.layerOnScreen({ type: "settings" });
 		});
 
 		this.view.getStartButton().on("click", () => {
 			this.audio.playSFX("click_sfx");
-			this.screenSwitcher.switchToScreen({ type: "mainGame" });
+			this.screenSwitcher.switchToScreen({ type: "wizardminigame" });
 		});
 		
 
@@ -37,7 +37,6 @@ export class HomeScreenController extends ScreenController {
 		this.view.getGroup().on("click", () => {
 			this.audio.playBGM("home_bgm");
 			this.view.getGroup().off("click");
-			console.log("Click detected, playing home BGM...");
 		});
 	}
 

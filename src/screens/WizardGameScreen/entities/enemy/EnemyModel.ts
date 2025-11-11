@@ -12,7 +12,7 @@ export class EnemyModel {
      * @param speed average speed in pixels
      * @param dead existing or not
      */
-    constructor(x = 300, y = 60, speed = 150, currentAnimation = "idle") {
+    constructor(x = 150, y = 60, speed = 150, currentAnimation = "idle") {
         this._x = x;
         this._y = y;
         this._speed = speed;

@@ -1,25 +1,11 @@
 import Konva from "konva";
 import { PlayerModel } from "./PlayerModel";
-//TODO: global turn on and off debug bounding boxes
 import { DebugBoundingBoxViewer } from "../DebugBoundingBox";
-
-//TODO: move Entity type
-export interface EntityType<Animation extends string>{
-    image: string;
-    animations: Record<Animation, number[]>;
-}
-
-//TODO: move this
-export type BoundingBoxes<Animation extends string> = Record<
-    Animation,
-    { x: number; y: number; width: number; height: number }[]
->;
 
 export class PlayerViewer<Animation extends string> {
     private sprite: Konva.Sprite | null = null;
-
     //debug red box visualizer
-    private debugViewer!: DebugBoundingBoxViewer;
+    private debugViewer: DebugBoundingBoxViewer;
 
     /**
      * 
@@ -30,12 +16,14 @@ export class PlayerViewer<Animation extends string> {
      */
     constructor(
         private group: Konva.Group,
-        private entity: EntityType<Animation>,
+        private entity: { image: string; animations: Record<string, number[]> },
         private model: PlayerModel,
-        private boundingBoxes: BoundingBoxes<Animation>
+        private boundingBoxes: Record<string, { x: number; y: number; width: number; height: number }[]>
     ) {
-        const player = new Image();
+        //DEBUG: bounding box red outline
+        this.debugViewer = new DebugBoundingBoxViewer(this.group);
 
+        const player = new Image();
         player.onload = () => {
             this.sprite = new Konva.Sprite({
                 image: player,
@@ -48,8 +36,7 @@ export class PlayerViewer<Animation extends string> {
             });
             this.group.add(this.sprite);
 
-            //TODO: need to move fix somewhere else
-            //disable smoothing (I know the unknown is just context warning otherwise)
+            //disable smoothing
             const layer = this.group.getLayer();
             if (layer) {
                 const ctx = layer.getContext() as unknown as CanvasRenderingContext2D;
@@ -57,14 +44,9 @@ export class PlayerViewer<Animation extends string> {
             }
 
             this.sprite.start();
-            //DEBUG: bounding box red outline
-            this.debugViewer = new DebugBoundingBoxViewer(this.group);
         };
-        //inside public file
         player.src = this.entity.image;
     }
-
-    //TODO: interface move entity generic
 
     /**
      * 
@@ -74,7 +56,6 @@ export class PlayerViewer<Animation extends string> {
         if(!this.sprite) return null; 
         
         const frames = this.boundingBoxes[this.model.currentAnimation as Animation];
-        //TODO: work on better null checker
         if (!frames?.length) return null;
 
         const frameIndex = Math.max(0, Math.min(frames.length - 1, this.sprite.frameIndex()));
@@ -118,6 +99,10 @@ export class PlayerViewer<Animation extends string> {
         //DEBUG: update bounding box
         const box = this.getCurrentWorldBoundingBox();
         this.debugViewer.updateBox(box);
+    }
+
+    public debugBoundingBox(show: boolean) {
+        this.toggleBoundingBox(show);
     }
 }
 

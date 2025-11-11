@@ -1,36 +1,55 @@
 import Konva from 'konva';
+
+//Player MVC
 import { PlayerViewer } from "./PlayerViewer";
-import type { PlayerModel } from './PlayerModel';
+import { PlayerModel } from './PlayerModel';
+import { PlayerController } from "./PlayerController";
+
+import { AudioController } from '../../../../audios/AudioController';
 
 //Types of assets
-import { wizardSrc, WIZARD_ANIMATIONS, type WizardAnimation, WIZARD_BOUNDING_BOXES } from "../types/Wizard";
+import { wizardSrc, WIZARD_ANIMATIONS, type WizardAnimation, WIZARD_BOUNDING_BOXES} from "../types/Wizard";
 import { knightSrc, KNIGHT_ANIMATIONS, type KnightAnimation, KNIGHT_BOUNDING_BOXES} from "../types/Knight";
 
 export type PlayerType = "wizard" | "knight";
 
-//TODO: most like will not need later IDK if just need it for testing for now
+/**
+ * creation and instantiated of player class 
+ */
 export class PlayerFactory {
-    static create(type: PlayerType, group: Konva.Group, model: PlayerModel): PlayerViewer<any> {
+    static create(
+        type: PlayerType, 
+        group: Konva.Group,
+        audio: AudioController
+    ): PlayerController<any> {
+        const model = new PlayerModel(150, 60, 150);
+        let viewer: PlayerViewer<any>;
+
         switch(type) {
             case "wizard":
-                return new PlayerViewer<WizardAnimation>(
+                viewer =  new PlayerViewer<WizardAnimation>(
                     group,
-                    { image: wizardSrc, animations: WIZARD_ANIMATIONS},
+                    { image: wizardSrc, animations: WIZARD_ANIMATIONS },
                     model,
-                    WIZARD_BOUNDING_BOXES
+                    WIZARD_BOUNDING_BOXES,
                 );
+                break;
             case "knight":
-                return new PlayerViewer<KnightAnimation>(
+                viewer = new PlayerViewer<KnightAnimation>(
                     group,
-                    { image: knightSrc, animations: KNIGHT_ANIMATIONS},
+                    { image: knightSrc, animations: KNIGHT_ANIMATIONS },
                     model,
-                    KNIGHT_BOUNDING_BOXES
+                    KNIGHT_BOUNDING_BOXES,
                 );
+                break;
             default:
                 throw new Error('unknown player type');
         }
+
+        return new PlayerController(model, viewer, audio);
     }
 }
+
 
 
 
