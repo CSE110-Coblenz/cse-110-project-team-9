@@ -21,7 +21,7 @@ import { EnemyFactory } from "./entities/enemy/EnemyFactory";
 import type { WizardAnimation } from "./entities/types/Wizard";
 import type { KnightAnimation } from "./entities/types/Knight";
 //audio
-import { AudioController } from "../../audio/AudioController";
+import { AudioController } from "../../audios/AudioController";
 
 
 export class WizardGameScreenController extends ScreenController {
