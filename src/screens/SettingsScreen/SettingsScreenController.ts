@@ -1,6 +1,6 @@
 import { SettingsScreenView } from "./SettingsScreenView";
 import { ScreenController, ScreenSwitcher } from "../../types";
-import { AudioController } from "../../audio/AudioController";
+import { AudioController } from "../../audios/AudioController";
 
 export class SettingsScreenController extends ScreenController {
 	private view: SettingsScreenView;
