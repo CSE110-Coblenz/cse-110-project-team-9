@@ -61,12 +61,14 @@ export class AudioModel {
      */
 
     public setBgmVolume(volume: number): void {
-        this.bgmVolume = this.validateVolume(volume);
+        this.bgmVolume = volume;
+        //this.bgmVolume = this.validateVolume(volume);
         this.applyVolume();
     }
 
     public setSfxVolume(volume: number): void {
-        this.sfxVolume = this.validateVolume(volume);
+        this.sfxVolume = volume;
+        //this.sfxVolume = this.validateVolume(volume);
         this.applyVolume();
     }
 
@@ -96,7 +98,7 @@ export class AudioModel {
      * Validate volume
      */
 
-    private validateVolume(volume: number): number {
-        return !isFinite(volume) || volume < 0 || volume > 1 ? 0.5 : volume;
-    }
+    // private validateVolume(volume: number): number {
+    //     return !isFinite(volume) || volume < 0 || volume > 1 ? 0.5 : volume;
+    // }
 }
