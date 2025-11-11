@@ -6,15 +6,8 @@ export class AudioModel {
 
     private constructor() {
 
-        // Reset volume when restarting the game
-        // localStorage.removeItem("bgmvolume");
-        // localStorage.removeItem("sfxvolume");
-    
-        const savedBgmVolume = parseFloat(localStorage.getItem("bgm_volume") ?? "0.5");
-        this.bgmVolume = this.validateVolume(savedBgmVolume);
-
-        const savedSfxVolume = parseFloat(localStorage.getItem("sfx_volume") ?? "0.5");
-        this.sfxVolume = this.validateVolume(savedSfxVolume);
+        this.bgmVolume = 0.5;
+        this.sfxVolume = 0.5;
 
         // Intial volume (HomeScreen)
         this.sounds = {
@@ -69,13 +62,11 @@ export class AudioModel {
 
     public setBgmVolume(volume: number): void {
         this.bgmVolume = this.validateVolume(volume);
-        localStorage.setItem("bgm_volume", this.bgmVolume.toString());
         this.applyVolume();
     }
 
     public setSfxVolume(volume: number): void {
         this.sfxVolume = this.validateVolume(volume);
-        localStorage.setItem("sfx_volume", this.sfxVolume.toString());
         this.applyVolume();
     }
 

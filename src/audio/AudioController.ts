@@ -13,52 +13,31 @@ export class AudioController {
     /**
      * Play function for BGM
      */
-
     public playBGM(key: string): void {
         const bgm = this.model.sounds[key];
         if (!bgm) return;
     
         bgm.muted = false;
         bgm.currentTime = 0;
-    
-        const tryPlay = () => {
-            bgm.play().catch(() => {
-                document.body.addEventListener("click", () => {
-                    bgm.play();
-                    bgm.muted = false;
-                }, { once: true });
-            });
-        };
-        tryPlay();
+        bgm.play();
     }
 
     /**
      * Play function for SOUND EFFECT
      * @param key : string
      */
-
     public playSFX(key: string): void {
         const sfx = this.model.sounds[key];
         if (!sfx) return;
 
         sfx.muted = false;
         sfx.currentTime = 0;
-
-        const tryPlay = () => {
-            sfx.play().catch(() => {
-                document.body.addEventListener("click", () => {
-                    sfx.play();
-                    sfx.muted = false;
-                }, { once: true });
-            });
-        };
-        tryPlay();
+        sfx.play();
     }
 
     /**
      * Stop function for BGM
      */
-
     public stopBGM(): void {
         for (const key in this.model.sounds) {
             const sound = this.model.sounds[key];
@@ -72,7 +51,6 @@ export class AudioController {
     /**
      * Replace BGM function
      */
-
     public replaceBGM(key: string, path: string): void {
         this.stopBGM();
         this.model.registerSound(key, path, true, true);
@@ -83,7 +61,6 @@ export class AudioController {
      * Change volume function
      * @param volume : number - A number between 0.0 and 1.0
      */
-
     public changeBgmVolume(volume: number): void {
         this.model.setBgmVolume(volume);
     }
@@ -96,7 +73,6 @@ export class AudioController {
      * Getter for volume
      * @returns The current volume level
      */
-
     public getBgmVolume(): number {
         return this.model.getBgmVolume();
     }

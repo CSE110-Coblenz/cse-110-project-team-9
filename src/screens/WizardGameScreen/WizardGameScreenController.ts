@@ -20,6 +20,9 @@ import { EnemyFactory } from "./entities/enemy/EnemyFactory";
 //sprite type
 import type { WizardAnimation } from "./entities/types/Wizard";
 import type { KnightAnimation } from "./entities/types/Knight";
+//audio
+import { AudioController } from "../../audio/AudioController";
+
 
 export class WizardGameScreenController extends ScreenController {
     private model: WizardGameScreenModel;
@@ -41,11 +44,12 @@ export class WizardGameScreenController extends ScreenController {
     private lastUpdateTime = 0;
     private animationFrameId: number | null = null;
 
-    constructor(private screenSwitcher: ScreenSwitcher) {
+    constructor(private screenSwitcher: ScreenSwitcher, private audio: AudioController) {
         super();
         //Game MVC
         this.model = new WizardGameScreenModel();
         this.view = new WizardGameScreenViewer();
+        this.audio = audio;
 
         //player MVC
         this.playerModel = new PlayerModel();

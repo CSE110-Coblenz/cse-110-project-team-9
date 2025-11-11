@@ -8,7 +8,6 @@ import { WizardGameScreenController } from "./screens/WizardGameScreen/WizardGam
 
 import { AudioController } from "./audio/AudioController";
 
-
 class App implements ScreenSwitcher {
 	private stage: Konva.Stage;
 	private layer: Konva.Layer;
@@ -36,7 +35,7 @@ class App implements ScreenSwitcher {
 		// Initialize all screen controllers
 		this.homeController = new HomeScreenController(this);
 		this.settingsController = new SettingsScreenController(this);
-		this.WizardGameController = new WizardGameScreenController(this);
+		this.WizardGameController = new WizardGameScreenController(this, this.audio);
 
 		// Add all screen groups to the layer
 		this.layer.add(this.homeController.getView().getGroup());
