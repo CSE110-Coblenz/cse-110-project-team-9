@@ -9,11 +9,11 @@ export class SettingsScreenController extends ScreenController {
 	private currentBgmVolume: number;
 	private currentSfxVolume: number;
 
-	constructor(screenSwitcher: ScreenSwitcher) {
+	constructor(screenSwitcher: ScreenSwitcher, audio: AudioController) {
 		super();
 		this.screenSwitcher = screenSwitcher;
 		this.view = new SettingsScreenView();
-		this.audio = new AudioController();
+		this.audio = audio;
 		this.currentBgmVolume = this.audio.getBgmVolume();
 		this.currentSfxVolume = this.audio.getSfxVolume();
 
@@ -24,7 +24,7 @@ export class SettingsScreenController extends ScreenController {
 		this.view.getSaveButton().on("click", () => {
 			localStorage.setItem("bgm_volume", this.audio.getBgmVolume().toString());
 			localStorage.setItem("sfx_volume", this.audio.getSfxVolume().toString());
-			this.audio.playSFX("click_sfx");
+			alert("Settings saved!");
 			this.screenSwitcher.switchToScreen({ type: "home" });
 		});
 

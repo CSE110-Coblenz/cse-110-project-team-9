@@ -10,6 +10,7 @@ export type Screen =
     | { type: "wizardminigame"}
 	| { type: "home" }
 	| { type: "settings" }
+	| { type: "mainGame" };
 
 export abstract class ScreenController {
 	abstract getView(): View;
