@@ -1,9 +1,13 @@
+import { KnightAudioMap } from "../types/Knight";
+
 export class PlayerModel {
     private _x: number;
     private _y: number;
     private _speed: number;
     private _dead: boolean;
     private _currentAnimation: string;
+    //this is a audio mapping
+    private _AUDIO: Record<string, string>;
     
     /**
      * 
@@ -13,12 +17,13 @@ export class PlayerModel {
      * @param dead state of entity
      * @param currentAnimation current animation
      */
-    constructor(x = 150, y = 60, speed = 150, currentAnimation = "idle") {
+    constructor(x = 150, y = 60, speed = 150, currentAnimation = "idle", AUDIO: Record<string, string>) {
         this._x = x;
         this._y = y;
         this._speed = speed;
         this._dead = false;
         this._currentAnimation = currentAnimation;
+        this._AUDIO = AUDIO;
     }
 
     /**
@@ -29,6 +34,7 @@ export class PlayerModel {
     get speed() { return this._speed; }
     get dead() { return this._dead; }
     get currentAnimation() { return this._currentAnimation; }
+    get audio() { return this._AUDIO }
         
     /**
      * setters for private values

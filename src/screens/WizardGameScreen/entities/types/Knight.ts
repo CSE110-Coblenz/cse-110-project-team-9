@@ -66,6 +66,8 @@ export const KNIGHT_ANIMATIONS: Record<KnightAnimation, number[]> = {
     ]
 };
 
+export type KnightAudioMap = typeof KNIGHT_AUDIO;
+
 //TODO: grab correct foramt .100 seconds per frame for any given animation
 //TODO: convert to mp4 instead mp3 does not do milliseconds
 export const KNIGHT_AUDIO = {

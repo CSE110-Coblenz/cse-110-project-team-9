@@ -10,7 +10,11 @@ export class PlayerController<Animation extends string> implements Collidable {
         private model: PlayerModel, 
         private view: PlayerViewer<Animation>,
         private audio: AudioController
-    ) {}
+    ) {
+        for (const key in this.model.audio){
+            this.audio.registerSound(key, model.audio[key]);
+        }
+    }
 
     /**
      * Return the player's current bounding box in world coordinates, or null if not available.
@@ -82,27 +86,24 @@ export class PlayerController<Animation extends string> implements Collidable {
         //speed on time about x(for given model) pixel per second from last move
         this.model.move(dx * this.model.speed * deltaTime, dy * this.model.speed * deltaTime);
 
+        //TODO: input handling
+        //TODO: broken audio
+
         //actions and animation only one at a time
         if (dx !== 0 || dy !== 0) {
             this.model.setAnimation("walk");
-            //TODO: broken audio
-            this.audio.playSFX("walk");
-
+            this.audio.play("walk", true);
         } else if (this.keys["f"]) {
             this.model.setAnimation("attackslash");
-            //TODO: broken audio
-            this.audio.playSFX("attackslash");
-
+            this.audio.play("attackslash");
         } else if (this.keys["e"]) {
             this.model.setAnimation("attackdown");
-            //TODO: broken audio
-            this.audio.playSFX("attackdown");
-
+            this.audio.play("attackdown");
         } else if (this.keys["r"]) {
             this.model.setAnimation("attackbow");
-            //TODO: broken audio
-            this.audio.playSFX("attackbow");
+            this.audio.play("attackbow");
         } else {
+            this.audio.stop("walk");
             this.model.setAnimation("idle");            
         }
         this.view.render(this.model);

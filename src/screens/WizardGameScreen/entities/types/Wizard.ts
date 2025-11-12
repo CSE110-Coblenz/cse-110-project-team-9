@@ -67,14 +67,17 @@ export const WIZARD_ANIMATIONS: Record<WizardAnimation, number[]> = {
     ]
 };
 
+export type WizardAudioMap = typeof WIZARD_AUDIO;
+
 //TODO: grab correct foramt .100 seconds per frame for any given animation
 //TODO: convert to mp4 instead mp3 does not do milliseconds
-export const KNIGHT_AUDIO = {
+export const WIZARD_AUDIO = {
     walk: "/wizardminigame/audio/8-bit-grass-footsteps-2-408574.mp3",
-    bow: "/wizardminigame/audio/bow_release-85040.mp3",
-    attack: "/wizardminigame/audio/sword-slash-and-swing-185432.mp3",
+    attackbow: "/wizardminigame/audio/bow_release-85040.mp3",
+    attackslash: "/wizardminigame/audio/sword-slash-and-swing-185432.mp3",
+    attackdown: "/wizardminigame/audio/sword-slash-and-swing-185432.mp3",
     damage: "/wizardminigame/audio/x",
-    death: "/wizardminigame/audio/x",
+    death: "/wizardminigame/audio/x"
 };
 
 //bounding box for collision frames

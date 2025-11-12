@@ -52,6 +52,9 @@ export class WizardGameScreenController extends ScreenController {
             this.showBoundingBoxes = !this.showBoundingBoxes;
             this.collisionManager.toggleDebugMode(this.showBoundingBoxes);
         }
+        if (e.key === 'Escape'){
+            screenSwitcher.layerOnScreen({ type:"settings" });
+        }
 });
 
     }
