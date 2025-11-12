@@ -1,23 +1,9 @@
 import Konva from "konva";
 import { EnemyModel } from "./EnemyModel";
-//computation
 import { DebugBoundingBoxViewer } from "../DebugBoundingBox";
-
-//TODO: move Entity type interface
-export interface EntityType<Animation extends string>{
-    image: string;
-    animations: Record<Animation, number[]>;
-}
-
-//TODO: move this
-export type BoundingBoxes<Animation extends string> = Record<
-    Animation,
-    { x: number; y: number; width: number; height: number }[]
->;
 
 export class EnemyViewer<Animation extends string> {
     private sprite: Konva.Sprite | null = null;
-
     //debug red box visualizer
     private debugViewer!: DebugBoundingBoxViewer;
 
@@ -30,26 +16,27 @@ export class EnemyViewer<Animation extends string> {
      */
     constructor(
         private group: Konva.Group,
-        private entity: EntityType<Animation>,
+        private entity: { image: string; animations: Record<string, number[]> },
         private model: EnemyModel,
-        private boundingBoxes: BoundingBoxes<Animation>
+        private boundingBoxes: Record<string, { x: number; y: number; width: number; height: number }[]>
     ) {
-        const enemy = new Image();
+        //DEBUG: bounding box red outline
+        this.debugViewer = new DebugBoundingBoxViewer(this.group);
 
+        const enemy = new Image();
         enemy.onload = () => {
             this.sprite = new Konva.Sprite({
                 image: enemy,
                 animations: this.entity.animations,
                 animation: this.model.currentAnimation as Animation,
-                frameRate: 10, //about .100 secondsd
+                frameRate: 10, //about .100 seconds
                 frameIndex: 0,
                 scaleX: 4,
                 scaleY: 4,
             });
             this.group.add(this.sprite);
 
-            //TODO: might move fix somewhere else
-            //disable smoothing (I know the unknown is just context warning otherwise)
+            //disable smoothing
             const layer = this.group.getLayer();
             if (layer) {
                 const ctx = layer.getContext() as unknown as CanvasRenderingContext2D;
@@ -57,14 +44,9 @@ export class EnemyViewer<Animation extends string> {
             }
 
             this.sprite.start();
-            //DEBUG: bounding box red outline
-            this.debugViewer = new DebugBoundingBoxViewer(this.group);
         };
-        //inside public file
         enemy.src = this.entity.image;
     }
-
-    //TODO: interface move entity generic
 
     /**
      * 

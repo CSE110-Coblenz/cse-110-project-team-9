@@ -11,11 +11,11 @@ export class PlayerModel {
     
     /**
      * 
-     * @param x x pos in game
-     * @param y y pos in game
-     * @param speed average speed in pixels
-     * @param dead state of entity
-     * @param currentAnimation current animation
+     * @param x x pos in screen
+     * @param y y pos in screen
+     * @param speed average speed in pixels a second
+     * @param currentAnimation current active animation
+     * @param AUDIO audio files for animations/events
      */
     constructor(x = 150, y = 60, speed = 150, currentAnimation = "idle", AUDIO: Record<string, string>) {
         this._x = x;

@@ -29,7 +29,7 @@ export class PlayerViewer<Animation extends string> {
                 image: player,
                 animations: this.entity.animations,
                 animation: this.model.currentAnimation as Animation,
-                frameRate: 10, //about .100 secondsd
+                frameRate: 10, //about .100 seconds
                 frameIndex: 0,
                 scaleX: 4,
                 scaleY: 4,

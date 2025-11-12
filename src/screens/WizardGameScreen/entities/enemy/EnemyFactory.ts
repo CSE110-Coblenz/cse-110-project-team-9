@@ -8,8 +8,8 @@ import { EnemyController } from './EnemyController';
 import { AudioController } from '../../../../audios/AudioController';
 
 //Types of assets
-import { wizardSrc, WIZARD_ANIMATIONS, type WizardAnimation, WIZARD_BOUNDING_BOXES } from "../types/Wizard";
-import { knightSrc, KNIGHT_ANIMATIONS, type KnightAnimation, KNIGHT_BOUNDING_BOXES} from "../types/Knight";
+import { wizardSrc, WIZARD_ANIMATIONS, type WizardAnimation, WIZARD_BOUNDING_BOXES, WIZARD_AUDIO } from "../types/Wizard";
+import { knightSrc, KNIGHT_ANIMATIONS, type KnightAnimation, KNIGHT_BOUNDING_BOXES, KNIGHT_AUDIO} from "../types/Knight";
 
 export type EnemyType = "wizard" | "knight";
 
@@ -21,12 +21,13 @@ export class EnemyFactory {
         type: EnemyType, 
         group: Konva.Group,
         audio: AudioController
-    ): EnemyController<any> {
-        const model = new EnemyModel(300, 60, 150);
-        let viewer: EnemyViewer<any>;
+    ): EnemyController<EnemyType> {
+        let model: EnemyModel;
+        let viewer: EnemyViewer<EnemyType>;
 
         switch(type) {
             case "wizard":
+                model = new EnemyModel(300, 60, 150, "idle", WIZARD_AUDIO);
                 viewer =  new EnemyViewer<WizardAnimation>(
                     group,
                     { image: wizardSrc, animations: WIZARD_ANIMATIONS },
@@ -35,6 +36,7 @@ export class EnemyFactory {
                 );
                 break;
             case "knight":
+                model = new EnemyModel(300, 60, 150, "idle", KNIGHT_AUDIO);
                 viewer = new EnemyViewer<KnightAnimation>(
                     group,
                     { image: knightSrc, animations: KNIGHT_ANIMATIONS },

@@ -4,20 +4,23 @@ export class EnemyModel {
     private _speed: number;
     private _dead: boolean;
     private _currentAnimation: string;
+    private _AUDIO: Record<string, string>;
     
     /**
      * 
-     * @param x x pos in game
-     * @param y y pos in game
-     * @param speed average speed in pixels
-     * @param dead existing or not
+     * @param x x pos in screen
+     * @param y y pos in screen
+     * @param speed average speed in pixels a second
+     * @param currentAnimation current active animation
+     * @param AUDIO audio files for animations/events
      */
-    constructor(x = 150, y = 60, speed = 150, currentAnimation = "idle") {
+    constructor(x = 150, y = 60, speed = 150, currentAnimation = "idle", AUDIO: Record<string,string>) {
         this._x = x;
         this._y = y;
         this._speed = speed;
         this._dead = false; 
         this._currentAnimation = currentAnimation;
+        this._AUDIO = AUDIO;
     }
 
     /**
@@ -28,6 +31,7 @@ export class EnemyModel {
     get speed() { return this._speed; }
     get dead() { return this._dead; }
     get currentAnimation() { return this._currentAnimation; }
+    get audio() { return this._AUDIO }
 
     /**
      * setters for private values
