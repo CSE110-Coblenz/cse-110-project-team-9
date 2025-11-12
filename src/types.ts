@@ -27,4 +27,6 @@ export abstract class ScreenController {
 export interface ScreenSwitcher {
 	switchToScreen(screen: Screen): void;
 	layerOnScreen(screen: Screen): void;
+
+	readonly lastScreen: Screen; 
 }

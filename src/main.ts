@@ -11,6 +11,7 @@ import { AudioController } from "./audios/AudioController";
 class App implements ScreenSwitcher {
 	private stage: Konva.Stage;
 	private layer: Konva.Layer;
+	private _lastScreen: Screen;
 
 	private homeController: HomeScreenController;
 	private settingsController: SettingsScreenController;
@@ -49,10 +50,13 @@ class App implements ScreenSwitcher {
 		this.layer.draw();
 
 		//initial start
-		this.switchToScreen({ type: "home" });
+		this._lastScreen = {type: "home"};
+		this.switchToScreen(this._lastScreen);
 	}
 
 	switchToScreen(screen: Screen): void {
+
+		this._lastScreen = screen;
 
 		this.homeController.hide();
 		this.settingsController.hide();
@@ -62,11 +66,7 @@ class App implements ScreenSwitcher {
 			case "home":
 				this.homeController.show();
 				break;
-
-			case "settings":
-				this.settingsController.show();
-				break;
-
+				
 			case "wizardminigame":
 				this.WizardGameController.startGame();
 				break;
@@ -84,6 +84,8 @@ class App implements ScreenSwitcher {
 				break;
 		}
 	}
+
+	get lastScreen() { return this._lastScreen; }
 }
 
 // Initialize the application

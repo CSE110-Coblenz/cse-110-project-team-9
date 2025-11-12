@@ -11,83 +11,72 @@ export class AudioController {
     }
 
     /**
-     * Play function for BGM
+     * Register a new sound
+     * @param key
+     * @param path
+     * @param loop Whether the sound should loop
+     * @param overwrite Whether to overwrite an existing sound with the same key
      */
-    public playBGM(key: string): void {
-        const bgm = this.model.sounds[key];
-        if (!bgm) return;
-    
-        bgm.muted = false;
-        bgm.currentTime = 0;
-        //TODO: fix catch error for google chrome errors
-        bgm.play().catch((err) => {
-		    console.error("Background Music Error", err);
-		});
+    public registerSound(key: string, path: string, overwrite = false): void {
+        if (!this.model.sounds[key] || overwrite) {
+            const audio = new Audio(path);
+
+            // If the key includes "bgm", set volume to bgmVolume, else sfxVolume
+            audio.volume = key.includes("bgm") ? this.model.bgmVolume: this.model.sfxVolume;
+            this.model.sounds[key] = audio;
+        }
     }
 
     /**
      * Play function for SOUND EFFECT
      * @param key : string
      */
-    public playSFX(key: string): void {
-        const sfx = this.model.sounds[key];
-        if (!sfx) return;
+    public play(key: string, loop: boolean = false): void {
+        const sound = this.model.sounds[key];
+        if (!sound) return;
 
-        sfx.muted = false;
-        sfx.currentTime = 0;
-        //TODO: fix catch error for goole chrome errors
-        sfx.play().catch((err) => {
-			console.error("Sound Effect Error", err);
-		});;
+        sound.loop = loop;
+        if(!loop) sound.currentTime = 0;
+        sound.play()
     }
 
     /**
      * Stop function for BGM
      */
-    public stopBGM(): void {
+    public stop(key: string): void {
+        const sound = this.model.sounds[key];
+        if (!sound) return;
+
+        //sound.muted = true;
+        sound.currentTime = 0;
+        sound.pause()
+    }
+
+    /**
+     * Stop function for BGM
+     */
+    public stopAll(): void {
         for (const key in this.model.sounds) {
-            const sound = this.model.sounds[key];
-            if (sound.loop) {
-                sound.pause();
-                sound.currentTime = 0;
-            }
+            this.stop(key);
         }
     }
 
     /**
-     * Replace BGM function
+     * abtracted getters and setters
      */
-    public replaceBGM(key: string, path: string): void {
-        this.stopBGM();
-        this.model.registerSound(key, path, true, true);
-        this.playBGM(key);
+    public get bgmVolume(): number {
+        return this.model.bgmVolume;
     }
 
-    /**
-     * Change volume function
-     * @param volume : number - A number between 0.0 and 1.0
-     */
-    public changeBgmVolume(volume: number): void {
-        this.model.setBgmVolume(volume);
+    public get sfxVolume(): number {
+        return this.model.sfxVolume;
     }
 
-    public changeSfxVolume(volume: number): void {
-        this.model.setSfxVolume(volume);
+    public setBgmVolume(v: number) {
+        this.model.setBgmVolume(v);
     }
 
-    /**
-     * Getter for music volume
-     * @returns The current volume level
-     */
-    public getBgmVolume(): number {
-        return this.model.getBgmVolume();
-    }
-
-    /**
-     * Getter for sfx volume
-     * @returns the current volume level
-     */
-    public getSfxVolume(): number {
-        return this.model.getSfxVolume();
+    public setSfxVolume(v: number) {
+        this.model.setSfxVolume(v);
     }
 }

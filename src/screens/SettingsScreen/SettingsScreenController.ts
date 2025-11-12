@@ -14,35 +14,31 @@ export class SettingsScreenController extends ScreenController {
 		this.screenSwitcher = screenSwitcher;
 		this.view = new SettingsScreenView();
 		this.audio = audio;
-		this.currentBgmVolume = this.audio.getBgmVolume();
-		this.currentSfxVolume = this.audio.getSfxVolume();
+		this.currentBgmVolume = this.audio.bgmVolume;
+		this.currentSfxVolume = this.audio.sfxVolume;
 
 		/**
 		 * Button Event Listeners
 		 */
-
 		this.view.getSaveButton().on("click", () => {
-			localStorage.setItem("bgm_volume", this.audio.getBgmVolume().toString());
-			localStorage.setItem("sfx_volume", this.audio.getSfxVolume().toString());
-			alert("Settings saved!");
-			this.screenSwitcher.switchToScreen({ type: "home" });
+			this.screenSwitcher.switchToScreen(this.screenSwitcher.lastScreen);
 		});
 
 		this.view.setVolumeChangeHandler((ratio, type) => {
 			if (type === "bgm") {
-				this.audio.changeBgmVolume(ratio);
+				this.audio.setBgmVolume(ratio);
 			} else if (type === "sfx") {
-				this.audio.changeSfxVolume(ratio);
+				this.audio.setSfxVolume(ratio);
 			}
 		});
 	}
 
 	public onBgmVolumeChange(newVolume: number): void {
-        this.audio.changeBgmVolume(newVolume);
+        this.audio.setBgmVolume(newVolume);
     }
 
 	public onSfxVolumeChange(newVolume: number): void {
-		this.audio.changeSfxVolume(newVolume);
+		this.audio.setSfxVolume(newVolume);
 	}
 
     public getCurrentBgmVolume(): number {
@@ -56,7 +52,6 @@ export class SettingsScreenController extends ScreenController {
     /**
      * Get the view
      */
-
 	getView(): SettingsScreenView {
 		return this.view;
 	}
