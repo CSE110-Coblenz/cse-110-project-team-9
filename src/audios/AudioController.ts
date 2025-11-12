@@ -20,7 +20,6 @@ export class AudioController {
     public registerSound(key: string, path: string, overwrite = false): void {
         if (!this.model.sounds[key] || overwrite) {
             const audio = new Audio(path);
-
             // If the key includes "bgm", set volume to bgmVolume, else sfxVolume
             audio.volume = key.includes("bgm") ? this.model.bgmVolume: this.model.sfxVolume;
             this.model.sounds[key] = audio;
@@ -31,13 +30,29 @@ export class AudioController {
      * Play function for SOUND EFFECT
      * @param key : string
      */
-    public play(key: string, loop: boolean = false): void {
+    public async play(key: string, loop: boolean = false): Promise<void> {
         const sound = this.model.sounds[key];
         if (!sound) return;
 
         sound.loop = loop;
+
+        // avoid replaying if called again if it is in a loop
+        if (!sound.paused && !sound.ended && loop) return;
+
+        //reset one shot-sfx
         if(!loop) sound.currentTime = 0;
-        sound.play()
+
+        //pauses audio until brower confirms play back and catches error for tabbed out as well
+        if (document.visibilityState === "visible") {
+            try {
+                await sound.play();
+            } catch (err: any) {
+                // ignore AbortError, log others
+                if (err.name !== "AbortError") {
+                    console.error(`AudioController: error playing "${key}"`, err);
+                }
+            }
+        }
     }
 
     /**
@@ -47,9 +62,14 @@ export class AudioController {
         const sound = this.model.sounds[key];
         if (!sound) return;
 
-        //sound.muted = true;
-        sound.currentTime = 0;
-        sound.pause()
+        if (document.visibilityState === "visible") {
+            try {
+                sound.pause();
+                sound.currentTime = 0;
+            } catch (err) {
+                console.error(`AudioController: error stopping "${key}"`, err);
+            }
+        }
     }
 
     /**

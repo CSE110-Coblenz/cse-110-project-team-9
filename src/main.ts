@@ -73,14 +73,11 @@ class App implements ScreenSwitcher {
 		}
 	}
 
+	//TODO: fix audio reseting when running
 	layerOnScreen(screen: Screen): void {
 		switch (screen.type) {
 			case "settings":
 				this.settingsController.show();
-				break;
-
-			case "mainGame":
-				this.mainGameController.show();
 				break;
 		}
 	}

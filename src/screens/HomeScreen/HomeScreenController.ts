@@ -7,6 +7,7 @@ export class HomeScreenController extends ScreenController {
 	private screenSwitcher: ScreenSwitcher;
 	private audio: AudioController;
 
+
 	constructor(screenSwitcher: ScreenSwitcher, audio: AudioController) {
 		super();
 		this.screenSwitcher = screenSwitcher;
@@ -14,7 +15,7 @@ export class HomeScreenController extends ScreenController {
 		this.audio = audio;
 
 		//register audio
-		audio.registerSound("home_bgm", "/homescreen/audio/medieval.mp3", true);
+		audio.registerSound("home_bgm", "/homescreen/audio/medieval.mp3");
         audio.registerSound("click_sfx", "/homescreen/audio/click.mp3");
 		
 		/**
@@ -29,16 +30,6 @@ export class HomeScreenController extends ScreenController {
 			this.audio.play("click_sfx");
 			this.screenSwitcher.switchToScreen({ type: "wizardminigame" });
 		});
-		
-
-		/**
-		 * Play background music (BGM) on first user interaction
-		 */
-		this.view.getGroup().on("click", () => {
-			this.audio.play("home_bgm");
-			this.view.getGroup().off("click");
-		});
-
 	}
 
 	hide(): void {
@@ -47,6 +38,7 @@ export class HomeScreenController extends ScreenController {
 	}
 
 	getView(): HomeScreenView {
+		this.audio.play("home_bgm");
 		return this.view;
 	}
 }
