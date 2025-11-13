@@ -326,6 +326,15 @@ export class MainGameScreenView implements View {
         this.group.visible(false);
     }
 
+    onSettingsOpen(callback: () => void): void {
+        const settingsButtonRect = this.settingsButton.findOne('.settingsButtonRect');
+        if (settingsButtonRect) {
+            settingsButtonRect.on("click tap", () => {
+                callback();
+            });
+        }
+    }
+
     onPlayerRoll(callback: () => void): void {
         // The event listener must be on a shape with a visible area (the rectangle),
         // not the group itself, which is just an invisible container.
