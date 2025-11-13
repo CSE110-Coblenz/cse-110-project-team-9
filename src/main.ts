@@ -69,6 +69,15 @@ class App implements ScreenSwitcher {
 				break;
 		}
 	}
+
+	
+	layerOnScreen(screen: Screen): void {
+		switch (screen.type) {
+			case "settings":
+				this.settingsController.show();
+				break;
+		}
+	}
 }
 
 // Initialize the application
