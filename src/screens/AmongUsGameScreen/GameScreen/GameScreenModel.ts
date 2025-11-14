@@ -7,7 +7,6 @@ import { PuzzleModel } from "./_Puzzle/PuzzleModel.ts";
  */
 export class AmongUsGameScreenModel {
 	private score = 0;
-	private isComplete = false;
 	private index = 0;
 	private puzzles: PuzzleModel[] = [];
 	
@@ -38,9 +37,6 @@ export class AmongUsGameScreenModel {
 	 */
 	incrementIndex(): void {
 		this.index++;
-		if (this.index >= this.puzzles.length) {
-			this.isComplete = true;
-		}
 	}
 
 	/**
@@ -61,7 +57,8 @@ export class AmongUsGameScreenModel {
 	 * Is the game finished?
 	 */
 	getIsComplete(): boolean {
-		return this.isComplete;
+		// Consider the game complete when all puzzles are solved.
+		return this.puzzles.length > 0 && this.puzzles.every(p => p.isSolved());
 	}
 
 	/**
@@ -69,7 +66,6 @@ export class AmongUsGameScreenModel {
 	 */
 	reset(): void {
 		this.score = 0;
-		this.isComplete = false;
 		this.index = 0;
 		this.puzzles = PuzzleModel.createDefaultPuzzles();
 		// Reset all puzzles

@@ -1,0 +1,12 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\src",
+    "\\src\\screens",
+    "\\src\\screens\\AmongUsGameScreen",
+    "\\src\\screens\\AmongUsGameScreen\\GameScreen",
+    "\\src\\screens\\AmongUsGameScreen\\GameScreen\\_Puzzle"
+  ],
+  "SelectedNode": "\\src\\screens\\AmongUsGameScreen\\GameScreen\\_Puzzle\\PuzzleModel.ts",
+  "PreviewInSolutionExplorer": false
+}

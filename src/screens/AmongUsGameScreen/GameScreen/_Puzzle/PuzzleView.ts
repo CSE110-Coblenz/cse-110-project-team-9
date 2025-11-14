@@ -45,7 +45,9 @@ export class PuzzleView {
 
     render(puzzle: { question: string; options: string[] }) {
         // Update question
+        this.questionText.visible(true);
         this.questionText.text(puzzle.question);
+
 
         // Clear old options
         this.optionButtons.forEach((btn) => btn.destroy());
@@ -105,9 +107,11 @@ export class PuzzleView {
 
         // Auto-hide feedback after 1.5 seconds
         setTimeout(() => {
+            // Hide feedback and fully clear the puzzle UI so it is not interactive
+            // (puzzle will be re-rendered only when the user clicks an obstacle)
             this.feedbackText.visible(false);
-            this.questionText.visible(true);
-            this.optionButtons.forEach((btn) => btn.visible(true));
+            // destroy option button nodes and clear question text
+            this.reset();
             this.parent.getLayer()?.draw();
         }, 1500);
     }

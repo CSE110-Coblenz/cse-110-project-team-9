@@ -14,6 +14,11 @@ export class AmongUsGameScreenController extends ScreenController {
 	private screenSwitcher: ScreenSwitcher;
 	private gameTimer: number | null = null;
 
+	// The puzzle currently opened by the player (via clicking an obstacle). Used so
+	// option clicks are evaluated against the obstacle's own PuzzleModel instead
+	// of a global sequential index.
+	private currentOpenPuzzle: PuzzleModel | null = null;
+
 	private backgroundSound: HTMLAudioElement;
 	private timerSound: HTMLAudioElement;
 	private correctSound: HTMLAudioElement;
@@ -125,43 +130,43 @@ export class AmongUsGameScreenController extends ScreenController {
 	};
 
 	private handleClick(option: number): void {
-		// Evaluate the current puzzle using PuzzleModel
-		const currentPuzzle = this.model.getPuzzle();
-		const isCorrect = currentPuzzle.evaluate(option);
+		// Ensure an obstacle's puzzle is currently open. If not, ignore click.
+		if (!this.currentOpenPuzzle) return;
+
+		const puzzle = this.currentOpenPuzzle;
+		const isCorrect = puzzle.evaluate(option);
 		this.clickSound.play();
-		
+
 		const feedbackMessage = isCorrect ? "Correct!" : "Wrong!";
 		this.view.hidePuzzle(feedbackMessage);
-		
-		if(isCorrect) {
+
+		if (isCorrect) {
 			this.correctSound.play();
 			this.correctSound.currentTime = 0;
-			// Update game progression on correct answer
+			// Stop the obstacle animation associated with this puzzle
+			this.view.markObstacleSolved(puzzle);
 			this.model.incrementScore();
-			this.model.incrementIndex();
 			this.view.updateScore(this.model.getScore());
 		} else {
 			this.wrongSound.play();
 			this.wrongSound.currentTime = 0;
 		}
 
-		if(this.model.getIsComplete()) {
-			setTimeout(() => this.endGame(), 1500);
-			return;
-		} 
-		// Wait before showing next puzzle so user sees feedback
-		setTimeout(() => {
-			const nextPuzzle = this.model.getPuzzle();
-			this.view.renderPuzzle({ 
-				question: nextPuzzle.getQuestion(), 
-				options: nextPuzzle.getOptions().map(o => String(o)) 
-			});
-		}, 1500);
+		// Clear the currently open puzzle after feedback is shown. Do not auto-open
+		// the "next" puzzle — puzzles are opened when the player clicks an obstacle.
+		this.currentOpenPuzzle = null;
 
+		// If all puzzles are solved, end the game shortly after showing feedback.
+		if (this.model.getIsComplete()) {
+			setTimeout(() => this.endGame(), 1500);
+		}
 	}
 
 	private handleObstacleClick(puzzle: PuzzleModel | null): void {
+		// When a player clicks an obstacle we open that obstacle's puzzle and
+		// remember which puzzle is open so option clicks evaluate against it.
 		if (!puzzle) return;
+		this.currentOpenPuzzle = puzzle;
 		const question = puzzle.getQuestion();
 		const options = puzzle.getOptions().map(o => String(o));
 		this.view.renderPuzzle({ question, options });

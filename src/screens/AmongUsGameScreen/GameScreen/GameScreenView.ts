@@ -84,6 +84,16 @@ export class AmongUsGameScreenView implements View {
 		return ob;
 	}
 
+	/**
+	 * Mark the obstacle associated with the given puzzle as solved (stop its animation / hide it)
+	 */
+	markObstacleSolved(puzzle: PuzzleModel): void {
+		// find the obstacle with the matching puzzle reference
+		const ob = this.obstacles.find(o => o.puzzle === puzzle);
+		if (!ob) return;
+		ob.markSolved();
+	}
+
 	setRoguePosition(x: number, y: number): void {
 		if (!this.player) return;
 		this.player.setPosition(x, y);
