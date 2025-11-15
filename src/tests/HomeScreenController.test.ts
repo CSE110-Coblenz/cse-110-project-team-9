@@ -79,7 +79,10 @@ describe("HomeScreenController", () => {
      * beforeEach: Setup before each test case (Not to share state between tests)
      */
     beforeEach(() => {
-        mockScreenSwitcher = { switchToScreen: vi.fn() };
+        mockScreenSwitcher = { 
+            switchToScreen: vi.fn(),
+            layerOnScreen: vi.fn()
+        };
         mockAudio = {
         playMusic: vi.fn(),
         stopBGM: vi.fn(),
@@ -106,7 +109,7 @@ describe("HomeScreenController", () => {
         callback();
 
         expect(mockAudio.playMusic).toHaveBeenCalledWith("click_sfx");
-        expect(mockScreenSwitcher.switchToScreen).toHaveBeenCalledWith({ type: "settings" });
+        expect(mockScreenSwitcher.layerOnScreen).toHaveBeenCalledWith({ type: "settings", returnTo: { type: "home" } });
     });
 
     /**
