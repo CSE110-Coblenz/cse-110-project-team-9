@@ -1,5 +1,5 @@
 import Konva from "konva";
-import type { ScreenSwitcher, Screen } from "./types";
+import type { ScreenSwitcher, Screen, LayerScreen } from "./types";
 import { HomeScreenController } from "./screens/HomeScreen/HomeScreenController";
 import { SettingsScreenController } from "./screens/SettingsScreen/SettingsScreenController";
 import { MainGameScreenController } from "./screens/MainGameScreen/MainGameScreenController";
@@ -56,18 +56,19 @@ class App implements ScreenSwitcher {
 				this.settingsController.hide();
 				break;
 
-			case "settings":
-				if (screen.returnTo) {
-					this.settingsController.setReturnTo(screen.returnTo);
-				}
-				this.homeController.show();
-				this.settingsController.show();
-				break;
-
 			case "mainGame":
 				this.homeController.hide();
 				this.settingsController.hide();
 				this.mainGameController.show();
+				break;
+		}
+	}
+
+	layerOnScreen(screen: LayerScreen): void {
+		switch (screen.type) {
+			case "settings":
+				this.settingsController.setReturnTo(screen.returnTo);
+				this.settingsController.show();
 				break;
 		}
 	}
