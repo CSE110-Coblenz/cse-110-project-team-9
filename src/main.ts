@@ -49,7 +49,6 @@ class App implements ScreenSwitcher {
 	}
 
 	switchToScreen(screen: Screen): void {
-
 		switch (screen.type) {
 			case "home":
 				this.homeController.show();
@@ -58,6 +57,9 @@ class App implements ScreenSwitcher {
 				break;
 
 			case "settings":
+				if (screen.returnTo) {
+					this.settingsController.setReturnTo(screen.returnTo);
+				}
 				this.homeController.show();
 				this.settingsController.show();
 				break;
@@ -69,6 +71,7 @@ class App implements ScreenSwitcher {
 				break;
 		}
 	}
+
 }
 
 // Initialize the application

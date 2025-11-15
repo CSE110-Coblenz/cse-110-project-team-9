@@ -1,11 +1,12 @@
 import { SettingsScreenView } from "./SettingsScreenView";
-import { ScreenController, ScreenSwitcher } from "../../types";
+import { ScreenController, ScreenSwitcher, Screen } from "../../types";
 import { AudioController } from "../../audios/AudioController";
 
 export class SettingsScreenController extends ScreenController {
 	private view: SettingsScreenView;
 	private screenSwitcher: ScreenSwitcher;
 	private audio: AudioController;
+	private returnTo: Screen | null = null;
 
 	constructor(screenSwitcher: ScreenSwitcher, audio: AudioController) {
 		super();
@@ -20,8 +21,10 @@ export class SettingsScreenController extends ScreenController {
 		this.view.getSaveButton().on("click", () => {
 			localStorage.setItem("bgm_volume", this.audio.getBgmVolume().toString());
 			localStorage.setItem("sfx_volume", this.audio.getSfxVolume().toString());
-			alert("Settings saved!");
-			this.screenSwitcher.switchToScreen({ type: "home" });
+			
+			if (this.returnTo) {
+				this.screenSwitcher.switchToScreen(this.returnTo);
+			}
 		});
 
 		this.view.setVolumeChangeHandler((ratio, type) => {
@@ -36,6 +39,10 @@ export class SettingsScreenController extends ScreenController {
     /**
      * Get the view
      */
+
+	setReturnTo(screen: Screen): void {
+		this.returnTo = screen;
+	}
 
 	getView(): SettingsScreenView {
 		return this.view;
