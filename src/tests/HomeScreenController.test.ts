@@ -81,8 +81,7 @@ describe("HomeScreenController", () => {
     beforeEach(() => {
         mockScreenSwitcher = { switchToScreen: vi.fn() };
         mockAudio = {
-        playSFX: vi.fn(),
-        playBGM: vi.fn(),
+        playMusic: vi.fn(),
         stopBGM: vi.fn(),
         } as unknown as AudioController;
 
@@ -106,7 +105,7 @@ describe("HomeScreenController", () => {
         const callback = viewInstance.getSettingsButton().on.mock.calls[0][1];
         callback();
 
-        expect(mockAudio.playSFX).toHaveBeenCalledWith("click_sfx");
+        expect(mockAudio.playMusic).toHaveBeenCalledWith("click_sfx");
         expect(mockScreenSwitcher.switchToScreen).toHaveBeenCalledWith({ type: "settings" });
     });
 
@@ -117,7 +116,7 @@ describe("HomeScreenController", () => {
         const callback = viewInstance.getStartButton().on.mock.calls[0][1];
         callback();
 
-        expect(mockAudio.playSFX).toHaveBeenCalledWith("click_sfx");
+        expect(mockAudio.playMusic).toHaveBeenCalledWith("click_sfx");
         expect(mockScreenSwitcher.switchToScreen).toHaveBeenCalledWith({ type: "mainGame" });
     });
 
@@ -128,7 +127,7 @@ describe("HomeScreenController", () => {
         const callback = viewInstance.getGroup().on.mock.calls[0][1];
         callback();
 
-        expect(mockAudio.playBGM).toHaveBeenCalledWith("home_bgm");
+        expect(mockAudio.playMusic).toHaveBeenCalledWith("home_bgm");
         expect(viewInstance.getGroup().off).toHaveBeenCalledWith("click");
     });
 

@@ -19,8 +19,8 @@ export class SettingsScreenController extends ScreenController {
 		 */
 
 		this.view.getSaveButton().on("click", () => {
-			localStorage.setItem("bgm_volume", this.audio.getBgmVolume().toString());
-			localStorage.setItem("sfx_volume", this.audio.getSfxVolume().toString());
+			localStorage.setItem("bgm_volume", this.audio.getVolume("bgm").toString());
+			localStorage.setItem("sfx_volume", this.audio.getVolume("sfx").toString());
 			
 			if (this.returnTo) {
 				this.screenSwitcher.switchToScreen(this.returnTo);
@@ -28,11 +28,7 @@ export class SettingsScreenController extends ScreenController {
 		});
 
 		this.view.setVolumeChangeHandler((ratio, type) => {
-			if (type === "bgm") {
-				this.audio.changeBgmVolume(ratio);
-			} else if (type === "sfx") {
-				this.audio.changeSfxVolume(ratio);
-			}
+			this.audio.changeVolume(ratio, type);
 		});
 	}
 

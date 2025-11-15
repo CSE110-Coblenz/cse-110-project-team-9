@@ -11,28 +11,16 @@ export class AudioController {
     }
 
     /**
-     * Play function for BGM
+     * Play function for audio (music or sound effects)
+     * @param key : string - The key of the audio to play
      */
-    public playBGM(key: string): void {
-        const bgm = this.model.sounds[key];
-        if (!bgm) return;
-    
-        bgm.muted = false;
-        bgm.currentTime = 0;
-        bgm.play();
-    }
+    public playMusic(key: string): void {
+        const sound = this.model.sounds[key];
+        if (!sound) return;
 
-    /**
-     * Play function for SOUND EFFECT
-     * @param key : string
-     */
-    public playSFX(key: string): void {
-        const sfx = this.model.sounds[key];
-        if (!sfx) return;
-
-        sfx.muted = false;
-        sfx.currentTime = 0;
-        sfx.play();
+        sound.muted = false;
+        sound.currentTime = 0;
+        sound.play();
     }
 
     /**
@@ -54,30 +42,24 @@ export class AudioController {
     public replaceBGM(key: string, path: string): void {
         this.stopBGM();
         this.model.registerSound(key, path, true, true);
-        this.playBGM(key);
+        this.playMusic(key);
     }
 
     /**
      * Change volume function
      * @param volume : number - A number between 0.0 and 1.0
+     * @param type : "bgm" | "sfx" - The type of audio to change volume for
      */
-    public changeBgmVolume(volume: number): void {
-        this.model.setBgmVolume(volume);
-    }
-
-    public changeSfxVolume(volume: number): void {
-        this.model.setSfxVolume(volume);
+    public changeVolume(volume: number, type: "bgm" | "sfx"): void {
+        this.model.setVolume(volume, type);
     }
 
     /**
      * Getter for volume
+     * @param type : "bgm" | "sfx" - The type of audio to get volume for
      * @returns The current volume level
      */
-    public getBgmVolume(): number {
-        return this.model.getBgmVolume();
-    }
-
-    public getSfxVolume(): number {
-        return this.model.getSfxVolume();
+    public getVolume(type: "bgm" | "sfx"): number {
+        return this.model.getVolume(type);
     }
 }

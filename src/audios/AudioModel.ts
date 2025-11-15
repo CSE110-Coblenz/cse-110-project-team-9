@@ -58,24 +58,20 @@ export class AudioModel {
     /**
      * Getter and Setter for volume
      * @param volume A number between 0.0 and 1.0
+     * @param type "bgm" or "sfx"
      */
 
-    public setBgmVolume(volume: number): void {
-        this.bgmVolume = this.validateVolume(volume);
+    public setVolume(volume: number, type: "bgm" | "sfx"): void {
+        if (type === "bgm") {
+            this.bgmVolume = this.validateVolume(volume);
+        } else {
+            this.sfxVolume = this.validateVolume(volume);
+        }
         this.applyVolume();
     }
 
-    public setSfxVolume(volume: number): void {
-        this.sfxVolume = this.validateVolume(volume);
-        this.applyVolume();
-    }
-
-    public getBgmVolume(): number {
-        return this.bgmVolume;
-    }
-
-    public getSfxVolume(): number {
-        return this.sfxVolume;
+    public getVolume(type: "bgm" | "sfx"): number {
+        return type === "bgm" ? this.bgmVolume : this.sfxVolume;
     }
 
     /**
