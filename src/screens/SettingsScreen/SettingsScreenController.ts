@@ -6,16 +6,12 @@ export class SettingsScreenController extends ScreenController {
 	private view: SettingsScreenView;
 	private screenSwitcher: ScreenSwitcher;
 	private audio: AudioController;
-	private currentBgmVolume: number;
-	private currentSfxVolume: number;
 
 	constructor(screenSwitcher: ScreenSwitcher, audio: AudioController) {
 		super();
 		this.screenSwitcher = screenSwitcher;
 		this.view = new SettingsScreenView();
 		this.audio = audio;
-		this.currentBgmVolume = this.audio.getBgmVolume();
-		this.currentSfxVolume = this.audio.getSfxVolume();
 
 		/**
 		 * Button Event Listeners
@@ -35,22 +31,6 @@ export class SettingsScreenController extends ScreenController {
 				this.audio.changeSfxVolume(ratio);
 			}
 		});
-	}
-
-	public onBgmVolumeChange(newVolume: number): void {
-        this.audio.changeBgmVolume(newVolume);
-    }
-
-	public onSfxVolumeChange(newVolume: number): void {
-		this.audio.changeSfxVolume(newVolume);
-	}
-
-    public getCurrentBgmVolume(): number {
-        return this.currentBgmVolume;
-    }
-
-	public getCurrentSfxVolume(): number {
-		return this.currentSfxVolume;
 	}
 
     /**
