@@ -2,6 +2,7 @@ import Konva from "konva";
 import type { View } from "../../types";
 import { STAGE_WIDTH, STAGE_HEIGHT } from "../../constants";
 import { MainGameScreenModel, NodeType } from "./MainGameScreenModel";
+import { AudioController } from "../../audios/AudioController";
 
 export class MainGameScreenView implements View {
     private group: Konva.Group;
@@ -14,10 +15,12 @@ export class MainGameScreenView implements View {
     private diceResultText: Konva.Text;
     private pieceImage: Konva.Image;
     private model: MainGameScreenModel;
+    private audio: AudioController;
     private boardHeadIndex = 39; // Start with the 40th tile (index 39) as the leftmost
 
-    constructor(model: MainGameScreenModel) {
+    constructor(model: MainGameScreenModel, audio: AudioController) {
         this.model = model;
+        this.audio = audio;
         const boardLength = 40;
         this.group = new Konva.Group({ visible: false });
 
@@ -174,6 +177,7 @@ export class MainGameScreenView implements View {
     async animatePlayerPieceRoll(count: number): Promise<void> {
         for (let i = 0; i < count; i++) {
             await this.doSinglePieceAnimation();
+            this.audio.playSFX("piece_move_sfx");
         }
     }
 

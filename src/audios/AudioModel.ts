@@ -13,9 +13,13 @@ export class AudioModel {
         this.sounds = {
             home_bgm: new Audio("/homescreen/audio/medieval.mp3"),
             click_sfx: new Audio("/homescreen/audio/click.mp3"),
+            dice_sfx: new Audio("/mainboard/audio/dice_roll.mp3"),
+            piece_move_sfx: new Audio("/mainboard/audio/piece_move.mp3"),
+            main_bgm: new Audio("/mainboard/audio/mainBGM.mp3"),
         };
 
         this.sounds.home_bgm.loop = true;
+        this.sounds.main_bgm.loop = true;
 
         this.applyVolume();
     }

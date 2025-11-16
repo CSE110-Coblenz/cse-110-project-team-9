@@ -17,13 +17,14 @@ export class MainGameScreenController extends ScreenController {
         
         super();
 
-        this.view = new MainGameScreenView(this.gameModel);
+        this.view = new MainGameScreenView(this.gameModel, audio);
         this.screenSwitcher = screenSwitcher;
         this.audio = audio;
 
         this.view.onPlayerRoll(() => this.onPlayerRoll());
         this.view.onSettingsOpen(() => {
             console.log("going to settings screen");
+            this.audio.playSFX("click_sfx");
             this.screenSwitcher.switchToScreen({ type: "settings" });
         });
 
@@ -40,20 +41,29 @@ export class MainGameScreenController extends ScreenController {
         return Math.floor(Math.random() * 6) + 1;
     }
 
-    public async onPlayerRoll(){
+    public onPlayerRoll(){
         this.view.disableRollButton();
-
         const roll = this.diceRoll();
+        this.audio.playSFX("dice_sfx");
         console.log(`Player rolled a ${roll}.`);
         this.view.displayRollResult(roll);
+
+        // Play the sound effect immediately, before any async operations.
+        this.audio.playSFX("dice_sfx");
+
+        // Execute the rest of the turn logic asynchronously.
+        this.executeTurn(roll);
+    }
+
+    private async executeTurn(roll: number): Promise<void> {
         await this.view.animatePlayerPieceRoll(roll);
 
         const currentPlayerID = this.gameModel.getCurrentPlayerID();
         const currentPosition = this.gameModel.getPlayerPosition(currentPlayerID);
 
         const newPosition = (currentPosition + roll) % this.BOARD_LENGTH;
-        console.log("Player moved to position " + (newPosition + 1));
         this.gameModel.setPlayerPosition(currentPlayerID, newPosition); // newPosition is 0-indexed
+        console.log(`Player moved to position ${newPosition + 1}`);
         this.triggerNodeEvent(currentPlayerID, newPosition + 1); // getNodeType is 1-indexed
 
         this.view.enableRollButton();
@@ -94,5 +104,15 @@ export class MainGameScreenController extends ScreenController {
 
     public getView(): MainGameScreenView {
         return this.view;
+    }
+
+    public onShow(): void {
+        this.view.show();
+        this.audio.playBGM("main_bgm");
+    }
+
+    public onHide(): void {
+        this.view.hide();
+        this.audio.stopBGM();
     }
 }
