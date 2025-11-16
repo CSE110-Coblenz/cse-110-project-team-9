@@ -14,15 +14,17 @@ export class AmongUsGameScreenView implements View {
 	private scoreText: Konva.Text;
 	private timerText: Konva.Text;
 	private puzzleView: PuzzleView;
-	private onOptionClick: (optionIndex: number) => void;
+	private onMatchingSubmit: (matches: Map<number, number>) => void;
 	private onObstacleClick?: (p: PuzzleModel | null) => void;
 	private player?: PlayerSprite;
 	private obstacles: Obstacle[] = [];
 
-
-	constructor(onOptionClick: (optionIndex: number) => void, onObstacleClick?: (p: PuzzleModel | null) => void) {
+	constructor(
+		onMatchingSubmit: (matches: Map<number, number>) => void, 
+		onObstacleClick?: (p: PuzzleModel | null) => void
+	) {
 		this.group = new Konva.Group({ visible: false });
-		this.onOptionClick = onOptionClick;
+		this.onMatchingSubmit = onMatchingSubmit;
 		this.onObstacleClick = onObstacleClick;
 
 		// Background
@@ -35,10 +37,6 @@ export class AmongUsGameScreenView implements View {
 			background.moveToBottom();
 			this.group.getLayer()?.draw();
 		});
-
-
-
-		// Obstacles are created by the controller via addObstacle()
 
 		this.scoreText = new Konva.Text({
 			x: 20,
@@ -60,24 +58,26 @@ export class AmongUsGameScreenView implements View {
 		});
 		this.group.add(this.timerText);
 
-		// Puzzle-specific UI is delegated to PuzzleView
-		this.puzzleView = new PuzzleView(this.group, this.onOptionClick);
+		// Updated: Pass matching submit callback
+		this.puzzleView = new PuzzleView(this.group, this.onMatchingSubmit);
 
-		// create player sprite and attach when ready
-		this.player = new PlayerSprite(this.group, STAGE_WIDTH / 2, STAGE_HEIGHT / 2, { scale: 2, frameRate: 8, onReady: () => {
-			this.group.getLayer()?.draw();
-		}});
+		this.player = new PlayerSprite(this.group, STAGE_WIDTH / 2, STAGE_HEIGHT / 2, { 
+			scale: 2, 
+			frameRate: 8, 
+			onReady: () => {
+				this.group.getLayer()?.draw();
+			}
+		});
 	}
 
 	/**
-	 * Create an obstacle and add it to the view. Returns the created Obstacle.
+	 * Create an obstacle and add it to the view
 	 */
-	addObstacle(id: number, x: number, y: number, puzzle: PuzzleModel | null): import("./_Entity/EntityObstacle.ts").Obstacle {
+	addObstacle(id: number, x: number, y: number, puzzle: PuzzleModel | null): Obstacle {
 		const ob = new Obstacle(id, x, y, puzzle, this.group, (p) => {
 			if (this.onObstacleClick) this.onObstacleClick(p);
 		});
 		this.obstacles.push(ob);
-		// Bring player to front so it renders above obstacles
 		if (this.player) {
 			this.player.moveToTop();
 		}
@@ -85,10 +85,9 @@ export class AmongUsGameScreenView implements View {
 	}
 
 	/**
-	 * Mark the obstacle associated with the given puzzle as solved (stop its animation / hide it)
+	 * Mark the obstacle as solved
 	 */
 	markObstacleSolved(puzzle: PuzzleModel): void {
-		// find the obstacle with the matching puzzle reference
 		const ob = this.obstacles.find(o => o.puzzle === puzzle);
 		if (!ob) return;
 		ob.markSolved();
@@ -102,7 +101,6 @@ export class AmongUsGameScreenView implements View {
 	moveRogueBy(dx: number, dy: number): void {
 		if (!this.player) return;
 		this.player.moveBy(dx, dy);
-		// set animation state
 		this.player.setMoving(dx !== 0 || dy !== 0);
 		if (dx !== 0) this.player.setDirection(dx < 0);
 	}
@@ -123,7 +121,7 @@ export class AmongUsGameScreenView implements View {
 	}
 
 	/**
-	 * Render a puzzle question and options (delegated to PuzzleView)
+	 * Render the matching puzzle
 	 */
 	renderPuzzle(puzzle: { question: string; options: string[] }): void {
 		this.puzzleView.render(puzzle);
@@ -169,7 +167,7 @@ export class AmongUsGameScreenView implements View {
 	}
 
 	/**
-	 * Hide the puzzle and show feedback (delegated to PuzzleView)
+	 * Hide the puzzle and show feedback
 	 */
 	hidePuzzle(feedback: string): void {
 		this.puzzleView.hide(feedback);

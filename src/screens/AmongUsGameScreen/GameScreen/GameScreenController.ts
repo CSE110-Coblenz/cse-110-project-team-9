@@ -14,9 +14,7 @@ export class AmongUsGameScreenController extends ScreenController {
 	private screenSwitcher: ScreenSwitcher;
 	private gameTimer: number | null = null;
 
-	// The puzzle currently opened by the player (via clicking an obstacle). Used so
-	// option clicks are evaluated against the obstacle's own PuzzleModel instead
-	// of a global sequential index.
+	// The puzzle currently opened by the player (via clicking an obstacle)
 	private currentOpenPuzzle: PuzzleModel | null = null;
 
 	private backgroundSound: HTMLAudioElement;
@@ -36,7 +34,11 @@ export class AmongUsGameScreenController extends ScreenController {
 		this.screenSwitcher = screenSwitcher;
 
 		this.model = new AmongUsGameScreenModel();
-	this.view = new AmongUsGameScreenView((option: number) => this.handleClick(option), (puzzle) => this.handleObstacleClick(puzzle));
+		// Updated: pass handleMatchingSubmit instead of handleClick
+		this.view = new AmongUsGameScreenView(
+			(matches: Map<number, number>) => this.handleMatchingSubmit(matches), 
+			(puzzle) => this.handleObstacleClick(puzzle)
+		);
 
 		this.backgroundSound = new Audio("AmongUsMiniGame/Audio/background-music.mp3");
 		this.timerSound = new Audio("AmongUsMiniGame/Audio/timer-beep.mp3");
@@ -49,15 +51,12 @@ export class AmongUsGameScreenController extends ScreenController {
 	 * Start the game
 	 */
 	startGame(): void {
-		// Reset model state
 		this.model.reset();
 		
-		// Update view
 		this.view.updateScore(this.model.getScore());
 		this.view.updateTimer(GAME_DURATION);
 		this.view.show();
 
-		// Create obstacles for each puzzle so clicking them opens the puzzle
 		const puzzles = this.model.getPuzzles();
 		puzzles.forEach((p, idx) => {
 			const x = STAGE_WIDTH / 2 - 200 + idx * 200;
@@ -101,10 +100,9 @@ export class AmongUsGameScreenController extends ScreenController {
 	}
 
 	private gameLoop = (now: number) => {
-		const dt = (now - this.lastFrameTime) / 1000; // seconds
+		const dt = (now - this.lastFrameTime) / 1000;
 		this.lastFrameTime = now;
 
-		// calculate movement vector
 		let dx = 0, dy = 0;
 		if (this.keysDown.has("w")) dy -= 1;
 		if (this.keysDown.has("s")) dy += 1;
@@ -112,7 +110,6 @@ export class AmongUsGameScreenController extends ScreenController {
 		if (this.keysDown.has("d")) dx += 1;
 
 		if (dx !== 0 || dy !== 0) {
-			// normalize diagonal movement
 			const len = Math.hypot(dx, dy) || 1;
 			dx = dx / len;
 			dy = dy / len;
@@ -125,16 +122,18 @@ export class AmongUsGameScreenController extends ScreenController {
 			this.view.setRogueMoving(false);
 		}
 
-		// continue loop
 		this.rafId = requestAnimationFrame(this.gameLoop);
 	};
 
-	private handleClick(option: number): void {
-		// Ensure an obstacle's puzzle is currently open. If not, ignore click.
+	/**
+	 * Handle matching puzzle submission
+	 * @param matches - Map of left index to right index (user's matches)
+	 */
+	private handleMatchingSubmit(matches: Map<number, number>): void {
 		if (!this.currentOpenPuzzle) return;
 
 		const puzzle = this.currentOpenPuzzle;
-		const isCorrect = puzzle.evaluate(option);
+		const isCorrect = puzzle.evaluateMatching(matches);
 		this.clickSound.play();
 
 		const feedbackMessage = isCorrect ? "Correct!" : "Wrong!";
@@ -143,7 +142,6 @@ export class AmongUsGameScreenController extends ScreenController {
 		if (isCorrect) {
 			this.correctSound.play();
 			this.correctSound.currentTime = 0;
-			// Stop the obstacle animation associated with this puzzle
 			this.view.markObstacleSolved(puzzle);
 			this.model.incrementScore();
 			this.view.updateScore(this.model.getScore());
@@ -152,19 +150,14 @@ export class AmongUsGameScreenController extends ScreenController {
 			this.wrongSound.currentTime = 0;
 		}
 
-		// Clear the currently open puzzle after feedback is shown. Do not auto-open
-		// the "next" puzzle — puzzles are opened when the player clicks an obstacle.
 		this.currentOpenPuzzle = null;
 
-		// If all puzzles are solved, end the game shortly after showing feedback.
 		if (this.model.getIsComplete()) {
 			setTimeout(() => this.endGame(), 1500);
 		}
 	}
 
 	private handleObstacleClick(puzzle: PuzzleModel | null): void {
-		// When a player clicks an obstacle we open that obstacle's puzzle and
-		// remember which puzzle is open so option clicks evaluate against it.
 		if (!puzzle) return;
 		this.currentOpenPuzzle = puzzle;
 		const question = puzzle.getQuestion();
@@ -207,7 +200,6 @@ export class AmongUsGameScreenController extends ScreenController {
 		this.stopTimer();
 		this.stopGameInput();
 
-		// Switch to results screen with final score
 		this.screenSwitcher.switchToScreen({
 			type: "result",
 			score: this.model.getScore(),

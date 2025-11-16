@@ -7,7 +7,6 @@ import { PuzzleModel } from "./_Puzzle/PuzzleModel.ts";
  */
 export class AmongUsGameScreenModel {
 	private score = 0;
-	private index = 0;
 	private puzzles: PuzzleModel[] = [];
 	
 	constructor() {
@@ -15,28 +14,10 @@ export class AmongUsGameScreenModel {
 	}
 
 	/**
-	 * Get the current puzzle
-	 * @throws Error if index is out of bounds
-	 */
-	getPuzzle(): PuzzleModel {
-		if (this.index < 0 || this.index >= this.puzzles.length) {
-			throw new Error(`Puzzle index ${this.index} out of bounds (puzzles: ${this.puzzles.length})`);
-		}
-		return this.puzzles[this.index];
-	}
-
-	/**
 	 * Return the full puzzles array
 	 */
 	getPuzzles(): PuzzleModel[] {
 		return this.puzzles;
-	}
-
-	/**
-	 * Move to the next puzzle
-	 */
-	incrementIndex(): void {
-		this.index++;
 	}
 
 	/**
@@ -66,7 +47,6 @@ export class AmongUsGameScreenModel {
 	 */
 	reset(): void {
 		this.score = 0;
-		this.index = 0;
 		this.puzzles = PuzzleModel.createDefaultPuzzles();
 		// Reset all puzzles
 		this.puzzles.forEach(p => p.reset());
