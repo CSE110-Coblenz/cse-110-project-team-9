@@ -17,7 +17,7 @@ export class AudioController {
     public playMusic(key: string): void {
         const sound = this.model.sounds[key];
         if (!sound) return;
-
+        
         sound.muted = false;
         sound.currentTime = 0;
         sound.play();

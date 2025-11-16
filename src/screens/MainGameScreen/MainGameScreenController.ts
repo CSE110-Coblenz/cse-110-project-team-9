@@ -95,14 +95,7 @@ export class MainGameScreenController extends ScreenController {
         console.log(`Advancing to player ${nextPlayerID}.`);
     }
 
-    public show(): void {
-        // Start main game BGM when screen is shown
-        // Note: You may want to register a mainGame_bgm in AudioModel first
-        this.view.show();
-    }
-
     public hide(): void {
-        // Stop BGM when leaving main game screen
         this.audio.stopBGM();
         this.view.hide();
     }

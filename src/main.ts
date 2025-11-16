@@ -49,16 +49,17 @@ class App implements ScreenSwitcher {
 	}
 
 	switchToScreen(screen: Screen): void {
+
+		this.settingsController.hide();
+
 		switch (screen.type) {
 			case "home":
 				this.homeController.show();
 				// Hide settings screen (Need for settings close button)
-				this.settingsController.hide();
 				break;
 
 			case "mainGame":
 				this.homeController.hide();
-				this.settingsController.hide();
 				this.mainGameController.show();
 				break;
 		}
@@ -72,7 +73,6 @@ class App implements ScreenSwitcher {
 				break;
 		}
 	}
-
 }
 
 // Initialize the application
