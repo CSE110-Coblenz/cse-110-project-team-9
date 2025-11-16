@@ -23,8 +23,8 @@ export class MainGameScreenController extends ScreenController {
 
         this.view.onPlayerRoll(() => this.onPlayerRoll());
         this.view.onSettingsOpen(() => {
-            console.log("going to settings screen");
-            this.screenSwitcher.switchToScreen({ type: "settings" });
+            this.audio.playMusic("click_sfx");
+            this.screenSwitcher.layerOnScreen({ type: "settings", returnTo: { type: "mainGame" } });
         });
 
         const tiles = this.view.getTiles();
@@ -42,6 +42,9 @@ export class MainGameScreenController extends ScreenController {
 
     public async onPlayerRoll(){
         this.view.disableRollButton();
+        
+        // Play dice roll sound effect
+        this.audio.playMusic("click_sfx");
 
         const roll = this.diceRoll();
         console.log(`Player rolled a ${roll}.`);
@@ -90,6 +93,18 @@ export class MainGameScreenController extends ScreenController {
 
         const nextPlayerID = this.gameModel.getCurrentPlayerID();
         console.log(`Advancing to player ${nextPlayerID}.`);
+    }
+
+    public show(): void {
+        // Start main game BGM when screen is shown
+        // Note: You may want to register a mainGame_bgm in AudioModel first
+        this.view.show();
+    }
+
+    public hide(): void {
+        // Stop BGM when leaving main game screen
+        this.audio.stopBGM();
+        this.view.hide();
     }
 
     public getView(): MainGameScreenView {
