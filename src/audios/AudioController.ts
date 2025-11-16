@@ -17,9 +17,14 @@ export class AudioController {
     public playMusic(key: string): void {
         const sound = this.model.sounds[key];
         if (!sound) return;
+
+        if (!sound.paused && !sound.ended) {
+            sound.muted = false;
+            return;
+        }
         
         sound.muted = false;
-        sound.currentTime = 0;
+        // sound.currentTime = 0;
         sound.play();
     }
 
@@ -31,7 +36,7 @@ export class AudioController {
             const sound = this.model.sounds[key];
             if (sound.loop) {
                 sound.pause();
-                sound.currentTime = 0;
+                // sound.currentTime = 0;
             }
         }
     }
