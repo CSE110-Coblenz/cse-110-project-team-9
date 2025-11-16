@@ -95,6 +95,11 @@ export class MainGameScreenController extends ScreenController {
         console.log(`Advancing to player ${nextPlayerID}.`);
     }
 
+    public show(): void {
+        this.audio.playMusic("mainboard_bgm");
+        this.view.show();
+    }
+
     public hide(): void {
         this.audio.stopBGM();
         this.view.hide();
