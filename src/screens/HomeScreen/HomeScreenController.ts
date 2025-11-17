@@ -29,16 +29,6 @@ export class HomeScreenController extends ScreenController {
 			this.audio.playMusic("click_sfx");
 			this.screenSwitcher.switchToScreen({ type: "mainGame" });
 		});
-		
-
-		/**
-		 * Play background music (BGM) on first user interaction
-		 */
-
-		this.view.getGroup().on("click", () => {
-			this.audio.playMusic("home_bgm");
-			this.view.getGroup().off("click");
-		});
 	}
 
 	hide(): void {

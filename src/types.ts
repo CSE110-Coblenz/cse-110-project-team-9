@@ -7,6 +7,7 @@ export interface View {
 }
 
 export type Screen =
+	| { type: "starting" }
 	| { type: "home" }
 	| { type: "mainGame" };
 
