@@ -27,7 +27,7 @@ export class EnemyFactory {
 
         switch(type) {
             case "wizard":
-                model = new EnemyModel(300, 60, 150, "idle", WIZARD_AUDIO);
+                model = new EnemyModel(300, 60, 150, WIZARD_AUDIO);
                 viewer =  new EnemyViewer<WizardAnimation>(
                     group,
                     { image: wizardSrc, animations: WIZARD_ANIMATIONS },
@@ -36,7 +36,7 @@ export class EnemyFactory {
                 );
                 break;
             case "knight":
-                model = new EnemyModel(300, 60, 150, "idle", KNIGHT_AUDIO);
+                model = new EnemyModel(300, 60, 150, KNIGHT_AUDIO);
                 viewer = new EnemyViewer<KnightAnimation>(
                     group,
                     { image: knightSrc, animations: KNIGHT_ANIMATIONS },

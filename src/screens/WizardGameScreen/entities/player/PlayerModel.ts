@@ -1,5 +1,3 @@
-import { KnightAudioMap } from "../types/Knight";
-
 export class PlayerModel {
     private _x: number;
     private _y: number;
@@ -14,7 +12,6 @@ export class PlayerModel {
      * @param x x pos in screen
      * @param y y pos in screen
      * @param speed average speed in pixels a second
-     * @param currentAnimation current active animation
      * @param AUDIO audio files for animations/events
      */
     constructor(x = 150, y = 60, speed = 150, AUDIO: Record<string, string>) {

@@ -1,84 +1,48 @@
 import Konva from "konva";
 import { EnemyModel } from "./EnemyModel";
-import { DebugBoundingBoxViewer } from "../DebugBoundingBox";
 
 export class EnemyViewer<Animation extends string> {
-    private sprite: Konva.Sprite | null = null;
-    //debug red box visualizer
-    private debugViewer!: DebugBoundingBoxViewer;
+    private sprite: Konva.Sprite;
 
     /**
-     * 
-     * @param group konva sprite group
+    * Building sprite image for the enemy class
+     * with built in animatons
+     * @param _group konva sprite group
      * @param entity knight/wizard type of imgatlas and animations
      * @param model current enemy model
      * @param boundingBoxes bounding box for enemy given type 
      */
     constructor(
-        private group: Konva.Group,
+        private _group: Konva.Group,
         private entity: { image: string; animations: Record<string, number[]> },
         private model: EnemyModel,
         private boundingBoxes: Record<string, { x: number; y: number; width: number; height: number }[]>
     ) {
-        //DEBUG: bounding box red outline
-        this.debugViewer = new DebugBoundingBoxViewer(this.group);
-
         const enemy = new Image();
-        enemy.onload = () => {
-            this.sprite = new Konva.Sprite({
-                image: enemy,
-                animations: this.entity.animations,
-                animation: this.model.currentAnimation as Animation,
-                frameRate: 10, //about .100 seconds
-                frameIndex: 0,
-                scaleX: 4,
-                scaleY: 4,
-            });
-            this.group.add(this.sprite);
+ 
+        this.sprite = new Konva.Sprite({
+            image: enemy,
+            animations: this.entity.animations,
+            animation: this.model.currentAnimation as Animation,
+            frameRate: 10, //about .100 seconds
+            frameIndex: 0,
+            scaleX: 4,
+            scaleY: 4,
+        });
+        this.group.add(this.sprite);
 
-            //disable smoothing
-            const layer = this.group.getLayer();
-            if (layer) {
-                const ctx = layer.getContext() as unknown as CanvasRenderingContext2D;
-                ctx.imageSmoothingEnabled = false;
-            }
+        //disable smoothing
+        const layer = this.group.getLayer();
+        if (layer) {
+            const ctx = layer.getContext() as unknown as CanvasRenderingContext2D;
+            ctx.imageSmoothingEnabled = false;
+        }
 
-            this.sprite.start();
-        };
+        this.sprite.start();
+
         enemy.src = this.entity.image;
     }
 
-    /**
-     * 
-     * @returns 
-     */
-    public getCurrentWorldBoundingBox(): { x: number; y: number; width: number; height: number } | null {
-        if(!this.sprite) return null; 
-        
-        const frames = this.boundingBoxes[this.model.currentAnimation as Animation];
-        //TODO: fix partial null values in animations frame I have no clue
-        if (!frames?.length) return null;
-
-        const frameIndex = Math.max(0, Math.min(frames.length - 1, this.sprite.frameIndex()));
-        const frameBox = frames[frameIndex];
-
-        const scaleX = this.sprite.scaleX();
-        const scaleY = this.sprite.scaleY();
-
-        return{
-            x: this.sprite.x() + frameBox.x * scaleX,
-            y: this.sprite.y() + frameBox.y * scaleY,
-            width: frameBox.width * scaleX,
-            height: frameBox.height * scaleY
-        }
-    }
-    /**
-     * debuging function to toggle bounding box rendering   
-     * @param show true shows bounding box false hides
-     */
-    public toggleBoundingBox(show: boolean) {
-        this.debugViewer.toggleVisibility(show);
-    }
     /**
      * Renders parameters for controller movement x and y pos
      * @param model player parmeters speed,x,y
@@ -95,13 +59,34 @@ export class EnemyViewer<Animation extends string> {
             this.sprite.start();
         }
         
-        //DEBUG: update bounding box
-        const box = this.getCurrentWorldBoundingBox();
-        this.debugViewer.updateBox(box);
     }
 
-    public debugBoundingBox(show: boolean) {
-        this.toggleBoundingBox(show);
+    /**
+     * getters to grab visual elements;
+     */
+    get group() { return this._group; }
+
+    //TODO: clean this mess up
+    /**
+     * 
+     * @returns 
+     */
+    public getCurrentWorldBoundingBox(): { x: number; y: number; width: number; height: number } {
+        
+        const frames = this.boundingBoxes[this.model.currentAnimation as Animation];
+
+        const frameIndex = Math.max(0, Math.min(frames.length - 1, this.sprite.frameIndex()));
+        const frameBox = frames[frameIndex];
+
+        const scaleX = this.sprite.scaleX();
+        const scaleY = this.sprite.scaleY();
+
+        return{
+            x: this.sprite.x() + frameBox.x * scaleX,
+            y: this.sprite.y() + frameBox.y * scaleY,
+            width: frameBox.width * scaleX,
+            height: frameBox.height * scaleY
+        }
     }
 }
 

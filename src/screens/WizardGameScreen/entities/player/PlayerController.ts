@@ -1,8 +1,17 @@
-import type { PlayerModel } from "./PlayerModel";
-import type { PlayerViewer } from "./PlayerViewer";
-import type { Collidable, AABB } from "../CollisionManager";
-import { AudioController } from "../../../../audios/AudioController";
+import Konva from "konva";
+
+//Player MVC
+import { PlayerModel } from "./PlayerModel";
+import { PlayerViewer } from "./PlayerViewer";
+
+//Input Handling
 import { InputHandler } from "../../InputHandler";
+
+//Collision Handling
+import { Collidable, AABB } from "../CollisionManager";
+
+//Audio Controller
+import { AudioController } from "../../../../audios/AudioController";
 
 export class PlayerController<Animation extends string> implements Collidable {
 
@@ -16,18 +25,6 @@ export class PlayerController<Animation extends string> implements Collidable {
             this.audio.registerSound(key, model.audio[key]);
         }
     }
-
-    /**
-     * Return the player's current bounding box in world coordinates, or null if not available.
-     * This delegates to the viewer which has access to sprite/frame info.
-     */
-    public getBoundingBox(): AABB | null {
-        // viewer exposes getCurrentWorldBoundingBox()
-        if (this.view && typeof (this.view as any).getCurrentWorldBoundingBox === 'function') {
-            return (this.view as any).getCurrentWorldBoundingBox();
-        }
-        return null;
-    }
     
     /**
      * check collision
@@ -40,7 +37,6 @@ export class PlayerController<Animation extends string> implements Collidable {
      */
     public reset(){
         this.model.reset();
-        this.p
     }
 
     /**
@@ -92,4 +88,10 @@ export class PlayerController<Animation extends string> implements Collidable {
         }
         this.view.render(this.model);
     }
+
+    /**
+     * Getter methods for various utility
+     */
+    getShape(): Konva.Group { return this.view.group; }
+    getBoundingBox(): AABB | null { return this.view.getCurrentWorldBoundingBox(); }
 }

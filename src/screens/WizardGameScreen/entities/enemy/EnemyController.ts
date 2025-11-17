@@ -1,6 +1,13 @@
-import type { EnemyModel } from "./EnemyModel";
-import type { EnemyViewer } from "./EnemyViewer";
-import type { Collidable, AABB } from "../CollisionManager";
+import Konva from "konva";
+
+//Enemy MVC
+import { EnemyModel } from "./EnemyModel";
+import { EnemyViewer } from "./EnemyViewer";
+
+//Collision Handling
+import { Collidable, AABB } from "../CollisionManager";
+
+//Audio Controller
 import { AudioController } from "../../../../audios/AudioController";
 
 export class EnemyController<Animation extends string> implements Collidable {
@@ -13,27 +20,14 @@ export class EnemyController<Animation extends string> implements Collidable {
     ) {}
 
     /**
-     * Return the player's current bounding box in world coordinates, or null if not available.
-     * This delegates to the viewer which has access to sprite/frame info.
-     */
-    public getBoundingBox(): AABB | null {
-        // viewer exposes getCurrentWorldBoundingBox()
-        if (this.view && typeof (this.view as any).getCurrentWorldBoundingBox === 'function') {
-            return (this.view as any).getCurrentWorldBoundingBox();
-        }
-        return null;
-    }
-
-    /**
      * check collision
      * @param other
      */
     public onCollision?(other: Collidable): void{
+        //delete or death?
         if (!this.model.dead) {
-            this.model.death();
             this.model.setAnimation("death");
         }
-        //TODO: Delete MVC
     }
 
     /**
@@ -43,4 +37,10 @@ export class EnemyController<Animation extends string> implements Collidable {
     update(deltaTime: number) {
         this.view.render(this.model);
     }
+
+    /**
+     * Getter methods for various utility
+     */
+    getShape(): Konva.Group { return this.view.group;}
+    getBoundingBox(): AABB | null { return this.view.getCurrentWorldBoundingBox(); }
 }
