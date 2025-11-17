@@ -12,8 +12,8 @@ import { InputHandler } from '../../InputHandler';
 import { AudioController } from '../../../../audios/AudioController';
 
 //Types of assets
-import { wizardSrc, WIZARD_ANIMATIONS, type WizardAnimation, WIZARD_BOUNDING_BOXES, WIZARD_AUDIO} from "../types/Wizard";
-import { knightSrc, KNIGHT_ANIMATIONS, type KnightAnimation, KNIGHT_BOUNDING_BOXES, KNIGHT_AUDIO} from "../types/Knight";
+import { wizardSrc, WIZARD_ANIMATIONS, WIZARD_BOUNDING_BOXES, WIZARD_AUDIO} from "../types/Wizard";
+import { knightSrc, KNIGHT_ANIMATIONS, KNIGHT_BOUNDING_BOXES, KNIGHT_AUDIO} from "../types/Knight";
 
 export type PlayerType = "wizard" | "knight";
 
@@ -57,7 +57,3 @@ export class PlayerFactory {
         return new PlayerController(model, viewer, audio, input);
     }
 }
-
-
-
-

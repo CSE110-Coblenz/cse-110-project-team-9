@@ -14,12 +14,12 @@ export class EnemyController implements Collidable {
     private keys: Record<string, boolean> = {};
 
     constructor(
-        private model: EnemyModel, 
+        private _model: EnemyModel, 
         private view: EnemyViewer,
         private audio: AudioController
     ) {
-        for (const key in this.model.audio){
-            this.audio.registerSound(key, model.audio[key]);
+        for (const key in this._model.audio){
+            this.audio.registerSound(key, _model.audio[key]);
         }
     }
 
@@ -36,15 +36,34 @@ export class EnemyController implements Collidable {
      * @param other
      */
     public onCollision?(other: Collidable): void{
-        this.model.damage(100);
+        this._model.damage(100);
     }
 
     /**
      * after 
      * @param deltaTime different in time from last animation event
      */
-    update(deltaTime: number) {
-        this.view.render(this.model);
+    update(deltaTime: number, playerX: number, playerY: number) {
+        let dx = playerX - this._model.x;
+        let dy = playerY - this._model.y;
+
+        //fix for double speed diagonal movement
+        if (dx !== 0 && dy !== 0) {
+            const mag = Math.sqrt(dx * dx + dy * dy);
+            dx /= mag;
+            dy /= mag;
+        }
+
+        //speed on time about x(for given model) pixel per second from last move
+        this._model.move(dx * this._model.speed * deltaTime, dy * this._model.speed * deltaTime);
+
+        if (dx !== 0 || dy !== 0) {
+            this._model.setAnimation("walk");
+        } else {
+            this._model.setAnimation("idle"); 
+        }
+        
+        this.view.render(this._model);
     }
 
     /**
@@ -52,6 +71,6 @@ export class EnemyController implements Collidable {
      */
     shape(): Konva.Group { return this.view.group;}
     boundingBox(): AABB { return this.view.getCurrentWorldBoundingBox(); }
-    dead(): boolean { return this.model.dead; }
+    dead(): boolean { return this._model.dead; }
     destroy(): void { this.destructor(); }
 }

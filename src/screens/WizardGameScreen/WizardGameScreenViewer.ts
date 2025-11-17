@@ -8,7 +8,6 @@ export class WizardGameScreenViewer implements View {
     constructor() {
         this.group = new Konva.Group({ visible: false });
 
-        //Place holder for background
         const bg = new Konva.Rect({
             x: 0,
             y: 0,

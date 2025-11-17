@@ -19,6 +19,8 @@ export type EnemyType = "wizard" | "knight" | "orc";
  */
 export class EnemyFactory {
     static create(
+        x: number,
+        y: number,  
         type: EnemyType, 
         group: Konva.Group,
         audio: AudioController
@@ -28,7 +30,7 @@ export class EnemyFactory {
 
         switch(type) {
             case "wizard":
-                model = new EnemyModel(300, 60, 150, WIZARD_AUDIO);
+                model = new EnemyModel(x, y, 150, WIZARD_AUDIO);
                 viewer =  new EnemyViewer(
                     group,
                     { image: wizardSrc, animations: WIZARD_ANIMATIONS },
@@ -37,7 +39,7 @@ export class EnemyFactory {
                 );
                 break;
             case "knight":
-                model = new EnemyModel(300, 60, 150, KNIGHT_AUDIO);
+                model = new EnemyModel(x, y, 150, KNIGHT_AUDIO);
                 viewer = new EnemyViewer(
                     group,
                     { image: knightSrc, animations: KNIGHT_ANIMATIONS },
@@ -46,7 +48,7 @@ export class EnemyFactory {
                 );
                 break;
             case "orc":
-                model = new EnemyModel(300, 60, 150, ORC_AUDIO);
+                model = new EnemyModel(x, y, 100, ORC_AUDIO);
                 viewer = new EnemyViewer(
                     group,
                     { image: orcSrc, animations: ORC_ANIMATIONS },

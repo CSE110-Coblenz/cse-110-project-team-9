@@ -19,7 +19,6 @@ export interface Collidable {
 	shape?(): Konva.Group;
 	dead?(): boolean;
 	destroy?(): void;
-	update?(deltaTime: number): void;
 }
 
 /**
@@ -66,6 +65,19 @@ export class CollisionManager {
 	}
 
 	/**
+     * remove entity list collision
+     * @param c MVC model object
+     */
+	public unregisterAll() {
+		for (const [collidable, viewer] of this.debugViewers.entries()) {
+			viewer.destroy();
+		}
+
+		this.debugViewers.clear();
+		this.collidables = [];
+	}
+
+	/**
 	 * toggles the debugging mode on and off
 	 */
 	public toggleDebugMode(show: boolean){
@@ -85,7 +97,7 @@ export class CollisionManager {
     /**
      * Processes collision detection among registered collidables
      */
-	public update(delta: number) {
+	public update() {
         for (let i = 0; i < this.collidables.length; i++) {
             const a = this.collidables[i];
 
@@ -96,8 +108,6 @@ export class CollisionManager {
                 i--; // adjust index after removal
                 continue;
             }
-
-			a.update?.(delta)
 
 			const aBox = a.boundingBox();
 

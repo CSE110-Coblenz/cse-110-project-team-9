@@ -24,7 +24,7 @@ export class PlayerModel {
     }
 
     /**
-     * player reset function after each gaem
+     * player reset function after each game
      */
     reset() {
         this._x = 150;

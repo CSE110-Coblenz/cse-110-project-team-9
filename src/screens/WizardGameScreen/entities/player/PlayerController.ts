@@ -16,13 +16,14 @@ import { AudioController } from "../../../../audios/AudioController";
 export class PlayerController implements Collidable {
 
     constructor(
-        private model: PlayerModel, 
+        private _model: PlayerModel, 
         private view: PlayerViewer,
         private audio: AudioController,
-        private input = new InputHandler()
+        private input: InputHandler 
     ) {
-        for (const key in this.model.audio){
-            this.audio.registerSound(key, model.audio[key]);
+
+        for (const key in this._model.audio){
+            this.audio.registerSound(key, _model.audio[key]);
         }
     }
 
@@ -30,7 +31,7 @@ export class PlayerController implements Collidable {
         this.view.destructor();
 
         //mark for garbage collection
-        (this as any).model = null;
+        (this as any)._model = null;
         (this as any).view = null;
     }
     
@@ -44,7 +45,7 @@ export class PlayerController implements Collidable {
      * reset function;
      */
     public reset(){
-        this.model.reset();
+        this._model.reset();
     }
 
     /**
@@ -52,7 +53,7 @@ export class PlayerController implements Collidable {
      * @param amount amount of damage
      */
     public damage(amount: number){
-        this.model.damage(amount);
+        this._model.damage(amount);
     }
     
     /**
@@ -75,33 +76,34 @@ export class PlayerController implements Collidable {
         }
         
         //speed on time about x(for given model) pixel per second from last move
-        this.model.move(dx * this.model.speed * deltaTime, dy * this.model.speed * deltaTime);
+        this._model.move(dx * this._model.speed * deltaTime, dy * this._model.speed * deltaTime);
 
         //actions and animation only one at a time
         if (dx !== 0 || dy !== 0) {
-            this.model.setAnimation("walk");
+            this._model.setAnimation("walk");
             this.audio.play("walk", true);
         } else if (this.input.isDown("f")) {
-            this.model.setAnimation("attackslash");
+            this._model.setAnimation("attackslash");
             this.audio.play("attackslash");
         } else if (this.input.isDown("e")) {
-            this.model.setAnimation("attackdown");
+            this._model.setAnimation("attackdown");
             this.audio.play("attackdown");
         } else if (this.input.isDown("r")) {
-            this.model.setAnimation("attackbow");
+            this._model.setAnimation("attackbow");
             this.audio.play("attackbow");
         } else {
             this.audio.stop("walk");
-            this.model.setAnimation("idle");            
+            this._model.setAnimation("idle");            
         }
-        this.view.render(this.model);
+        this.view.render(this._model);
     }
 
     /**
      * Getter methods for various utility
      */
-    shape(): Konva.Group { return this.view.group; }
-    boundingBox(): AABB { return this.view.getCurrentWorldBoundingBox(); }
-    dead(): boolean { return this.model.dead; }
-    destroy(): void { this.destructor(); }
+    get model() { return this._model; }
+    shape() { return this.view.group; }
+    boundingBox() { return this.view.getCurrentWorldBoundingBox(); }
+    dead() { return this.model.dead; }
+    destroy() { this.destructor(); }
 }
