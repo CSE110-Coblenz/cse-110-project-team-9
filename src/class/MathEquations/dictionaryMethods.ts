@@ -6,13 +6,29 @@ export interface mathDictEntry{
     points: string; //index 3
 }
 
-//Reads the dictionary file and loads 
-// 💡 Browser-safe stub: in the browser we don't read from the filesystem.
-// 💡 Your helper (QuadraticEquationsHelper.ensureLoaded) will see this empty
-//    result and use its fallback hard-coded questions instead.
+// Browser-safe version: loads from public/mathDictionary.txt using fetch
 export async function readMathDictionary(): Promise<string[]> {
+  try {
+    const response = await fetch("/mathDictionary.txt"); // file located in public/
+    if (!response.ok) {
+      console.error("Failed to load mathDictionary.txt:", response.status, response.statusText);
+      return [];
+    }
+
+    const text = await response.text();
+    const lines = text
+      .split("\n")
+      .map((line) => line.trim())
+      .filter((line) => line.length > 0);
+
+    console.log("Loaded dictionary lines:", lines.length); // debug check
+    return lines;
+  } catch (err) {
+    console.error("Error reading mathDictionary via fetch:", err);
     return [];
+  }
 }
+
 
 //Dictionary Functions
 
