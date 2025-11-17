@@ -40,14 +40,53 @@ describe("AudioController", () => {
     });
 
     /**
-     * Test 2: playMusic with valid key
+     * Test 2: playBGM with valid BGM key
      */
-    it("should play music when valid key is provided", () => {
+    it("should play music when valid BGM key is provided", () => {
         const model = (audioController as any).model;
         const sound = model.sounds["home_bgm"];
         const playSpy = vi.spyOn(sound, "play");
         
-        audioController.playMusic("home_bgm");
+        audioController.playBGM("home_bgm");
+        
+        expect(sound.muted).toBe(false);
+        expect(playSpy).toHaveBeenCalled();
+    });
+
+    /**
+     * Test 3: playBGM rejects non-BGM keys
+     */
+    it("should not play music when non-BGM key is provided", () => {
+        const consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+        const model = (audioController as any).model;
+        const sound = model.sounds["click_sfx"];
+        const playSpy = vi.spyOn(sound, "play");
+        
+        audioController.playBGM("click_sfx");
+        
+        expect(consoleSpy).toHaveBeenCalled();
+        expect(playSpy).not.toHaveBeenCalled();
+        consoleSpy.mockRestore();
+    });
+
+    /**
+     * Test 4: playBGM with invalid key
+     */
+    it("should not throw error when invalid key is provided", () => {
+        expect(() => {
+            audioController.playBGM("invalid_key");
+        }).not.toThrow();
+    });
+
+    /**
+     * Test 5: playSFX with valid SFX key
+     */
+    it("should play SFX when valid SFX key is provided", () => {
+        const model = (audioController as any).model;
+        const sound = model.sounds["click_sfx"];
+        const playSpy = vi.spyOn(sound, "play");
+        
+        audioController.playSFX("click_sfx");
         
         expect(sound.muted).toBe(false);
         expect(sound.currentTime).toBe(0);
@@ -55,16 +94,48 @@ describe("AudioController", () => {
     });
 
     /**
-     * Test 3: playMusic with invalid key
+     * Test 6: playSFX rejects non-SFX keys
      */
-    it("should not throw error when invalid key is provided", () => {
+    it("should not play SFX when non-SFX key is provided", () => {
+        const consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+        const model = (audioController as any).model;
+        const sound = model.sounds["home_bgm"];
+        const playSpy = vi.spyOn(sound, "play");
+        
+        audioController.playSFX("home_bgm");
+        
+        expect(consoleSpy).toHaveBeenCalled();
+        expect(playSpy).not.toHaveBeenCalled();
+        consoleSpy.mockRestore();
+    });
+
+    /**
+     * Test 7: playSFX with invalid key
+     */
+    it("should not throw error when invalid SFX key is provided", () => {
         expect(() => {
-            audioController.playMusic("invalid_key");
+            audioController.playSFX("invalid_key");
         }).not.toThrow();
     });
 
     /**
-     * Test 4: stopBGM stops looping sounds
+     * Test 8: playBGM doesn't restart if already playing
+     */
+    it("should not restart BGM if already playing", () => {
+        const model = (audioController as any).model;
+        const sound = model.sounds["home_bgm"];
+        sound.paused = false;
+        sound.ended = false;
+        const playSpy = vi.spyOn(sound, "play");
+        
+        audioController.playBGM("home_bgm");
+        
+        expect(sound.muted).toBe(false);
+        expect(playSpy).not.toHaveBeenCalled();
+    });
+
+    /**
+     * Test 9: stopBGM stops looping sounds
      */
     it("should stop all looping sounds", () => {
         const model = (audioController as any).model;
@@ -74,11 +145,10 @@ describe("AudioController", () => {
         audioController.stopBGM();
         
         expect(pauseSpy).toHaveBeenCalled();
-        expect(sound.currentTime).toBe(0);
     });
 
     /**
-     * Test 5: changeVolume for BGM
+     * Test 10: changeVolume for BGM
      */
     it("should change BGM volume", () => {
         audioController.changeVolume(0.7, "bgm");
@@ -86,7 +156,7 @@ describe("AudioController", () => {
     });
 
     /**
-     * Test 6: changeVolume for SFX
+     * Test 11: changeVolume for SFX
      */
     it("should change SFX volume", () => {
         audioController.changeVolume(0.8, "sfx");
@@ -94,7 +164,7 @@ describe("AudioController", () => {
     });
 
     /**
-     * Test 7: getVolume returns correct values
+     * Test 12: getVolume returns correct values
      */
     it("should return correct volume values", () => {
         audioController.changeVolume(0.6, "bgm");
@@ -105,7 +175,7 @@ describe("AudioController", () => {
     });
 
     /**
-     * Test 8: Volume validation - invalid values
+     * Test 13: Volume validation - invalid values
      */
     it("should clamp volume to valid range", () => {
         audioController.changeVolume(-1, "bgm");

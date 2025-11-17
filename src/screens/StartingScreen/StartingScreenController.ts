@@ -18,7 +18,7 @@ export class StartingScreenController extends ScreenController {
 		 * Click anywhere to go to HomeScreen and start BGM
 		 */
 		this.view.getGroup().on("click", () => {
-			this.audio.playMusic("home_bgm");
+			this.audio.playBGM("home_bgm");
 			this.screenSwitcher.switchToScreen({ type: "home" });
 		});
 	}

@@ -55,6 +55,7 @@ describe("SettingsScreenController", () => {
         mockAudio = {
             getVolume: vi.fn().mockReturnValue(0.5),
             changeVolume: vi.fn(),
+            playSFX: vi.fn(),
         } as unknown as AudioController;
 
         controller = new SettingsScreenController(mockScreenSwitcher, mockAudio);
@@ -78,6 +79,7 @@ describe("SettingsScreenController", () => {
         const callback = viewInstance.getSaveButton().on.mock.calls[0][1];
         callback();
 
+        expect(mockAudio.playSFX).toHaveBeenCalledWith("click_sfx");
         expect(mockAudio.getVolume).toHaveBeenCalledWith("bgm");
         expect(mockAudio.getVolume).toHaveBeenCalledWith("sfx");
         expect(localStorage.setItem).toHaveBeenCalledWith("bgm_volume", "0.7");

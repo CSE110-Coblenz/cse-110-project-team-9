@@ -21,12 +21,12 @@ export class HomeScreenController extends ScreenController {
 		 */
 		
 		this.view.getSettingsButton().on("click", () => {
-			this.audio.playMusic("click_sfx");
+			this.audio.playSFX("click_sfx");
 			this.screenSwitcher.layerOnScreen({ type: "settings", returnTo: { type: "home" } });
 		});
 
 		this.view.getStartButton().on("click", () => {
-			this.audio.playMusic("click_sfx");
+			this.audio.playSFX("click_sfx");
 			this.screenSwitcher.switchToScreen({ type: "mainGame" });
 		});
 	}
