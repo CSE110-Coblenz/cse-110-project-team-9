@@ -37,6 +37,21 @@ export class WizardGameScreenController extends ScreenController {
 
     private input: InputHandler;
 
+    //TODO: this is for testing purposes
+    private keydownHandler = (e: KeyboardEvent) => {
+        if (e.key === 'b') {
+            this.showBoundingBoxes = !this.showBoundingBoxes;
+            this.collisionManager.toggleDebugMode(this.showBoundingBoxes);
+        } 
+        if (e.key === 'Escape'){
+            this.stopGame();
+            this.screenSwitcher.switchToScreen({ type:"home" });
+        } 
+        if (e.key === '1'){
+            this.screenSwitcher.layerOnScreen({ type:"settings" });
+        }
+    }
+
     constructor(private screenSwitcher: ScreenSwitcher, private audio: AudioController) {
         //TODO: add dynamic resolution
         super();
@@ -52,28 +67,21 @@ export class WizardGameScreenController extends ScreenController {
         this.enemyController = EnemyFactory.create("knight", this.view.getGroup(), this.audio);
         this.playerController = PlayerFactory.create("knight", this.view.getGroup(), this.audio, this.input);
 
-
         //collision betweene entities
         this.collisionManager = new CollisionManager();
+    }
 
-        //Debug bounding boxes
-        window.addEventListener('keydown', (e: KeyboardEvent) => {
-            if (e.key === 'b') {
-                this.showBoundingBoxes = !this.showBoundingBoxes;
-                this.collisionManager.toggleDebugMode(this.showBoundingBoxes);
-            }
-            if (e.key === 'Escape'){
-                //screenSwitcher.layerOnScreen({ type:"settings" });
-                this.stopGame();
-                screenSwitcher.switchToScreen({ type:"home" });
-            }
-        });
+    windowBind() {
+        window.addEventListener('keydown', this.keydownHandler);
+    }
 
+    windowUnbind() {
+        window.removeEventListener('keydown', this.keydownHandler);
     }
 
     startGame() {
         this.view.show();
-
+        this.windowBind();
         this.input.bind();
 
         //register collidables e.g. player for now. projectiles and blocks to added later
@@ -121,6 +129,7 @@ export class WizardGameScreenController extends ScreenController {
 
         this.playerController.reset();
 
+        this.windowUnbind();
         this.input.unbind();
     }
 
