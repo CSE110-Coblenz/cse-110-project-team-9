@@ -2,97 +2,110 @@ import { AudioModel } from "./AudioModel";
 
 export class AudioController {
     private model: AudioModel;
+    private hasUserInteracted;
 
     /**
      * Initializes the AudioController
      */
     constructor() {
         this.model = AudioModel.getInstance();
+        this.hasUserInteracted = false;
+
+        //Chrome DOM fix
+        const userGesture = () => {
+            this.hasUserInteracted = true;
+            window.removeEventListener("keydown", userGesture);
+            window.removeEventListener("mousedown", userGesture);
+            window.removeEventListener("touchstart", userGesture);
+        };
+
+        window.addEventListener("keydown", userGesture);
+        window.addEventListener("mousedown", userGesture);
+        window.addEventListener("touchstart", userGesture);
     }
 
     /**
-     * Play function for BGM (Background Music)
-     * Only plays BGM sounds. If already playing, does nothing.
-     * @param key : string - The key of the BGM to play (must contain "bgm")
+     * Register a new sound
+     * @param key
+     * @param path
+     * @param loop Whether the sound should loop
+     * @param overwrite Whether to overwrite an existing sound with the same key
      */
-    public playBGM(key: string): void {
+    public registerSound(key: string, path: string, overwrite = false): void {
+        if (!this.model.sounds[key] || overwrite) {
+            const audio = new Audio(path);
+            // If the key includes "bgm", set volume to bgmVolume, else sfxVolume
+            audio.volume = key.includes("bgm") ? this.model.bgmVolume: this.model.sfxVolume;
+            this.model.sounds[key] = audio;
+        }
+    }
+
+    /**
+     * Play function for SOUND EFFECT
+     * @param key : string
+     */
+    public play(key: string, loop: boolean = false): void {
         const sound = this.model.sounds[key];
         if (!sound) return;
-        
-        // Only play BGM sounds
-        if (!key.includes("bgm")) {
-            console.warn(`playBGM called with non-BGM key: ${key}. Use playSFX for sound effects.`);
-            return;
-        }
 
-        // If already playing, don't restart
-        if (!sound.paused && !sound.ended) {
-            sound.muted = false;
-            return;
-        }
-        
-        sound.muted = false;
-        sound.play();
+        sound.loop = loop;
+
+        //reset one shot-sfx
+        if(!loop) sound.currentTime = 0;
+
+        //DOM fix user interacted
+        if (!this.hasUserInteracted) return;
+
+        //pauses audio until brower confirms play back and catches error for tabbed out as well
+        sound.play().catch((err: any) => {
+            if (err.name !== "AbortError") {
+                console.error(`AudioController: error playing "${key}"`, err);
+            }
+        });
     }
 
     /**
-     * Play function for SFX (Sound Effects)
-     * Always plays the sound effect, allowing multiple SFX to play simultaneously.
-     * @param key : string - The key of the SFX to play (must contain "sfx")
+     * Stop function for inputed audio
      */
-    public playSFX(key: string): void {
+    public stop(key: string): void {
         const sound = this.model.sounds[key];
         if (!sound) return;
-        
-        // Only play SFX sounds
-        if (!key.includes("sfx")) {
-            console.warn(`playSFX called with non-SFX key: ${key}. Use playBGM for background music.`);
-            return;
-        }
 
-        // SFX should always play from the beginning
-        sound.muted = false;
-        sound.currentTime = 0;
-        sound.play();
-    }
-
-    /**
-     * Stop function for BGM
-     */
-    public stopBGM(): void {
-        for (const key in this.model.sounds) {
-            const sound = this.model.sounds[key];
-            if (sound.loop) {
+        if (document.visibilityState === "visible") {
+            try {
                 sound.pause();
-                // sound.currentTime = 0;
+                sound.currentTime = 0;
+            } catch (err: any) {
+                console.error(`AudioController: error stopping "${key}"`, err);
             }
         }
     }
 
     /**
-     * Replace BGM function
+     * Stop all audio
      */
-    public replaceBGM(key: string, path: string): void {
-        this.stopBGM();
-        this.model.registerSound(key, path, true, true);
-        this.playBGM(key);
+    public stopAll(): void {
+        for (const key in this.model.sounds) {
+            this.stop(key);
+        }
     }
 
     /**
-     * Change volume function
-     * @param volume : number - A number between 0.0 and 1.0
-     * @param type : "bgm" | "sfx" - The type of audio to change volume for
+     * abtracted getters and setters
      */
-    public changeVolume(volume: number, type: "bgm" | "sfx"): void {
-        this.model.setVolume(volume, type);
+    public get bgmVolume(): number {
+        return this.model.bgmVolume;
     }
 
-    /**
-     * Getter for volume
-     * @param type : "bgm" | "sfx" - The type of audio to get volume for
-     * @returns The current volume level
-     */
-    public getVolume(type: "bgm" | "sfx"): number {
-        return this.model.getVolume(type);
+    public get sfxVolume(): number {
+        return this.model.sfxVolume;
+    }
+
+    public setBgmVolume(v: number) {
+        this.model.setBgmVolume(v);
+    }
+
+    public setSfxVolume(v: number) {
+        this.model.setSfxVolume(v);
     }
 }

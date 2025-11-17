@@ -23,9 +23,12 @@ export class MainGameScreenController extends ScreenController {
 
         this.view.onPlayerRoll(() => this.onPlayerRoll());
 			this.view.onSettingsOpen(() => {
-				this.audio.playSFX("click_sfx");
-				this.screenSwitcher.layerOnScreen({ type: "settings", returnTo: { type: "mainGame" } });
+				this.audio.play("click_sfx");
+				this.screenSwitcher.layerOnScreen({ type: "settings" });
 			});
+
+        audio.registerSound("mainboard_bgm", "/mainboard/audio/mainboardBGM.mp3");
+        audio.registerSound("click_sfx", "/homescreen/audio/click.mp3");
 
         const tiles = this.view.getTiles();
 
@@ -44,7 +47,7 @@ export class MainGameScreenController extends ScreenController {
 		this.view.disableRollButton();
 		
 		// Play dice roll sound effect
-		this.audio.playSFX("click_sfx");
+		this.audio.play("click_sfx");
 
         const roll = this.diceRoll();
         console.log(`Player rolled a ${roll}.`);
@@ -96,12 +99,12 @@ export class MainGameScreenController extends ScreenController {
     }
 
     public show(): void {
-        this.audio.playBGM("mainboard_bgm");
+        this.audio.play("mainboard_bgm", true); // true for loop (BGM)
         this.view.show();
     }
 
     public hide(): void {
-        this.audio.stopBGM();
+        this.audio.stopAll();
         this.view.hide();
     }
 

@@ -9,10 +9,8 @@ export interface View {
 export type Screen =
 	| { type: "starting" }
 	| { type: "home" }
-	| { type: "mainGame" };
-
-export type LayerScreen =
-	| { type: "settings"; returnTo: Screen };
+	| { type: "mainGame" }
+	| { type: "settings" };
 
 export abstract class ScreenController {
 	abstract getView(): View;
@@ -28,5 +26,7 @@ export abstract class ScreenController {
 
 export interface ScreenSwitcher {
 	switchToScreen(screen: Screen): void;
-	layerOnScreen(screen: LayerScreen): void;
+	layerOnScreen(screen: Screen): void;
+
+	readonly lastScreen: Screen;
 }

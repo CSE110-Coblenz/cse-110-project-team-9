@@ -1,12 +1,11 @@
 import { SettingsScreenView } from "./SettingsScreenView";
-import { ScreenController, ScreenSwitcher, Screen } from "../../types";
+import { ScreenController, ScreenSwitcher } from "../../types";
 import { AudioController } from "../../audios/AudioController";
 
 export class SettingsScreenController extends ScreenController {
 	private view: SettingsScreenView;
 	private screenSwitcher: ScreenSwitcher;
 	private audio: AudioController;
-	private returnTo: Screen | null = null;
 
 	constructor(screenSwitcher: ScreenSwitcher, audio: AudioController) {
 		super();
@@ -17,30 +16,25 @@ export class SettingsScreenController extends ScreenController {
 		/**
 		 * Button Event Listeners
 		 */
-
 		this.view.getSaveButton().on("click", () => {
-			this.audio.playSFX("click_sfx");
-			localStorage.setItem("bgm_volume", this.audio.getVolume("bgm").toString());
-			localStorage.setItem("sfx_volume", this.audio.getVolume("sfx").toString());
-			
-			if (this.returnTo) {
-				this.screenSwitcher.switchToScreen(this.returnTo);
-			}
+			this.audio.play("click_sfx");
+			this.hide()
 		});
 
 		this.view.setVolumeChangeHandler((ratio, type) => {
-			this.audio.changeVolume(ratio, type);
+			if (type === "bgm") this.audio.setBgmVolume(ratio);
+			else if (type === "sfx") this.audio.setSfxVolume(ratio);
 		});
+	}
+
+	hide(): void {
+		// this.audio.stopAll();
+		this.view.hide();    
 	}
 
     /**
      * Get the view
      */
-
-	setReturnTo(screen: Screen): void {
-		this.returnTo = screen;
-	}
-
 	getView(): SettingsScreenView {
 		return this.view;
 	}
