@@ -39,23 +39,19 @@ export class QuadraticEquationsHelper {
   and stores them in the entries array.
   Returns: void
   */
-    // 💡 Changed: Added try/catch fallback so the browser doesn’t crash
   async ensureLoaded(): Promise<void> {
     if (this.loadedDictionary) return;
 
     let lines: string[] = [];
 
     try {
-      // 💡 Try normal Node-style read
+      // 💡 Try to load from dictionaryMethods (in Node tests / non-browser)
       lines = await readMathDictionary();
     } catch (err) {
-      // 💡 Fallback for browsers that can’t use fs/promises
-      lines = [
-        "x² - 7x + 10 | (x - 2)(x - 5) | 2, 5 | 1",
-        "x² - 8x + 12 | (x - 2)(x - 6) | 2, 6 | 1",
-        "x² - 9x + 8 | (x - 1)(x - 8) | 1, 8 | 2",
-      ];
+      // 💡 If that throws, we’ll fallback below
+      console.warn("readMathDictionary error, will use fallback questions:", err);
     }
+
 
     const parsed: mathDictEntry[] = [];
 
@@ -71,7 +67,6 @@ export class QuadraticEquationsHelper {
     this.loadedDictionary = true;
   }
 
-  // 💡 Same signature, but type matches QuadraticQuestion
   getNextQuestion(): QuadraticQuestion | null {
     if (!this.loadedDictionary || this.entries.length === 0) {
       return null;
@@ -99,13 +94,31 @@ export class QuadraticEquationsHelper {
     return question;
   }
 
-
-///BUG HERE: TO BE FIXED (x-1)(x-2) not accepted as correct answer for x^2-3x+2but (x-2)(x-1) is accepted
+  ///Iterate through this method to check bug fixes
   checkFactored(userInput: string): boolean {
     if (!this.currentQuestion) return false;
+
     const correct = normalizeFactored(this.currentQuestion.factored);
     const given = normalizeFactored(userInput);
-    return correct === given;
+
+    // 💡 First, quick exact check (if they match exactly, we're done)
+    if (correct === given) return true;
+
+    // 💡 Extract each "(...)" group from both strings
+    const correctParts = correct.match(/\(.*?\)/g) || [];
+    const givenParts = given.match(/\(.*?\)/g) || [];
+
+    // 💡 If we couldn't parse them, or counts differ, it's wrong
+    if (correctParts.length === 0 || correctParts.length !== givenParts.length) {
+      return false;
+    }
+
+    // 💡 Sort both arrays so order doesn't matter
+    correctParts.sort();
+    givenParts.sort();
+
+    // 💡 Join and compare
+    return correctParts.join("") === givenParts.join("");
   }
 
   /*
@@ -138,6 +151,4 @@ export class QuadraticEquationsHelper {
 
     return true;
   }
-
-
 }

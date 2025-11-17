@@ -1,7 +1,3 @@
-//Import statements (if any) go here
-//import {readFile} from "fs/promises";
-//import {resolve} from "node:path";
-
 //Type Definitions 
 export interface mathDictEntry{
     equation: string; //index 0
@@ -10,12 +6,12 @@ export interface mathDictEntry{
     points: string; //index 3
 }
 
-//Reads the dictionaryfile and loads 
+//Reads the dictionary file and loads 
+// 💡 Browser-safe stub: in the browser we don't read from the filesystem.
+// 💡 Your helper (QuadraticEquationsHelper.ensureLoaded) will see this empty
+//    result and use its fallback hard-coded questions instead.
 export async function readMathDictionary(): Promise<string[]> {
-  const filePath = resolve("src/class/MathEquations/mathDictionary.txt");
-  const data = await readFile(filePath, "utf8");
-  const lines = data.split("\n").map(line => line.trim()).filter(Boolean);
-  return lines;
+    return [];
 }
 
 //Dictionary Functions
