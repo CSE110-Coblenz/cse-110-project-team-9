@@ -2,10 +2,15 @@ import Konva from "konva";
 import type { ScreenSwitcher, Screen } from "./types";
 import { STAGE_WIDTH, STAGE_HEIGHT } from "./constants";
 
+import { StartingScreenController } from "./screens/StartingScreen/StartingScreenController";
+
 import { HomeScreenController } from "./screens/HomeScreen/HomeScreenController";
 import { SettingsScreenController } from "./screens/SettingsScreen/SettingsScreenController";
+
 import { MainGameScreenController } from "./screens/MainGameScreen/MainGameScreenController";
+
 import { WizardGameScreenController } from "./screens/WizardGameScreen/WizardGameScreenController";
+
 import { AudioController } from "./audios/AudioController";
 
 class App implements ScreenSwitcher {
@@ -13,6 +18,7 @@ class App implements ScreenSwitcher {
 	private layer: Konva.Layer;
 	private _lastScreen: Screen;
 
+	private startingController: StartingScreenController;
 	private homeController: HomeScreenController;
 	private settingsController: SettingsScreenController;
 	private WizardGameController : WizardGameScreenController;
@@ -35,12 +41,14 @@ class App implements ScreenSwitcher {
 		this.audio = new AudioController();
 
 		// Initialize all screen controllers
+		this.startingController = new StartingScreenController(this, this.audio);
 		this.homeController = new HomeScreenController(this, this.audio);
 		this.settingsController = new SettingsScreenController(this, this.audio);
 		this.mainGameController = new MainGameScreenController(this, this.audio);
 		this.WizardGameController = new WizardGameScreenController(this, this.audio);
 
 		// Add all screen groups to the layer
+		this.layer.add(this.startingController.getView().getGroup());
 		this.layer.add(this.homeController.getView().getGroup());
 		this.layer.add(this.settingsController.getView().getGroup());
 		this.layer.add(this.WizardGameController.getView().getGroup());
@@ -50,7 +58,7 @@ class App implements ScreenSwitcher {
 		this.layer.draw();
 
 		//initial start
-		this._lastScreen = {type: "home"};
+		this._lastScreen = {type: "starting"};
 		this.switchToScreen(this._lastScreen);
 	}
 
@@ -65,6 +73,8 @@ class App implements ScreenSwitcher {
 		switch (screen.type) {
 			case "home":
 				this.homeController.show();
+				// Hide settings screen (Need for settings close button)
+				this.settingsController.hide();
 				break;
 				
 			case "wizardminigame":
@@ -82,6 +92,7 @@ class App implements ScreenSwitcher {
 	}
 
 	get lastScreen() { return this._lastScreen; }
+	
 }
 
 // Initialize the application

@@ -11,17 +11,17 @@ export class AudioController {
         this.model = AudioModel.getInstance();
         this.hasUserInteracted = false;
 
-        //Chrome DOM fix
-        const userGesture = () => {
-            this.hasUserInteracted = true;
-            window.removeEventListener("keydown", userGesture);
-            window.removeEventListener("mousedown", userGesture);
-            window.removeEventListener("touchstart", userGesture);
-        };
+        // //Chrome DOM fix
+        // const userGesture = () => {
+        //     this.hasUserInteracted = true;
+        //     window.removeEventListener("keydown", userGesture);
+        //     window.removeEventListener("mousedown", userGesture);
+        //     window.removeEventListener("touchstart", userGesture);
+        // };
 
-        window.addEventListener("keydown", userGesture);
-        window.addEventListener("mousedown", userGesture);
-        window.addEventListener("touchstart", userGesture);
+        // window.addEventListener("keydown", userGesture);
+        // window.addEventListener("mousedown", userGesture);
+        // window.addEventListener("touchstart", userGesture);
     }
 
     /**

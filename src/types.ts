@@ -8,9 +8,13 @@ export interface View {
 
 export type Screen =
     | { type: "wizardminigame"}
+	| { type: "starting" }
 	| { type: "home" }
+	| { type: "mainGame" }
 	| { type: "settings" }
-	| { type: "mainGame" };
+
+export type LayerScreen =
+	| { type: "settings"; returnTo: Screen };
 
 export abstract class ScreenController {
 	abstract getView(): View;
