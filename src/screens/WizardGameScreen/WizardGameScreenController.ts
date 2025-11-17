@@ -20,7 +20,6 @@ import { AudioController } from "../../audios/AudioController";
 //input handler
 import { InputHandler } from "./InputHandler";
 
-
 export class WizardGameScreenController extends ScreenController {
     private model: WizardGameScreenModel;
     private view: WizardGameScreenViewer;
