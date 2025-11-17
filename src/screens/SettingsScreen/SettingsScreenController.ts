@@ -18,7 +18,9 @@ export class SettingsScreenController extends ScreenController {
 		 */
 		this.view.getSaveButton().on("click", () => {
 			this.audio.play("click_sfx");
-			this.screenSwitcher.switchToScreen(this.screenSwitcher.lastScreen);
+			this.hide()
+			// TODO: fix later idk
+			// this.screenSwitcher.switchToScreen(this.screenSwitcher.lastScreen);
 		});
 
 		this.view.setVolumeChangeHandler((ratio, type) => {
@@ -28,7 +30,7 @@ export class SettingsScreenController extends ScreenController {
 	}
 
 	hide(): void {
-		this.audio.stopAll();
+		// this.audio.stopAll();
 		this.view.hide();    
 	}
 

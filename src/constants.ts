@@ -1,4 +1,5 @@
 // Stage Size
+//TODO: listen to window height changes
 export const STAGE_WIDTH = 800;
 export const STAGE_HEIGHT = 600;
 

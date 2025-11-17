@@ -21,6 +21,7 @@ export class HomeScreenView implements View {
 		video.load();
 		video.style.display = "none";
 		video.muted = true;
+		video.loop = true;
 
 		const videoBackground = new Konva.Image({
 			image: video,

@@ -2,12 +2,26 @@ import { AudioModel } from "./AudioModel";
 
 export class AudioController {
     private model: AudioModel;
+    private hasUserInteracted;
 
     /**
      * Initializes the AudioController
      */
     constructor() {
         this.model = AudioModel.getInstance();
+        this.hasUserInteracted = false;
+
+        //Chrome DOM fix
+        const userGesture = () => {
+            this.hasUserInteracted = true;
+            window.removeEventListener("keydown", userGesture);
+            window.removeEventListener("mousedown", userGesture);
+            window.removeEventListener("touchstart", userGesture);
+        };
+
+        window.addEventListener("keydown", userGesture);
+        window.addEventListener("mousedown", userGesture);
+        window.addEventListener("touchstart", userGesture);
     }
 
     /**
@@ -30,33 +44,28 @@ export class AudioController {
      * Play function for SOUND EFFECT
      * @param key : string
      */
-    public async play(key: string, loop: boolean = false): Promise<void> {
+    public play(key: string, loop: boolean = false): void {
         const sound = this.model.sounds[key];
         if (!sound) return;
 
         sound.loop = loop;
 
-        // avoid replaying if called again if it is in a loop
-        if (!sound.paused && !sound.ended && loop) return;
-
         //reset one shot-sfx
         if(!loop) sound.currentTime = 0;
 
+        //DOM fix user interacted
+        if (!this.hasUserInteracted) return;
+
         //pauses audio until brower confirms play back and catches error for tabbed out as well
-        if (document.visibilityState === "visible") {
-            try {
-                await sound.play();
-            } catch (err: any) {
-                // ignore AbortError, log others
-                if (err.name !== "AbortError") {
-                    console.error(`AudioController: error playing "${key}"`, err);
-                }
+        sound.play().catch((err: any) => {
+            if (err.name !== "AbortError") {
+                console.error(`AudioController: error playing "${key}"`, err);
             }
-        }
+        });
     }
 
     /**
-     * Stop function for BGM
+     * Stop function for inputed audio
      */
     public stop(key: string): void {
         const sound = this.model.sounds[key];
@@ -66,14 +75,14 @@ export class AudioController {
             try {
                 sound.pause();
                 sound.currentTime = 0;
-            } catch (err) {
+            } catch (err: any) {
                 console.error(`AudioController: error stopping "${key}"`, err);
             }
         }
     }
 
     /**
-     * Stop function for BGM
+     * Stop all audio
      */
     public stopAll(): void {
         for (const key in this.model.sounds) {

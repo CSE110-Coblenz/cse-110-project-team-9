@@ -30,6 +30,11 @@ export class HomeScreenController extends ScreenController {
 			this.audio.play("click_sfx");
 			this.screenSwitcher.switchToScreen({ type: "wizardminigame" });
 		});
+
+		this.view.getGroup().on("click", () => {
+			this.audio.play("home_bgm");
+			this.view.getGroup().off("click");
+		});
 	}
 
 	hide(): void {
