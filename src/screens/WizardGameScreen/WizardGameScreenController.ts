@@ -36,7 +36,6 @@ export class WizardGameScreenController extends ScreenController {
 
     private input: InputHandler;
 
-    //TODO: this is for testing purposes
     private keydownHandler = (e: KeyboardEvent) => {
         if (e.key === 'b') {
             this.showBoundingBoxes = !this.showBoundingBoxes;
@@ -52,7 +51,6 @@ export class WizardGameScreenController extends ScreenController {
     }
 
     constructor(private screenSwitcher: ScreenSwitcher, private audio: AudioController) {
-        //TODO: add dynamic resolution
         super();
         //Game MVC
         this.model = new WizardGameScreenModel();

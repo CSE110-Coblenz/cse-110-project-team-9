@@ -1,9 +1,7 @@
 // Stage Size
-//TODO: listen to window height changes
 export const STAGE_WIDTH = 800;
 export const STAGE_HEIGHT = 600;
 
 // Settings Size
-//TODO: pop menu ui
 export const SETTINGS_WIDTH = 400;
 export const SETTINGS_HEIGHT = 300;

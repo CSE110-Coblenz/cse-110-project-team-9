@@ -69,8 +69,7 @@ export const WIZARD_ANIMATIONS: Record<WizardAnimation, number[]> = {
 
 export type WizardAudioMap = typeof WIZARD_AUDIO;
 
-//TODO: grab correct foramt .100 seconds per frame for any given animation
-//TODO: convert to mp4 instead mp3 does not do milliseconds
+//TODO: grab correct foramt .100 seconds per frame for any given animation mp4
 export const WIZARD_AUDIO = {
     walk: "/wizardminigame/audio/8-bit-grass-footsteps-2-408574.mp3",
     attackbow: "/wizardminigame/audio/bow_release-85040.mp3",

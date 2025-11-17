@@ -59,7 +59,6 @@ export class PlayerViewer<Animation extends string> {
      */
     get group() { return this._group; }
     
-    //TODO: clean this mess up
     /**
      * 
      * @returns 

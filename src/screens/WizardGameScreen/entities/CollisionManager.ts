@@ -1,7 +1,5 @@
 import Konva from "konva";
 
-//TODO: simplify these functions
-
 /**
  * Axix-Aligned Bounding box
  */
