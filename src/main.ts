@@ -57,9 +57,8 @@ class App implements ScreenSwitcher {
 		// Draw the layer
 		this.layer.draw();
 
-		this._lastScreen = {type: "starting"};
-
 		// Start with starting screen visible
+		this._lastScreen = {type: "starting"};
 		this.switchToScreen({ type: "starting" });
 	}
 
