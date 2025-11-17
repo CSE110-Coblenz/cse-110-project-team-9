@@ -14,7 +14,7 @@ export class PlayerModel {
      * @param speed average speed in pixels a second
      * @param AUDIO audio files for animations/events
      */
-    constructor(x = 150, y = 60, speed = 150, AUDIO: Record<string, string>) {
+    constructor(x = 150, y = 60, speed = 150, AUDIO: Record<string,string>) {
         this._x = x;
         this._y = y;
         this._speed = speed;
@@ -52,6 +52,7 @@ export class PlayerModel {
     get dead() { return this._health <= 0; }
     get currentAnimation() { return this._currentAnimation; }
     get audio() { return this._AUDIO }
+    get health() { return this._health; }
         
     /**
      * setters for private values

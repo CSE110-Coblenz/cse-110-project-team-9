@@ -26,6 +26,7 @@ export class EnemyController implements Collidable {
     destructor() {
         this.view.destructor();
 
+        //mark for garbage collection
         (this as any).model = null;
         (this as any).view = null;
     }
@@ -35,12 +36,7 @@ export class EnemyController implements Collidable {
      * @param other
      */
     public onCollision?(other: Collidable): void{
-        
-        //TODO: testing purpose damage 100
         this.model.damage(100);
-        if (!this.model.dead) {
-            this.model.setAnimation("death");
-        }
     }
 
     /**

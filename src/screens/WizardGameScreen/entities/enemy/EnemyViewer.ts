@@ -49,8 +49,6 @@ export class EnemyViewer {
      * @returns Nonexistent entity
      */
     public render(model: EnemyModel): void {
-        if (!this.sprite) return;
-
         this.sprite.x(model.x);
         this.sprite.y(model.y);
 
@@ -71,7 +69,6 @@ export class EnemyViewer {
      * @returns 
      */
     public getCurrentWorldBoundingBox(): { x: number; y: number; width: number; height: number } {
-        
         const frames = this.boundingBoxes[this.model.currentAnimation];
 
         const frameIndex = Math.max(0, Math.min(frames.length - 1, this.sprite.frameIndex()));

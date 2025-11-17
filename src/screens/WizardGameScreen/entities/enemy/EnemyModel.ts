@@ -41,6 +41,7 @@ export class EnemyModel {
     get dead() { return this._health <= 0; }
     get currentAnimation() { return this._currentAnimation; }
     get audio() { return this._AUDIO }
+    get health() { return this._health; }
 
     /**
      * setters for private values

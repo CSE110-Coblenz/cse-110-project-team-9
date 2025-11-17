@@ -29,6 +29,7 @@ export class PlayerController implements Collidable {
     destructor() {
         this.view.destructor();
 
+        //mark for garbage collection
         (this as any).model = null;
         (this as any).view = null;
     }
