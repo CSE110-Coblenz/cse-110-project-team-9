@@ -18,7 +18,7 @@ import type { KnightAnimation } from "./entities/types/Knight";
 //audio
 import { AudioController } from "../../audios/AudioController";
 //input handler
-import { InputHandler } from "./Inputhandler";
+import { InputHandler } from "./InputHandler";
 
 
 export class WizardGameScreenController extends ScreenController {
@@ -72,6 +72,8 @@ export class WizardGameScreenController extends ScreenController {
     startGame() {
         this.view.show();
 
+        this.input.bind();
+
         //register collidables e.g. player for now. projectiles and blocks to added later
         this.collisionManager.register(this.playerController);
         this.collisionManager.register(this.enemyController);
@@ -107,6 +109,8 @@ export class WizardGameScreenController extends ScreenController {
         //remove collidables
         this.collisionManager.unregister(this.playerController);
         this.collisionManager.unregister(this.enemyController);
+
+        this.playerController.reset();
 
         this.input.unbind();
     }

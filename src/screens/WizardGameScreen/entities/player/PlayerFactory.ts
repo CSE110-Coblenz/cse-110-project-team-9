@@ -6,7 +6,7 @@ import { PlayerModel } from './PlayerModel';
 import { PlayerController } from "./PlayerController";
 
 //InputHandler
-import { InputHandler } from '../../Inputhandler';
+import { InputHandler } from '../../InputHandler';
 
 //Audio MVC
 import { AudioController } from '../../../../audios/AudioController';
@@ -33,7 +33,7 @@ export class PlayerFactory {
 
         switch(type) {
             case "wizard":
-                model = new PlayerModel(150, 60, 150, "idle", WIZARD_AUDIO);
+                model = new PlayerModel(150, 60, 150, WIZARD_AUDIO);
                 viewer = new PlayerViewer<WizardAnimation>(
                     group,
                     { image: wizardSrc, animations: WIZARD_ANIMATIONS },
@@ -42,7 +42,7 @@ export class PlayerFactory {
                 );
                 break;
             case "knight":
-                model = new PlayerModel(150, 60, 150, "idle", KNIGHT_AUDIO);
+                model = new PlayerModel(150, 60, 150, KNIGHT_AUDIO);
                 viewer = new PlayerViewer<KnightAnimation>(
                     group,
                     { image: knightSrc, animations: KNIGHT_ANIMATIONS },

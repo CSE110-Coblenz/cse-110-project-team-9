@@ -1,29 +1,35 @@
 export class InputHandler {
-    private keys: Record<string, boolean> = {};
-    //TODO: added more allowed keys for various functions
-    private readonly allowedKeys = [
-        "ArrowUp","ArrowDown","ArrowLeft","ArrowRight",
-        "w","a","s","d","f","e","r"
-    ];
+    private keys: Record<string, boolean>;
+    private listenersBound: boolean;
+    private allowedKeys: string[];
 
-    constructor() {
-        this.bind();
+    constructor(){
+        this.keys = {};
+        this.listenersBound = false;
+        this.allowedKeys = [
+            "ArrowUp","ArrowDown","ArrowLeft","ArrowRight",
+            "w","a","s","d","f","e","r"
+        ];
     }
 
     /**
      * add Listening functionality
      */
     private bind() {
+        if (this.listenersBound) return;
         window.addEventListener("keydown", this.onKeyDown);
         window.addEventListener("keyup", this.onKeyUp);
+        this.listenersBound = true;
     }
 
     /**
      * remove Listening functionaliyt
      */
     public unbind() {
+        if (!this.listenersBound) return;
         window.removeEventListener("keydown", this.onKeyDown);
         window.removeEventListener("keyup", this.onKeyUp);
+        this.listenersBound = false;
     }
 
     /**
@@ -52,6 +58,7 @@ export class InputHandler {
      * @returns is the key pressed
      */
     public isDown(key: string): boolean {
+        //bang operation !! always returns true for that key
         return !!this.keys[key];
     }
 }

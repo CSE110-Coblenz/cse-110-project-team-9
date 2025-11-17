@@ -2,7 +2,7 @@ import type { PlayerModel } from "./PlayerModel";
 import type { PlayerViewer } from "./PlayerViewer";
 import type { Collidable, AABB } from "../CollisionManager";
 import { AudioController } from "../../../../audios/AudioController";
-import { InputHandler } from "../../Inputhandler";
+import { InputHandler } from "../../InputHandler";
 
 export class PlayerController<Animation extends string> implements Collidable {
 
@@ -28,11 +28,28 @@ export class PlayerController<Animation extends string> implements Collidable {
         }
         return null;
     }
+    
     /**
      * check collision
      * @param other
      */
     public onCollision?(other: Collidable): void;
+
+    /**
+     * reset function;
+     */
+    public reset(){
+        this.model.reset();
+        this.p
+    }
+
+    /**
+     * take damage function
+     * @param amount amount of damage
+     */
+    public damage(amount: number){
+        this.model.damage(amount);
+    }
     
     /**
      * after 
