@@ -57,28 +57,32 @@ class App implements ScreenSwitcher {
 		// Draw the layer
 		this.layer.draw();
 
-		//initial start
 		this._lastScreen = {type: "starting"};
-		this.switchToScreen(this._lastScreen);
+
+		// Start with starting screen visible
+		this.switchToScreen({ type: "starting" });
 	}
 
 	switchToScreen(screen: Screen): void {
 
 		this._lastScreen = screen;
 
+		this.startingController.hide();
 		this.homeController.hide();
 		this.settingsController.hide();
-		this.WizardGameController.hide();
+		this.mainGameController.hide();
 
 		switch (screen.type) {
+			case "starting":
+				this.startingController.show();
+				break;
+
 			case "home":
 				this.homeController.show();
-				// Hide settings screen (Need for settings close button)
-				this.settingsController.hide();
 				break;
-				
-			case "wizardminigame":
-				this.WizardGameController.startGame();
+
+			case "mainGame":
+				this.mainGameController.show();
 				break;
 		}
 	}
@@ -92,7 +96,6 @@ class App implements ScreenSwitcher {
 	}
 
 	get lastScreen() { return this._lastScreen; }
-	
 }
 
 // Initialize the application

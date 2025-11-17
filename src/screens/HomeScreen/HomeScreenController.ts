@@ -43,7 +43,7 @@ export class HomeScreenController extends ScreenController {
 	}
 
 	getView(): HomeScreenView {
-		this.audio.play("home_bgm");
+		this.audio.play("home_bgm", true);
 		return this.view;
 	}
 }

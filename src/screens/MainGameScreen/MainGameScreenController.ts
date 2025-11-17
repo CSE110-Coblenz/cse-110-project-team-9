@@ -27,6 +27,9 @@ export class MainGameScreenController extends ScreenController {
 				this.screenSwitcher.layerOnScreen({ type: "settings" });
 			});
 
+        audio.registerSound("mainboard_bgm", "/mainboard/audio/mainboardBGM.mp3");
+        audio.registerSound("click_sfx", "/homescreen/audio/click.mp3");
+
         const tiles = this.view.getTiles();
 
         // tiles[0].on("click", () => this.screenSwitcher.switchToScreen({ type: "wizard" }));
@@ -96,12 +99,20 @@ export class MainGameScreenController extends ScreenController {
     }
 
     public show(): void {
+<<<<<<< HEAD
         this.audio.play("mainboard_bgm", true);
+=======
+        this.audio.play("mainboard_bgm", true); // true for loop (BGM)
+>>>>>>> 38bd20a (Resolved Camdon's review)
         this.view.show();
     }
 
     public hide(): void {
+<<<<<<< HEAD
         this.audio.stop("mainboard_bgm");
+=======
+        this.audio.stopAll();
+>>>>>>> 38bd20a (Resolved Camdon's review)
         this.view.hide();
     }
 

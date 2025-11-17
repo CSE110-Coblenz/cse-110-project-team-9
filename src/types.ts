@@ -11,10 +11,7 @@ export type Screen =
 	| { type: "starting" }
 	| { type: "home" }
 	| { type: "mainGame" }
-	| { type: "settings" }
-
-export type LayerScreen =
-	| { type: "settings"; returnTo: Screen };
+	| { type: "settings" };
 
 export abstract class ScreenController {
 	abstract getView(): View;
