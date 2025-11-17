@@ -12,9 +12,6 @@ import { EnemyController } from "./entities/enemy/EnemyController";
 //sprite factories
 import { PlayerFactory } from "./entities/player/PlayerFactory";
 import { EnemyFactory } from "./entities/enemy/EnemyFactory";
-//sprite type
-import type { WizardAnimation } from "./entities/types/Wizard";
-import type { KnightAnimation } from "./entities/types/Knight";
 //audio
 import { AudioController } from "../../audios/AudioController";
 //input handler
@@ -24,8 +21,8 @@ export class WizardGameScreenController extends ScreenController {
     private model: WizardGameScreenModel;
     private view: WizardGameScreenViewer;
 
-    private playerController: PlayerController<WizardAnimation | KnightAnimation>;
-    private enemyController: EnemyController<WizardAnimation | KnightAnimation>;
+    private playerController: PlayerController;
+    private enemyController: EnemyController;
 
     private collisionManager: CollisionManager;
 
@@ -50,6 +47,16 @@ export class WizardGameScreenController extends ScreenController {
         }
     }
 
+    private debugKey = (e: KeyboardEvent) => {
+        console.log({
+            key: e.key,
+            keyLower: (e.key || "").toLowerCase(),
+            code: e.code,
+            isRepeat: e.repeat,
+            capsLockOn: e.getModifierState && e.getModifierState("CapsLock")
+        });
+    };
+
     constructor(private screenSwitcher: ScreenSwitcher, private audio: AudioController) {
         super();
         //Game MVC
@@ -61,7 +68,7 @@ export class WizardGameScreenController extends ScreenController {
         this.input = new InputHandler();
         
         //entities
-        this.enemyController = EnemyFactory.create("knight", this.view.getGroup(), this.audio);
+        this.enemyController = EnemyFactory.create("orc", this.view.getGroup(), this.audio);
         this.playerController = PlayerFactory.create("knight", this.view.getGroup(), this.audio, this.input);
 
         //collision betweene entities
@@ -80,6 +87,8 @@ export class WizardGameScreenController extends ScreenController {
         this.view.show();
         this.windowBind();
         this.input.bind();
+
+        window.addEventListener("keydown", this.debugKey);
 
         //register collidables e.g. player for now. projectiles and blocks to added later
         this.collisionManager.register(this.playerController);
@@ -106,11 +115,8 @@ export class WizardGameScreenController extends ScreenController {
         this.lastUpdateTime = now;
 
         //update entities with delta from last frame
-        this.playerController.update(delta);
-        this.enemyController.update(delta);
-        
         //check collisions between entities (not boundaries)  
-        this.collisionManager.update();
+        this.collisionManager.update(delta);
 
         //repeat update loop keep response time smooth
         this.animationFrameId = requestAnimationFrame (this.updateLoop);

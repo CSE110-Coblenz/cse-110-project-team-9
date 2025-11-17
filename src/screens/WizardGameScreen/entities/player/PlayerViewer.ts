@@ -37,6 +37,13 @@ export class PlayerViewer {
     }
 
     /**
+     * 
+     */
+    destructor() {
+        this.sprite.destroy();
+    }
+
+    /**
      * Renders parameters for controller movement x and y pos
      * @param model player parmeters speed,x,y
      * @returns Nonexistent entity

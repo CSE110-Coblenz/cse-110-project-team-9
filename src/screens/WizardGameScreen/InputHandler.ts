@@ -8,7 +8,9 @@ export class InputHandler {
         this.listenersBound = false;
         this.allowedKeys = [
             "ArrowUp","ArrowDown","ArrowLeft","ArrowRight",
-            "w","a","s","d","f","e","r"
+            "w","a","s","d","f","e","r",
+            //modifer keys
+            "Shift", "Control", "Alt"
         ];
     }
 
@@ -37,17 +39,20 @@ export class InputHandler {
      * @param e keyboard event
      */
     private onKeyDown = (e: KeyboardEvent) => {
-        if (this.allowedKeys.includes(e.key)) {
+        const key = e.key.toLowerCase(); 
+        if (this.allowedKeys.includes(key)) {
             this.keys[e.key] = true;
         }
-    };
+
+    };  
 
     /**
      * takes x input key to be false (not pressed)
      * @param e keyboard event
      */
     private onKeyUp = (e: KeyboardEvent) => {
-        if (this.allowedKeys.includes(e.key)) {
+        const key = e.key.toLowerCase(); 
+        if (this.allowedKeys.includes(key)) {
             this.keys[e.key] = false;
         }
     };

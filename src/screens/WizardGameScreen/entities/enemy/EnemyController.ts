@@ -17,14 +17,27 @@ export class EnemyController implements Collidable {
         private model: EnemyModel, 
         private view: EnemyViewer,
         private audio: AudioController
-    ) {}
+    ) {
+        for (const key in this.model.audio){
+            this.audio.registerSound(key, model.audio[key]);
+        }
+    }
+
+    destructor() {
+        this.view.destructor();
+
+        (this as any).model = null;
+        (this as any).view = null;
+    }
 
     /**
      * check collision
      * @param other
      */
     public onCollision?(other: Collidable): void{
-        //delete or death?
+        
+        //TODO: testing purpose damage 100
+        this.model.damage(100);
         if (!this.model.dead) {
             this.model.setAnimation("death");
         }
@@ -41,6 +54,8 @@ export class EnemyController implements Collidable {
     /**
      * Getter methods for various utility
      */
-    getShape(): Konva.Group { return this.view.group;}
-    getBoundingBox(): AABB | null { return this.view.getCurrentWorldBoundingBox(); }
+    shape(): Konva.Group { return this.view.group;}
+    boundingBox(): AABB { return this.view.getCurrentWorldBoundingBox(); }
+    dead(): boolean { return this.model.dead; }
+    destroy(): void { this.destructor(); }
 }

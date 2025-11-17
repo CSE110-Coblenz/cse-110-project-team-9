@@ -25,6 +25,13 @@ export class PlayerController implements Collidable {
             this.audio.registerSound(key, model.audio[key]);
         }
     }
+
+    destructor() {
+        this.view.destructor();
+
+        (this as any).model = null;
+        (this as any).view = null;
+    }
     
     /**
      * check collision
@@ -92,6 +99,8 @@ export class PlayerController implements Collidable {
     /**
      * Getter methods for various utility
      */
-    getShape(): Konva.Group { return this.view.group; }
-    getBoundingBox(): AABB | null { return this.view.getCurrentWorldBoundingBox(); }
+    shape(): Konva.Group { return this.view.group; }
+    boundingBox(): AABB { return this.view.getCurrentWorldBoundingBox(); }
+    dead(): boolean { return this.model.dead; }
+    destroy(): void { this.destructor(); }
 }

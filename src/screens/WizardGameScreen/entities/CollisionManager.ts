@@ -7,7 +7,7 @@ export type AABB = { x: number; y: number; width: number; height: number };
 
 export interface Collidable {
     // Returns the current bounding box of the object in world coordinates
-	getBoundingBox(): AABB | null;
+	boundingBox(): AABB;
 
     // Optional call for collision handling e.g. when a collision is detected
 	onCollision?(other: Collidable): void;
@@ -15,8 +15,11 @@ export interface Collidable {
 	//debuging red boundary box
 	debugBoundingBox?(show: boolean): void;
 
-	//visualization debug grab konva group
-	getShape?(): Konva.Group;
+	//grab entity data
+	shape?(): Konva.Group;
+	dead?(): boolean;
+	destroy?(): void;
+	update?(deltaTime: number): void;
 }
 
 /**
@@ -38,9 +41,9 @@ export class CollisionManager {
 		if (!this.collidables.includes(c)) this.collidables.push(c);
 
 		// create debug viewer that is layered on top of entity group
-		if (this.debugMode && c.getShape && !this.debugViewers.has(c)){
+		if (this.debugMode && c.shape && !this.debugViewers.has(c)){
 
-			const viewer = new DebugBoundingBoxViewer(c.getShape());
+			const viewer = new DebugBoundingBoxViewer(c.shape());
 			this.debugViewers.set(c, viewer);
 			viewer.toggleVisibility(true);
 		}
@@ -54,7 +57,7 @@ export class CollisionManager {
 	public unregister(c: Collidable) {
 		this.collidables = this.collidables.filter(x => x !== c);
 
-		//destroy debug layer group
+		//destroy debug layer 
 		const viewer = this.debugViewers.get(c);
         if (viewer) {
             viewer.destroy();
@@ -70,8 +73,8 @@ export class CollisionManager {
 
 		//create debug bounding boxes view
 		for (const c of this.collidables) {
-			if (c.getShape && !this.debugViewers.has(c)) {
-				const viewer = new DebugBoundingBoxViewer(c.getShape());
+			if (c.shape && !this.debugViewers.has(c)) {
+				const viewer = new DebugBoundingBoxViewer(c.shape());
 				this.debugViewers.set(c, viewer);
 			}
 		}
@@ -82,24 +85,34 @@ export class CollisionManager {
     /**
      * Processes collision detection among registered collidables
      */
-	public update() {
-		const list = this.collidables;
+	public update(delta: number) {
+        for (let i = 0; i < this.collidables.length; i++) {
+            const a = this.collidables[i];
 
-        for (let i = 0; i < list.length; i++) {
-            const a = list[i];
-            const aBox = a.getBoundingBox();
-            if (!aBox) continue;
+			//destroy dead
+			if (a.dead?.()) {
+                a.destroy?.();
+                this.unregister(a);
+                i--; // adjust index after removal
+                continue;
+            }
 
-            // Update debug box
+			a.update?.(delta)
+
+			const aBox = a.boundingBox();
+
+            //update debug box
             if (this.debugMode) {
                 this.debugViewers.get(a)?.updateBox(aBox);
             }
 
-            for (let j = i + 1; j < list.length; j++) {
-                const b = list[j];
-                const bBox = b.getBoundingBox();
-                if (!bBox) continue;
+			//check collision with any entity
+            for (let j = i + 1; j < this.collidables.length; j++) {
+                const b = this.collidables[j];
 
+				if (b.dead?.()) continue; //skip if dead
+
+                const bBox = b.boundingBox();
                 if (this.aabbIntersect(aBox, bBox)) {
                     a.onCollision?.(b);
                     b.onCollision?.(a);
