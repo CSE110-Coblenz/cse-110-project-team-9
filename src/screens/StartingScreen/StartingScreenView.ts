@@ -4,33 +4,53 @@ import { STAGE_WIDTH, STAGE_HEIGHT } from "../../constants";
 
 export class StartingScreenView implements View {
 	private group: Konva.Group;
-	private background: Konva.Rect;
 	private clickText: Konva.Text;
 
 	constructor() {
 		this.group = new Konva.Group({ visible: true });
 
-		/**
-		 * Background - Cloud-like gradient
+		/** 
+		 * StartingScreen Background Video 
 		 */
-		this.background = new Konva.Rect({
+		const video = document.createElement("video");
+		video.src = "/startingscreen/video/Startingscreen.mp4";
+		video.load();
+		video.style.display = "none";
+		video.muted = true;
+
+		const videoBackground = new Konva.Image({
+			image: video,
 			x: 0,
 			y: 0,
 			width: STAGE_WIDTH,
 			height: STAGE_HEIGHT,
-			fillLinearGradientStartPoint: { x: 0, y: 0 },
-			fillLinearGradientEndPoint: { x: 0, y: STAGE_HEIGHT },
-			fillLinearGradientColorStops: [
-				0,
-				"#87CEEB", // Sky blue
-				0.5,
-				"#B0E0E6", // Powder blue
-				1,
-				"#E0F6FF", // Light blue
-			],
 		});
 
-		this.group.add(this.background);
+		this.group.add(videoBackground);
+
+		/**
+		 * StartingScreen Background Video Animation
+		 */
+		// Play video when loaded
+		video.addEventListener("loadeddata", () => {
+			video.play().catch((err) => {
+				console.error("Video playback failed:", err);
+			});
+		});
+
+		// Animation to update video frames
+		const anim = new Konva.Animation(() => {
+			videoBackground.getLayer()?.batchDraw();
+		});
+
+		// Start the animation
+		anim.start();
+
+		// Loop video
+		video.addEventListener("ended", () => {
+			video.currentTime = 0;
+			video.play();
+		});
 
 		/**
 		 * Click to Start Text
@@ -40,7 +60,7 @@ export class StartingScreenView implements View {
 			y: STAGE_HEIGHT / 2,
 			text: "Click to Start",
 			fontSize: 48,
-			fontFamily: "Arial",
+			fontFamily: "HomeScreenFont",
 			fill: "white",
 			align: "center",
 			shadowColor: "rgba(0, 0, 0, 0.5)",
