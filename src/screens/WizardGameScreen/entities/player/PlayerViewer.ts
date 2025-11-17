@@ -31,13 +31,6 @@ export class PlayerViewer<Animation extends string> {
         });
         this.group.add(this.sprite);
 
-        //disable smoothing
-        const layer = this.group.getLayer();
-        if (layer) {
-            const ctx = layer.getContext() as unknown as CanvasRenderingContext2D;
-            ctx.imageSmoothingEnabled = false;
-        }
-
         this.sprite.start();
 
         player.src = this.entity.image;

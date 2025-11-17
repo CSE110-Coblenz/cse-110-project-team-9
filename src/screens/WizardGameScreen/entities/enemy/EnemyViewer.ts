@@ -30,14 +30,7 @@ export class EnemyViewer<Animation extends string> {
             scaleY: 4,
         });
         this.group.add(this.sprite);
-
-        //disable smoothing
-        const layer = this.group.getLayer();
-        if (layer) {
-            const ctx = layer.getContext() as unknown as CanvasRenderingContext2D;
-            ctx.imageSmoothingEnabled = false;
-        }
-
+        
         this.sprite.start();
 
         enemy.src = this.entity.image;

@@ -38,6 +38,7 @@ export class WizardGameScreenController extends ScreenController {
     private input: InputHandler;
 
     constructor(private screenSwitcher: ScreenSwitcher, private audio: AudioController) {
+        //TODO: add dynamic resolution
         super();
         //Game MVC
         this.model = new WizardGameScreenModel();
@@ -47,25 +48,26 @@ export class WizardGameScreenController extends ScreenController {
         //input handler
         this.input = new InputHandler();
         
-        //player 
-        this.playerController = PlayerFactory.create("knight", this.view.getGroup(), this.audio, this.input);
+        //entities
         this.enemyController = EnemyFactory.create("knight", this.view.getGroup(), this.audio);
+        this.playerController = PlayerFactory.create("knight", this.view.getGroup(), this.audio, this.input);
+
 
         //collision betweene entities
         this.collisionManager = new CollisionManager();
 
         //Debug bounding boxes
         window.addEventListener('keydown', (e: KeyboardEvent) => {
-        if (e.key === 'b') {
-            this.showBoundingBoxes = !this.showBoundingBoxes;
-            this.collisionManager.toggleDebugMode(this.showBoundingBoxes);
-        }
-        if (e.key === 'Escape'){
-            //screenSwitcher.layerOnScreen({ type:"settings" });
-            this.stopGame();
-            screenSwitcher.switchToScreen({ type:"home" });
-        }
-});
+            if (e.key === 'b') {
+                this.showBoundingBoxes = !this.showBoundingBoxes;
+                this.collisionManager.toggleDebugMode(this.showBoundingBoxes);
+            }
+            if (e.key === 'Escape'){
+                //screenSwitcher.layerOnScreen({ type:"settings" });
+                this.stopGame();
+                screenSwitcher.switchToScreen({ type:"home" });
+            }
+        });
 
     }
 
@@ -77,6 +79,13 @@ export class WizardGameScreenController extends ScreenController {
         //register collidables e.g. player for now. projectiles and blocks to added later
         this.collisionManager.register(this.playerController);
         this.collisionManager.register(this.enemyController);
+
+        // disable image smoothing for sprites
+        const layer = this.view.getGroup().getLayer();
+        if (layer) {
+            const ctx = layer.getContext() as unknown as CanvasRenderingContext2D;
+            ctx.imageSmoothingEnabled = false;
+        }
 
         //current time to get deltas
         this.lastUpdateTime = performance.now();
