@@ -6,6 +6,69 @@ export interface PuzzleData {
 }
 
 /**
+ * Generate a random integer between min and max (inclusive)
+ */
+function randomInt(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+/**
+ * Format a quadratic equation nicely
+ */
+function formatQuadratic(a: number, b: number, c: number): string {
+    let equation = "";
+    
+    // ax^2 term
+    if (a === 1) {
+        equation = "x²";
+    } else if (a === -1) {
+        equation = "-x²";
+    } else {
+        equation = `${a}x²`;
+    }
+    
+    // bx term
+    if (b > 0) {
+        equation += b === 1 ? " + x" : ` + ${b}x`;
+    } else if (b < 0) {
+        equation += b === -1 ? " - x" : ` - ${Math.abs(b)}x`;
+    }
+    
+    // c term
+    if (c > 0) {
+        equation += ` + ${c}`;
+    } else if (c < 0) {
+        equation += ` - ${Math.abs(c)}`;
+    }
+    
+    return equation + " = 0";
+}
+
+/**
+ * Format roots as a string
+ */
+function formatRoots(r1: number, r2: number): string {
+    if (r1 === r2) {
+        return `x = ${r1}`;
+    }
+    // Sort roots for consistent display
+    const [smaller, larger] = r1 < r2 ? [r1, r2] : [r2, r1];
+    return `x = ${smaller}, ${larger}`;
+}
+
+/**
+ * Generate a quadratic equation from roots
+ * Given roots r1 and r2, the equation is: a(x - r1)(x - r2) = 0
+ * Expanding: a(x² - (r1+r2)x + r1*r2) = 0
+ * So: ax² - a(r1+r2)x + a*r1*r2 = 0
+ */
+function generateQuadraticFromRoots(r1: number, r2: number, a: number): { a: number; b: number; c: number } {
+    const b = -a * (r1 + r2);
+    const c = a * r1 * r2;
+    return { a, b, c };
+}
+
+/**
  * PuzzleModel - Encapsulates all puzzle-specific logic and state
  * Supports both multiple choice and matching-style puzzles
  */
@@ -62,33 +125,14 @@ export class PuzzleModel {
         // Parse the options to get correct pairs
         // Options should be in format "question:answer"
         const correctPairs = new Map<number, number>();
-        const answers: string[] = [];
         
-        // Build correct answer mapping
         this.puzzle.options.forEach((opt, idx) => {
             const optStr = String(opt);
             if (optStr.includes(":")) {
-                const [_, answer] = optStr.split(":");
-                answers.push(answer.trim());
+                // For matching format, correct pair is index -> index (same position)
+                correctPairs.set(idx, idx);
             } else {
                 // Fallback for non-matching format
-                answers.push(optStr);
-            }
-        });
-
-        // Create shuffled answers list to find correct indices
-        // In a real implementation, this should match the shuffle in PuzzleView
-        // For now, we'll check if the user matched each question to its correct answer
-        this.puzzle.options.forEach((opt, idx) => {
-            const optStr = String(opt);
-            if (optStr.includes(":")) {
-                const [_, answer] = optStr.split(":");
-                const answerTrimmed = answer.trim();
-                // Find the index of this answer in the answers array
-                const rightIdx = answers.indexOf(answerTrimmed);
-                correctPairs.set(idx, rightIdx);
-            } else {
-                // For non-matching format, just map to same index
                 correctPairs.set(idx, idx);
             }
         });
@@ -118,29 +162,55 @@ export class PuzzleModel {
     }
 
     /**
-     * Create default puzzles - now using matching format
-     * Format: "question:answer"
+     * Generate a random quadratic matching puzzle
+     */
+    static generateQuadraticPuzzle(id: number, numEquations: number = 3): PuzzleModel {
+        const usedRootPairs = new Set<string>();
+        const options: string[] = [];
+        
+        for (let i = 0; i < numEquations; i++) {
+            let r1: number, r2: number, pairKey: string;
+            
+            // Generate unique root pairs
+            do {
+                r1 = randomInt(-10, 10);
+                r2 = randomInt(-10, 10);
+                // Create a sorted key to avoid duplicate pairs like (2,3) and (3,2)
+                pairKey = [r1, r2].sort((a, b) => a - b).join(",");
+            } while (usedRootPairs.has(pairKey));
+            
+            usedRootPairs.add(pairKey);
+            
+            // Generate random coefficient a (non-zero)
+            let a: number;
+            do {
+                a = randomInt(-5, 5);
+            } while (a === 0);
+            
+            const { a: coeffA, b: coeffB, c: coeffC } = generateQuadraticFromRoots(r1, r2, a);
+            
+            const equation = formatQuadratic(coeffA, coeffB, coeffC);
+            const roots = formatRoots(r1, r2);
+            
+            options.push(`${equation}:${roots}`);
+        }
+        
+        return new PuzzleModel({
+            id,
+            question: "Solve for the roots of each equation",
+            options,
+            correctIndex: 0
+        });
+    }
+
+    /**
+     * Create default puzzles - now using quadratic equations
      */
     static createDefaultPuzzles(): PuzzleModel[] {
         return [
-            new PuzzleModel({ 
-                id: 1, 
-                question: "Match the operation to its result", 
-                options: ["1 + 1:2", "2 x 5:10", "10 - 5:5"], 
-                correctIndex: 0 
-            }),
-            new PuzzleModel({ 
-                id: 2, 
-                question: "Match the color to its hex code", 
-                options: ["Red:#FF0000", "Blue:#0000FF", "Green:#00FF00"], 
-                correctIndex: 0 
-            }),
-            new PuzzleModel({ 
-                id: 3, 
-                question: "Match the planet to its position", 
-                options: ["Mercury:1st", "Venus:2nd", "Earth:3rd"], 
-                correctIndex: 0 
-            }),
+            PuzzleModel.generateQuadraticPuzzle(1, 3),
+            PuzzleModel.generateQuadraticPuzzle(2, 3),
+            PuzzleModel.generateQuadraticPuzzle(3, 3),
         ];
     }
 }
