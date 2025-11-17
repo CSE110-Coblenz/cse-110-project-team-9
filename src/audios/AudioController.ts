@@ -11,19 +11,6 @@ export class AudioController {
         this.model = AudioModel.getInstance();
         this.hasUserInteracted = false;
 
-<<<<<<< HEAD
-        // //Chrome DOM fix
-        // const userGesture = () => {
-        //     this.hasUserInteracted = true;
-        //     window.removeEventListener("keydown", userGesture);
-        //     window.removeEventListener("mousedown", userGesture);
-        //     window.removeEventListener("touchstart", userGesture);
-        // };
-
-        // window.addEventListener("keydown", userGesture);
-        // window.addEventListener("mousedown", userGesture);
-        // window.addEventListener("touchstart", userGesture);
-=======
         //Chrome DOM fix
         const userGesture = () => {
             this.hasUserInteracted = true;
@@ -35,7 +22,6 @@ export class AudioController {
         window.addEventListener("keydown", userGesture);
         window.addEventListener("mousedown", userGesture);
         window.addEventListener("touchstart", userGesture);
->>>>>>> 38bd20a (Resolved Camdon's review)
     }
 
     /**

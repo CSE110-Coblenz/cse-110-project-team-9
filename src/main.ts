@@ -84,6 +84,10 @@ class App implements ScreenSwitcher {
 			case "mainGame":
 				this.mainGameController.show();
 				break;
+
+			case "wizardminigame":
+				this.WizardGameController.startGame();
+				break;
 		}
 	}
 
