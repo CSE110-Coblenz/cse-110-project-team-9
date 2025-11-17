@@ -29,8 +29,6 @@ export class MainGameScreenController extends ScreenController {
 
         audio.registerSound("mainboard_bgm", "/mainboard/audio/mainboardBGM.mp3");
         audio.registerSound("click_sfx", "/homescreen/audio/click.mp3");
-
-        const tiles = this.view.getTiles();
     }
 
 
