@@ -2,14 +2,15 @@ import type { PlayerModel } from "./PlayerModel";
 import type { PlayerViewer } from "./PlayerViewer";
 import type { Collidable, AABB } from "../CollisionManager";
 import { AudioController } from "../../../../audios/AudioController";
+import { InputHandler } from "../../Inputhandler";
 
 export class PlayerController<Animation extends string> implements Collidable {
-    private keys: Record<string, boolean> = {};    
 
     constructor(
         private model: PlayerModel, 
         private view: PlayerViewer<Animation>,
-        private audio: AudioController
+        private audio: AudioController,
+        private input = new InputHandler()
     ) {
         for (const key in this.model.audio){
             this.audio.registerSound(key, model.audio[key]);
@@ -32,38 +33,7 @@ export class PlayerController<Animation extends string> implements Collidable {
      * @param other
      */
     public onCollision?(other: Collidable): void;
-    /**
-     * add Listening functionality
-     */
-    bindControls() {
-        window.addEventListener("keydown", (e) => this.handleKeyDown(e));
-        window.addEventListener("keyup", (e) => this.handleKeyUp(e));
-    }
-    /**
-     * remove Listening functionality
-     */
-    unbindControls() {
-        window.removeEventListener("keydown", (e) => this.handleKeyDown(e));
-        window.removeEventListener("keyup", (e) => this.handleKeyUp(e));
-    }
-    /**
-     * takes x input key to be true (pressed)
-     * @param e keyboard event
-     */
-    private handleKeyDown = (e: KeyboardEvent) => {
-        if (["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","w","a","s","d","f","e","r"].includes(e.key)) {
-            this.keys[e.key] = true;
-        }
-    }
-    /**
-     * takes x input key to be false (not pressed)
-     * @param e 
-     */
-    private handleKeyUp = (e: KeyboardEvent) => {
-        if (["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","w","a","s","d","f","e","r"].includes(e.key)) {
-            this.keys[e.key] = false;
-        }
-    }
+    
     /**
      * after 
      * @param deltaTime different in time from last animation event
@@ -71,10 +41,10 @@ export class PlayerController<Animation extends string> implements Collidable {
     update(deltaTime: number) {
         let dx = 0, dy = 0;
 
-        if (this.keys["ArrowUp"] || this.keys["w"]) dy -= 1;
-        if (this.keys["ArrowDown"] || this.keys["s"]) dy += 1;
-        if (this.keys["ArrowLeft"] || this.keys["a"]) dx -= 1;
-        if (this.keys["ArrowRight"] || this.keys["d"]) dx += 1;
+        if (this.input.isDown("ArrowUp") || this.input.isDown("w")) dy -= 1;
+        if (this.input.isDown("ArrowDown") || this.input.isDown("s")) dy += 1;
+        if (this.input.isDown("ArrowLeft") || this.input.isDown("a")) dx -= 1;
+        if (this.input.isDown("ArrowRight") || this.input.isDown("d")) dx += 1;
 
         //fix for double speed diagonal movement
         if (dx !== 0 && dy !== 0) {
@@ -86,20 +56,17 @@ export class PlayerController<Animation extends string> implements Collidable {
         //speed on time about x(for given model) pixel per second from last move
         this.model.move(dx * this.model.speed * deltaTime, dy * this.model.speed * deltaTime);
 
-        //TODO: input handling
-        //TODO: broken audio
-
         //actions and animation only one at a time
         if (dx !== 0 || dy !== 0) {
             this.model.setAnimation("walk");
             this.audio.play("walk", true);
-        } else if (this.keys["f"]) {
+        } else if (this.input.isDown("f")) {
             this.model.setAnimation("attackslash");
             this.audio.play("attackslash");
-        } else if (this.keys["e"]) {
+        } else if (this.input.isDown("e")) {
             this.model.setAnimation("attackdown");
             this.audio.play("attackdown");
-        } else if (this.keys["r"]) {
+        } else if (this.input.isDown("r")) {
             this.model.setAnimation("attackbow");
             this.audio.play("attackbow");
         } else {

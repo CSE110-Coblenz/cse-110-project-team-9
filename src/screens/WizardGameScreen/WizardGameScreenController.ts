@@ -17,6 +17,8 @@ import type { WizardAnimation } from "./entities/types/Wizard";
 import type { KnightAnimation } from "./entities/types/Knight";
 //audio
 import { AudioController } from "../../audios/AudioController";
+//input handler
+import { InputHandler } from "./Inputhandler";
 
 
 export class WizardGameScreenController extends ScreenController {
@@ -33,6 +35,8 @@ export class WizardGameScreenController extends ScreenController {
     private lastUpdateTime = 0;
     private animationFrameId: number | null = null;
 
+    private input: InputHandler;
+
     constructor(private screenSwitcher: ScreenSwitcher, private audio: AudioController) {
         super();
         //Game MVC
@@ -40,7 +44,11 @@ export class WizardGameScreenController extends ScreenController {
         this.view = new WizardGameScreenViewer();
         this.audio = audio;
 
-        this.playerController = PlayerFactory.create("knight", this.view.getGroup(), this.audio);
+        //input handler
+        this.input = new InputHandler();
+        
+        //player 
+        this.playerController = PlayerFactory.create("knight", this.view.getGroup(), this.audio, this.input);
         this.enemyController = EnemyFactory.create("knight", this.view.getGroup(), this.audio);
 
         //collision betweene entities
@@ -53,7 +61,9 @@ export class WizardGameScreenController extends ScreenController {
             this.collisionManager.toggleDebugMode(this.showBoundingBoxes);
         }
         if (e.key === 'Escape'){
-            screenSwitcher.layerOnScreen({ type:"settings" });
+            //screenSwitcher.layerOnScreen({ type:"settings" });
+            this.stopGame();
+            screenSwitcher.switchToScreen({ type:"home" });
         }
 });
 
@@ -61,7 +71,6 @@ export class WizardGameScreenController extends ScreenController {
 
     startGame() {
         this.view.show();
-        this.playerController.bindControls();
 
         //register collidables e.g. player for now. projectiles and blocks to added later
         this.collisionManager.register(this.playerController);
@@ -95,12 +104,11 @@ export class WizardGameScreenController extends ScreenController {
         //dont run update loop anymore 
         if (this.animationFrameId) cancelAnimationFrame(this.animationFrameId);
 
-        //remove player controls
-        this.playerController.unbindControls();
-
         //remove collidables
         this.collisionManager.unregister(this.playerController);
         this.collisionManager.unregister(this.enemyController);
+
+        this.input.unbind();
     }
 
     getView(): WizardGameScreenViewer {

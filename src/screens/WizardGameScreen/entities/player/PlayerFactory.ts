@@ -5,6 +5,9 @@ import { PlayerViewer } from "./PlayerViewer";
 import { PlayerModel } from './PlayerModel';
 import { PlayerController } from "./PlayerController";
 
+//InputHandler
+import { InputHandler } from '../../Inputhandler';
+
 //Audio MVC
 import { AudioController } from '../../../../audios/AudioController';
 
@@ -18,7 +21,13 @@ export type PlayerType = "wizard" | "knight";
  * creation and instantiated of player class 
  */
 export class PlayerFactory {
-    static create(type: PlayerType, group: Konva.Group, audio: AudioController): PlayerController<PlayerType> {
+    static create(
+        type: PlayerType, 
+        group: Konva.Group, 
+        audio: AudioController, 
+        input: InputHandler
+    ): PlayerController<PlayerType> {
+
         let model: PlayerModel;
         let viewer: PlayerViewer<PlayerType>;
 
@@ -45,7 +54,7 @@ export class PlayerFactory {
                 throw new Error('unknown player type');
         }
 
-        return new PlayerController(model, viewer, audio);
+        return new PlayerController(model, viewer, audio, input);
     }
 }
 
