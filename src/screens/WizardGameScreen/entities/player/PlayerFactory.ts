@@ -26,15 +26,15 @@ export class PlayerFactory {
         group: Konva.Group, 
         audio: AudioController, 
         input: InputHandler
-    ): PlayerController<PlayerType> {
+    ): PlayerController {
 
         let model: PlayerModel;
-        let viewer: PlayerViewer<PlayerType>;
+        let viewer: PlayerViewer;
 
         switch(type) {
             case "wizard":
                 model = new PlayerModel(150, 60, 150, WIZARD_AUDIO);
-                viewer = new PlayerViewer<WizardAnimation>(
+                viewer = new PlayerViewer(
                     group,
                     { image: wizardSrc, animations: WIZARD_ANIMATIONS },
                     model,
@@ -43,7 +43,7 @@ export class PlayerFactory {
                 break;
             case "knight":
                 model = new PlayerModel(150, 60, 150, KNIGHT_AUDIO);
-                viewer = new PlayerViewer<KnightAnimation>(
+                viewer = new PlayerViewer(
                     group,
                     { image: knightSrc, animations: KNIGHT_ANIMATIONS },
                     model,

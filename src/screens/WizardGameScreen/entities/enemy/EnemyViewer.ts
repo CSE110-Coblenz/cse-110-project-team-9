@@ -1,7 +1,7 @@
 import Konva from "konva";
 import { EnemyModel } from "./EnemyModel";
 
-export class EnemyViewer<Animation extends string> {
+export class EnemyViewer {
     private sprite: Konva.Sprite;
 
     /**
@@ -23,7 +23,7 @@ export class EnemyViewer<Animation extends string> {
         this.sprite = new Konva.Sprite({
             image: enemy,
             animations: this.entity.animations,
-            animation: this.model.currentAnimation as Animation,
+            animation: this.model.currentAnimation,
             frameRate: 10, //about .100 seconds
             frameIndex: 0,
             scaleX: 4,
@@ -59,13 +59,13 @@ export class EnemyViewer<Animation extends string> {
      */
     get group() { return this._group; }
 
-   /**
+    /**
      * 
      * @returns 
      */
     public getCurrentWorldBoundingBox(): { x: number; y: number; width: number; height: number } {
         
-        const frames = this.boundingBoxes[this.model.currentAnimation as Animation];
+        const frames = this.boundingBoxes[this.model.currentAnimation];
 
         const frameIndex = Math.max(0, Math.min(frames.length - 1, this.sprite.frameIndex()));
         const frameBox = frames[frameIndex];

@@ -10,12 +10,12 @@ import { Collidable, AABB } from "../CollisionManager";
 //Audio Controller
 import { AudioController } from "../../../../audios/AudioController";
 
-export class EnemyController<Animation extends string> implements Collidable {
+export class EnemyController implements Collidable {
     private keys: Record<string, boolean> = {};
 
     constructor(
         private model: EnemyModel, 
-        private view: EnemyViewer<Animation>,
+        private view: EnemyViewer,
         private audio: AudioController
     ) {}
 

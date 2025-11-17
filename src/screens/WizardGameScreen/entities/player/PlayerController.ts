@@ -13,11 +13,11 @@ import { Collidable, AABB } from "../CollisionManager";
 //Audio Controller
 import { AudioController } from "../../../../audios/AudioController";
 
-export class PlayerController<Animation extends string> implements Collidable {
+export class PlayerController implements Collidable {
 
     constructor(
         private model: PlayerModel, 
-        private view: PlayerViewer<Animation>,
+        private view: PlayerViewer,
         private audio: AudioController,
         private input = new InputHandler()
     ) {
