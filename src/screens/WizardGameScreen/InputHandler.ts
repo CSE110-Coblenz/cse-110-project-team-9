@@ -15,7 +15,7 @@ export class InputHandler {
     /**
      * add Listening functionality
      */
-    private bind() {
+    public bind() {
         if (this.listenersBound) return;
         window.addEventListener("keydown", this.onKeyDown);
         window.addEventListener("keyup", this.onKeyUp);
