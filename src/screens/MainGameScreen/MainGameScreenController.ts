@@ -22,10 +22,10 @@ export class MainGameScreenController extends ScreenController {
         this.audio = audio;
 
         this.view.onPlayerRoll(() => this.onPlayerRoll());
-			this.view.onSettingsOpen(() => {
-				this.audio.play("click_sfx");
-				this.screenSwitcher.layerOnScreen({ type: "settings" });
-			});
+        this.view.onSettingsOpen(() => {
+            this.audio.play("click_sfx");
+            this.screenSwitcher.layerOnScreen({ type: "settings" });
+        });
 
         audio.registerSound("mainboard_bgm", "/mainboard/audio/mainboardBGM.mp3");
         audio.registerSound("click_sfx", "/homescreen/audio/click.mp3");

@@ -7,7 +7,6 @@ export class HomeScreenController extends ScreenController {
 	private screenSwitcher: ScreenSwitcher;
 	private audio: AudioController;
 
-
 	constructor(screenSwitcher: ScreenSwitcher, audio: AudioController) {
 		super();
 		this.screenSwitcher = screenSwitcher;
@@ -28,13 +27,8 @@ export class HomeScreenController extends ScreenController {
 
 		this.view.getStartButton().on("click", () => {
 			this.audio.play("click_sfx");
-			// this.screenSwitcher.switchToScreen({ type: "wizardminigame" });
-			this.screenSwitcher.switchToScreen({ type: "mainGame" });
-		});
-
-		this.view.getGroup().on("click", () => {
-			this.audio.play("home_bgm");
-			this.view.getGroup().off("click");
+			this.screenSwitcher.switchToScreen({ type: "wizardminigame" });
+			// this.screenSwitcher.switchToScreen({ type: "mainGame" });
 		});
 	}
 

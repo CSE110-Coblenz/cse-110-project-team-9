@@ -3,7 +3,7 @@ import { ScreenController, ScreenSwitcher } from "../../types";
 import { AudioController } from "../../audios/AudioController";
 
 export class StartingScreenController extends ScreenController {
-	private view: StartingScreenView;
+	private _view: StartingScreenView;
 	private screenSwitcher: ScreenSwitcher;
 	private audio: AudioController;
 
@@ -11,20 +11,21 @@ export class StartingScreenController extends ScreenController {
 		super();
 
 		this.screenSwitcher = screenSwitcher;
-		this.view = new StartingScreenView();
+		this._view = new StartingScreenView();
 		this.audio = audio;
 
 		/**
 		 * Click anywhere to go to HomeScreen and start BGM
 		 */
-		this.view.getGroup().on("click", () => {
-			this.audio.play("home_bgm", true); // true for loop (BGM)
+		this._view.getGroup().on("click", () => {
 			this.screenSwitcher.switchToScreen({ type: "home" });
 		});
 	}
 
 	getView(): StartingScreenView {
-		return this.view;
+		return this._view;
 	}
+
+	get view() { return this._view; }
 }
 
