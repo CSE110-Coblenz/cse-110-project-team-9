@@ -21,6 +21,7 @@ export class SettingsScreenController extends ScreenController {
 		this.view.getSaveButton().on("click", () => {
 			localStorage.setItem("bgm_volume", this.audio.getVolume("bgm").toString());
 			localStorage.setItem("sfx_volume", this.audio.getVolume("sfx").toString());
+			this.audio.playMusic("click_sfx");
 			
 			if (this.returnTo) {
 				this.screenSwitcher.switchToScreen(this.returnTo);
