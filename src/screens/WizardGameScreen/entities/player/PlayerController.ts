@@ -91,16 +91,25 @@ export class PlayerController implements Collidable {
         if (dx !== 0 || dy !== 0) {
             this._model.animation = "walk";
             this.audio.play("walk", true);
-        } else if (this.input.isDown("f")) {
+        } else if (this.input.isDown("f")) {            
+            if(this._model.currentAnimation !== "attackslash"){
+                this.audio.play("attackslash", true);
+            }
             this._model.animation = "attackslash";
-            this.audio.play("attackslash");
         } else if (this.input.isDown("e")) {
+            if(this._model.currentAnimation !== "attackdown"){
+                this.audio.play("attackdown", true);
+            }
             this._model.animation = "attackdown";
-            this.audio.play("attackdown");
         } else if (this.input.isDown("r")) {
+            if(this._model.currentAnimation !== "attackbow"){
+                this.audio.play("attackbow", true);
+            }
             this._model.animation = "attackbow";
-            this.audio.play("attackbow");
         } else {
+            this.audio.stop("attackslash");
+            this.audio.stop("attackdown");
+            this.audio.stop("attackbow");
             this.audio.stop("walk");
             this._model.animation = "idle";            
         }

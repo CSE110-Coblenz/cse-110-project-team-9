@@ -168,7 +168,6 @@ export class WizardGameScreenController extends ScreenController {
  * Generate AI SFX and Grab BGM
  * 
  * BUGS/FIX:
- * holding down attack button does not repeat the audio
  * Fix exit game/ mem cleanup
  * holding shift key down while walking
  * 
