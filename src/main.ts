@@ -1,5 +1,6 @@
 import Konva from "konva";
 import type { ScreenSwitcher, Screen } from "./types";
+import { StartingScreenController } from "./screens/StartingScreen/StartingScreenController";
 import { HomeScreenController } from "./screens/HomeScreen/HomeScreenController";
 import { SettingsScreenController } from "./screens/SettingsScreen/SettingsScreenController";
 import { MainGameScreenController } from "./screens/MainGameScreen/MainGameScreenController";
@@ -10,7 +11,9 @@ import { AudioController } from "./audios/AudioController";
 class App implements ScreenSwitcher {
 	private stage: Konva.Stage;
 	private layer: Konva.Layer;
+	private _lastScreen: Screen;
 
+	private startingController: StartingScreenController;
 	private homeController: HomeScreenController;
 	private settingsController: SettingsScreenController;
 	private mainGameController: MainGameScreenController;
@@ -32,11 +35,13 @@ class App implements ScreenSwitcher {
 		this.audio = new AudioController();
 
 		// Initialize all screen controllers
+		this.startingController = new StartingScreenController(this, this.audio);
 		this.homeController = new HomeScreenController(this, this.audio);
 		this.settingsController = new SettingsScreenController(this, this.audio);
 		this.mainGameController = new MainGameScreenController(this, this.audio);
 
 		// Add all screen groups to the layer
+		this.layer.add(this.startingController.getView().getGroup());
 		this.layer.add(this.homeController.getView().getGroup());
 		this.layer.add(this.settingsController.getView().getGroup());
 		this.layer.add(this.mainGameController.getView().getGroup());
@@ -44,31 +49,45 @@ class App implements ScreenSwitcher {
 		// Draw the layer
 		this.layer.draw();
 
-		// Start with home screen visible
-		this.switchToScreen({ type: "home" });
+		this._lastScreen = {type: "starting"};
+
+		// Start with starting screen visible
+		this.switchToScreen({ type: "starting" });
 	}
 
 	switchToScreen(screen: Screen): void {
 
+		this._lastScreen = screen;
+
+		this.startingController.hide();
+		this.homeController.hide();
+		this.settingsController.hide();
+		this.mainGameController.hide();
+
 		switch (screen.type) {
-			case "home":
-				this.homeController.show();
-				// Hide settings screen (Need for settings close button)
-				this.settingsController.hide();
+			case "starting":
+				this.startingController.show();
 				break;
 
-			case "settings":
+			case "home":
 				this.homeController.show();
-				this.settingsController.show();
 				break;
 
 			case "mainGame":
-				this.homeController.hide();
-				this.settingsController.hide();
 				this.mainGameController.show();
 				break;
 		}
 	}
+
+	layerOnScreen(screen: Screen): void {
+		switch (screen.type) {
+			case "settings":
+				this.settingsController.show();
+				break;
+		}
+	}
+
+	get lastScreen() { return this._lastScreen; }
 }
 
 // Initialize the application
