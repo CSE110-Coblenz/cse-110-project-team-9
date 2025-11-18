@@ -6,8 +6,9 @@ import { WizardGameScreenModel } from "./WizardGameScreenModel";
 import { WizardGameScreenViewer } from "./WizardGameScreenViewer";
 //Collision Manager
 import { CollisionManager } from "./entities/CollisionManager";
-//entities 
+//player
 import { PlayerController } from "./entities/player/PlayerController";
+// import { PlayerHUD } from "./entities/player/PlayerHUD";
 import { PlayerFactory } from "./entities/player/PlayerFactory";
 //audio
 import { AudioController } from "../../audios/AudioController";
@@ -21,17 +22,15 @@ export class WizardGameScreenController extends ScreenController {
     private view: WizardGameScreenViewer;
 
     private playerController: PlayerController;
-    private enemyManager: EnemyManager;
+        private enemyManager: EnemyManager;
 
     private collisionManager: CollisionManager;
     private input: InputHandler;
 
-    //TODO: remove
     private showBoundingBoxes = false;
 
     private lastUpdateTime = 0;
     private animationFrameId: number | null = null;
-
 
     private keydownHandler = (e: KeyboardEvent) => {
         if (e.key === 'b') {
@@ -68,7 +67,14 @@ export class WizardGameScreenController extends ScreenController {
         this.input = new InputHandler();
         
         //player
-        this.playerController = PlayerFactory.create(150, 150, "knight", this.view.getGroup(), this.audio, this.input);
+        this.playerController = PlayerFactory.create(
+            150, 
+            150, 
+            "knight", 
+            this.view.getGroup(),  //maybe add hud for player as seperta layer
+            this.audio, 
+            this.input
+        );
 
         //collision between entities
         this.collisionManager = new CollisionManager();
@@ -101,7 +107,7 @@ export class WizardGameScreenController extends ScreenController {
         //register collidables e.g. player for now. projectiles and blocks to added later
         this.collisionManager.register(this.playerController);
 
-        //TODO: fix
+        //TODO: remove this goad awful thing
         //disable image smoothing for sprites
         const layer = this.view.getGroup().getLayer();
         if (layer) {
@@ -167,19 +173,13 @@ export class WizardGameScreenController extends ScreenController {
  * add boundary box for window
  * add boundary box for all collidabl entities no overlap
  * attacks can overlap perhaps
- * add damage hurt modifer to enemies on damage and player
+ * Add hurt animation
  * 
- * generat ai audio for sound effects perhaps
- * grab game audio bgm music list perhaps
- * 
+ * Generate AI SFX and Grab BGM
  * 
  * BUGS/FIX:
  * holding down attack button does not repeat the audio
- * fix escape key not returning back to main menu
+ * Fix exit game/ mem cleanup
  * holding shift key down while walking
- * main game board assets need a change
- * added flip image when 
  * 
- * 
- * add image sprite size and scale size actrascitons
- */
+  */

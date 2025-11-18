@@ -4,6 +4,8 @@ import Konva from 'konva';
 import { PlayerViewer } from "./PlayerViewer";
 import { PlayerModel } from './PlayerModel';
 import { PlayerController } from "./PlayerController";
+//Player HUD
+import { PlayerHUD } from './PlayerHUD';
 
 //InputHandler
 import { InputHandler } from '../../InputHandler';
@@ -29,7 +31,6 @@ export class PlayerFactory {
         audio: AudioController, 
         input: InputHandler
     ): PlayerController {
-
         let model: PlayerModel;
         let viewer: PlayerViewer;
         let scale = 4;
@@ -55,6 +56,8 @@ export class PlayerFactory {
                 throw new Error('unknown player type');
         }
 
-        return new PlayerController(model, viewer, audio, input);
+        const hud = new PlayerHUD(group, model);
+
+        return new PlayerController(model, hud, viewer, audio, input);
     }
 }

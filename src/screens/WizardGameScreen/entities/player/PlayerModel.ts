@@ -3,6 +3,7 @@ export class PlayerModel {
     private _y: number;
     private _speed: number;
     private _health: number; //out of 100
+    private _mana: number; //out of 100
     private _currentAnimation: string;
     //this is a audio mapping
     private _AUDIO: Record<string, string>;
@@ -27,6 +28,7 @@ export class PlayerModel {
         this._y = y;
         this._speed = speed;
         this._health = 100;
+        this._mana = 100;
         this._currentAnimation = "idle";
         this._AUDIO = AUDIO;
         this._direction = "right";
@@ -41,6 +43,7 @@ export class PlayerModel {
         this._y = 60; 
         this._speed = 150;
         this._health = 100;
+        this._mana = 100;
         this._currentAnimation = "idle";
         this._direction = "right";
     }
@@ -51,6 +54,7 @@ export class PlayerModel {
      */
     damage(amount: number) {
         this._health -= amount;
+        console.log(this._health);
         if (this._health < 0) this._health = 0;
     }
 
@@ -64,6 +68,7 @@ export class PlayerModel {
     get currentAnimation() { return this._currentAnimation; }
     get audio() { return this._AUDIO }
     get health() { return this._health; }
+    get mana() { return this._mana; }
     get direction() { return this._direction; }
 
     public worldBoundingBox(frameIndex: number, scale: number): { x: number; y: number; width: number; height: number } {
@@ -88,8 +93,9 @@ export class PlayerModel {
     /**
      * setters for private values
      */
-    set direction(value: "left" | "right") { this._direction = value; }
-    set animation(animation: string) {this._currentAnimation = animation; }
+    set direction(d: "left" | "right") { this._direction = d; }
+    set animation(a: string) {this._currentAnimation = a; }
+    set mana(m: number) {this._mana = m;}
 
     move(dx: number, dy: number){
         this._x += dx;

@@ -13,10 +13,14 @@ import { Collidable, AABB } from "../CollisionManager";
 //Audio Controller
 import { AudioController } from "../../../../audios/AudioController";
 
+//PlayerHUD
+import { PlayerHUD } from "./PlayerHUD";
+
 export class PlayerController implements Collidable {
 
     constructor(
         private _model: PlayerModel, 
+        private _hud: PlayerHUD,
         private view: PlayerViewer,
         private audio: AudioController,
         private input: InputHandler 
@@ -39,7 +43,10 @@ export class PlayerController implements Collidable {
      * check collision
      * @param other
      */
-    public onCollision?(other: Collidable): void;
+    public onCollision?(other: Collidable): void{
+        this._model.damage(1);
+    }
+
 
     /**
      * reset function;
@@ -99,6 +106,7 @@ export class PlayerController implements Collidable {
             this.audio.stop("walk");
             this._model.animation = "idle";            
         }
+        this._hud.render();
         this.view.render(this._model);
     }
 
