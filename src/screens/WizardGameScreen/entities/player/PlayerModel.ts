@@ -54,7 +54,6 @@ export class PlayerModel {
      */
     damage(amount: number) {
         this._health -= amount;
-        console.log(this._health);
         if (this._health < 0) this._health = 0;
     }
 

@@ -17,7 +17,7 @@ export class MainGameScreenController extends ScreenController {
         
         super();
 
-        this.view = new MainGameScreenView(this.gameModel);
+        this.view = new MainGameScreenView(this.gameModel, audio);
         this.screenSwitcher = screenSwitcher;
         this.audio = audio;
 

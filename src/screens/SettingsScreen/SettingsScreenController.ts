@@ -22,8 +22,8 @@ export class SettingsScreenController extends ScreenController {
 		});
 
 		this.view.setVolumeChangeHandler((ratio, type) => {
-			if (type === "bgm") this.audio.setBgmVolume(ratio);
-			else if (type === "sfx") this.audio.setSfxVolume(ratio);
+			if (type === "bgm") this.audio.bgmVolume = ratio;
+			else if (type === "sfx") this.audio.sfxVolume = ratio;
 		});
 	}
 

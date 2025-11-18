@@ -2,6 +2,7 @@ import Konva from "konva";
 import type { View } from "../../types";
 import { STAGE_WIDTH, STAGE_HEIGHT } from "../../constants";
 import { MainGameScreenModel, NodeType } from "./MainGameScreenModel";
+import { AudioController } from "../../audios/AudioController";
 
 export class MainGameScreenView implements View {
     private group: Konva.Group;
@@ -12,12 +13,14 @@ export class MainGameScreenView implements View {
     private scoreText: Konva.Text;
     private nodeEventText: Konva.Text;
     private diceResultText: Konva.Text;
-    private pieceImage: Konva.Image;
+    private pieceImage?: Konva.Image;
     private model: MainGameScreenModel;
+    private audio: AudioController;
     private boardHeadIndex = 39; // Start with the 40th tile (index 39) as the leftmost
 
-    constructor(model: MainGameScreenModel) {
+    constructor(model: MainGameScreenModel, audio: AudioController) {
         this.model = model;
+        this.audio = audio;
         const boardLength = 40;
         this.group = new Konva.Group({ visible: false });
 
@@ -174,6 +177,7 @@ export class MainGameScreenView implements View {
     async animatePlayerPieceRoll(count: number): Promise<void> {
         for (let i = 0; i < count; i++) {
             await this.doSinglePieceAnimation();
+            this.audio.play("piece_move_sfx");
         }
     }
 
@@ -213,7 +217,7 @@ export class MainGameScreenView implements View {
 
             // Animate piece jumping
             const tweenUp = new Konva.Tween({
-                node: this.pieceImage,
+                node: this.pieceImage!,
                 y: originalY - 75,
                 duration: 0.15,
                 easing: Konva.Easings.EaseOut,
@@ -230,7 +234,7 @@ export class MainGameScreenView implements View {
                     }
 
                     const tweenDown = new Konva.Tween({
-                        node: this.pieceImage,
+                        node: this.pieceImage!,
                         y: originalY,
                         duration: 0.5,
                         easing: Konva.Easings.EaseIn,
@@ -363,18 +367,18 @@ export class MainGameScreenView implements View {
     }
     disableRollButton(): void {
         const buttonRect = this.diceRollButton.findOne('.buttonRect');
-        if (buttonRect) {   
+        if (buttonRect && buttonRect instanceof Konva.Rect) {
             buttonRect.listening(false);
-            // buttonRect.fill('#b2bec3'); // A disabled grey color
+            buttonRect.fill('#b2bec3'); // A disabled grey color
             this.group.getLayer()?.batchDraw();
         }
     }
 
     enableRollButton(): void {
         const buttonRect = this.diceRollButton.findOne('.buttonRect');
-        if (buttonRect) {
+        if (buttonRect && buttonRect instanceof Konva.Rect) {
             buttonRect.listening(true);
-            //buttonRect.fill('#ff7675'); // Original color
+            buttonRect.fill('#ff7675'); // Original color
             this.group.getLayer()?.batchDraw();
         }
     }
