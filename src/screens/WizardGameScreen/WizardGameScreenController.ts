@@ -157,11 +157,12 @@ export class WizardGameScreenController extends ScreenController {
  * 
  * NEED TO COMPLETE:
  * seperate attack image from player / same thing with enemy HARD
- * 
  * add boundary box for window
  * add boundary box for all collidable entities no overlap
  * 
+ * 
  * Add hurt animation
+ * Add death animation
  * 
  * when player dies end game result screen  
  * 

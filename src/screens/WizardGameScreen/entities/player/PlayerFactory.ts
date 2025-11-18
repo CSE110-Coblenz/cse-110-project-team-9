@@ -14,7 +14,6 @@ import { InputHandler } from '../../InputHandler';
 import { AudioController } from '../../../../audios/AudioController';
 
 //Types of assets
-import { wizardSrc, WIZARD_ANIMATIONS, WIZARD_BOUNDING_BOXES, WIZARD_AUDIO} from "../types/Wizard";
 import { knightSrc, KNIGHT_ANIMATIONS, KNIGHT_BOUNDING_BOXES, KNIGHT_AUDIO} from "../types/Knight";
 
 export type PlayerType = "wizard" | "knight";
@@ -36,14 +35,6 @@ export class PlayerFactory {
         let scale = 4;
 
         switch(type) {
-            case "wizard":
-                model = new PlayerModel(x, y, 150, WIZARD_AUDIO, WIZARD_BOUNDING_BOXES);
-                viewer = new PlayerViewer(group,
-                    { image: wizardSrc, animations: WIZARD_ANIMATIONS },
-                    model,
-                    scale,
-                );
-                break;
             case "knight":
                 model = new PlayerModel(x, y, 150, KNIGHT_AUDIO, KNIGHT_BOUNDING_BOXES);
                 viewer = new PlayerViewer(group,

@@ -8,7 +8,6 @@ import { EnemyController } from './EnemyController';
 import { AudioController } from '../../../../audios/AudioController';
 
 //Types of assets
-import { wizardSrc, WIZARD_ANIMATIONS, type WizardAnimation, WIZARD_BOUNDING_BOXES, WIZARD_AUDIO } from "../types/Wizard";
 import { knightSrc, KNIGHT_ANIMATIONS, type KnightAnimation, KNIGHT_BOUNDING_BOXES, KNIGHT_AUDIO} from "../types/Knight";
 import { orcSrc, ORC_ANIMATIONS, type OrcAnimation, ORC_BOUNDING_BOXES, ORC_AUDIO} from "../types/Orc";
 
@@ -31,15 +30,6 @@ export class EnemyFactory {
 
 
         switch(type) {
-            case "wizard":
-                model = new EnemyModel(x, y, 150, WIZARD_AUDIO, WIZARD_BOUNDING_BOXES);
-                viewer =  new EnemyViewer(
-                    group,
-                    { image: wizardSrc, animations: WIZARD_ANIMATIONS },
-                    model,
-                    scale,
-                );
-                break;
             case "knight":
                 model = new EnemyModel(x, y, 150, KNIGHT_AUDIO, KNIGHT_BOUNDING_BOXES);
                 viewer = new EnemyViewer(

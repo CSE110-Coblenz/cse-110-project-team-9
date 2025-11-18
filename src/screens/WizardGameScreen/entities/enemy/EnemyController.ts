@@ -3,7 +3,7 @@ import { EnemyModel } from "./EnemyModel";
 import { EnemyViewer } from "./EnemyViewer";
 
 //Collision Handling
-import { Collidable, AABB } from "../CollisionManager";
+import { Collidable } from "../CollisionManager";
 
 //Audio Controller
 import { AudioController } from "../../../../audios/AudioController";
