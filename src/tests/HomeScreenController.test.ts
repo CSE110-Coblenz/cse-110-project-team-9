@@ -81,12 +81,13 @@ describe("HomeScreenController", () => {
     beforeEach(() => {
         mockScreenSwitcher = { 
             switchToScreen: vi.fn(),
-            layerOnScreen: vi.fn()
+            layerOnScreen: vi.fn(),
+            lastScreen: { type: "starting" },
         };
         mockAudio = {
-        playBGM: vi.fn(),
-        playSFX: vi.fn(),
-        stopBGM: vi.fn(),
+        play: vi.fn(),
+        stopAll: vi.fn(),
+        registerSound: vi.fn(),
         } as unknown as AudioController;
 
         controller = new HomeScreenController(mockScreenSwitcher, mockAudio);
@@ -99,7 +100,6 @@ describe("HomeScreenController", () => {
         expect(controller).toBeDefined();
         expect(viewInstance.getSettingsButton).toHaveBeenCalled();
         expect(viewInstance.getStartButton).toHaveBeenCalled();
-        expect(viewInstance.getGroup).toHaveBeenCalled();
     });
 
     /**
@@ -109,8 +109,8 @@ describe("HomeScreenController", () => {
         const callback = viewInstance.getSettingsButton().on.mock.calls[0][1];
         callback();
 
-        expect(mockAudio.playSFX).toHaveBeenCalledWith("click_sfx");
-        expect(mockScreenSwitcher.layerOnScreen).toHaveBeenCalledWith({ type: "settings", returnTo: { type: "home" } });
+        expect(mockAudio.play).toHaveBeenCalledWith("click_sfx");
+        expect(mockScreenSwitcher.layerOnScreen).toHaveBeenCalledWith({ type: "settings" });
     });
 
     /**
@@ -120,27 +120,24 @@ describe("HomeScreenController", () => {
         const callback = viewInstance.getStartButton().on.mock.calls[0][1];
         callback();
 
-        expect(mockAudio.playSFX).toHaveBeenCalledWith("click_sfx");
+        expect(mockAudio.play).toHaveBeenCalledWith("click_sfx");
         expect(mockScreenSwitcher.switchToScreen).toHaveBeenCalledWith({ type: "mainGame" });
     });
 
     /**
-     * Test 4: Group Click to Play BGM
+     * Test 4: getView plays BGM
      */
-    it("should play BGM when group clicked and remove listener", () => {
-        const callback = viewInstance.getGroup().on.mock.calls[0][1];
-        callback();
-
-        expect(mockAudio.playBGM).toHaveBeenCalledWith("home_bgm");
-        expect(viewInstance.getGroup().off).toHaveBeenCalledWith("click");
+    it("should play BGM when getView is called", () => {
+        controller.getView();
+        expect(mockAudio.play).toHaveBeenCalledWith("home_bgm", true);
     });
 
     /**
      * Test 5: Hide Method
      */
-    it("should stop BGM and hide view when hide() is called", () => {
+    it("should stop all audio and hide view when hide() is called", () => {
         controller.hide();
-        expect(mockAudio.stopBGM).toHaveBeenCalled();
+        expect(mockAudio.stopAll).toHaveBeenCalled();
         expect(viewInstance.hide).toHaveBeenCalled();
     });
 });

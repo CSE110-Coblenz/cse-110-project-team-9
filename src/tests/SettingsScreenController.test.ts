@@ -51,11 +51,14 @@ describe("SettingsScreenController", () => {
         mockScreenSwitcher = {
             switchToScreen: vi.fn(),
             layerOnScreen: vi.fn(),
+            lastScreen: { type: "starting" },
         };
         mockAudio = {
-            getVolume: vi.fn().mockReturnValue(0.5),
-            changeVolume: vi.fn(),
-            playSFX: vi.fn(),
+            bgmVolume: 0.5,
+            sfxVolume: 0.5,
+            setBgmVolume: vi.fn(),
+            setSfxVolume: vi.fn(),
+            play: vi.fn(),
         } as unknown as AudioController;
 
         controller = new SettingsScreenController(mockScreenSwitcher, mockAudio);
@@ -71,67 +74,33 @@ describe("SettingsScreenController", () => {
     });
 
     /**
-     * Test 2: Save button saves volumes to localStorage
+     * Test 2: Save button plays click sound and hides
      */
-    it("should save volumes to localStorage when save button is clicked", () => {
-        (mockAudio.getVolume as any).mockReturnValueOnce(0.7).mockReturnValueOnce(0.8);
-        
+    it("should play click sound and hide when save button is clicked", () => {
         const callback = viewInstance.getSaveButton().on.mock.calls[0][1];
         callback();
 
-        expect(mockAudio.playSFX).toHaveBeenCalledWith("click_sfx");
-        expect(mockAudio.getVolume).toHaveBeenCalledWith("bgm");
-        expect(mockAudio.getVolume).toHaveBeenCalledWith("sfx");
-        expect(localStorage.setItem).toHaveBeenCalledWith("bgm_volume", "0.7");
-        expect(localStorage.setItem).toHaveBeenCalledWith("sfx_volume", "0.8");
+        expect(mockAudio.play).toHaveBeenCalledWith("click_sfx");
+        expect(viewInstance.hide).toHaveBeenCalled();
     });
 
     /**
-     * Test 3: Save button switches to return screen
+     * Test 3: Volume change handler calls setBgmVolume or setSfxVolume
      */
-    it("should switch to return screen when save button is clicked and returnTo is set", () => {
-        const returnScreen: Screen = { type: "mainGame" };
-        controller.setReturnTo(returnScreen);
-        
-        const callback = viewInstance.getSaveButton().on.mock.calls[0][1];
-        callback();
-
-        expect(mockScreenSwitcher.switchToScreen).toHaveBeenCalledWith(returnScreen);
-    });
-
-    /**
-     * Test 4: Save button does not switch when returnTo is null
-     */
-    it("should not switch screen when returnTo is null", () => {
-        const callback = viewInstance.getSaveButton().on.mock.calls[0][1];
-        callback();
-
-        expect(mockScreenSwitcher.switchToScreen).not.toHaveBeenCalled();
-    });
-
-    /**
-     * Test 5: Volume change handler calls changeVolume
-     */
-    it("should call changeVolume when volume change handler is triggered", () => {
+    it("should call setBgmVolume when volume change handler is triggered for bgm", () => {
         const handler = viewInstance.setVolumeChangeHandler.mock.calls[0][0];
         
         handler(0.6, "bgm");
-        expect(mockAudio.changeVolume).toHaveBeenCalledWith(0.6, "bgm");
-        
-        handler(0.4, "sfx");
-        expect(mockAudio.changeVolume).toHaveBeenCalledWith(0.4, "sfx");
+        expect(mockAudio.setBgmVolume).toHaveBeenCalledWith(0.6);
     });
 
     /**
-     * Test 6: setReturnTo sets return screen
+     * Test 4: Volume change handler calls setSfxVolume for sfx
      */
-    it("should set return screen correctly", () => {
-        const returnScreen: Screen = { type: "home" };
-        controller.setReturnTo(returnScreen);
+    it("should call setSfxVolume when volume change handler is triggered for sfx", () => {
+        const handler = viewInstance.setVolumeChangeHandler.mock.calls[0][0];
         
-        const callback = viewInstance.getSaveButton().on.mock.calls[0][1];
-        callback();
-
-        expect(mockScreenSwitcher.switchToScreen).toHaveBeenCalledWith(returnScreen);
+        handler(0.4, "sfx");
+        expect(mockAudio.setSfxVolume).toHaveBeenCalledWith(0.4);
     });
 });

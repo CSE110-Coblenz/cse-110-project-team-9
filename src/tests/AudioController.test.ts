@@ -24,12 +24,26 @@ describe("AudioController", () => {
                 mockAudioElement = this;
             }
         } as any;
+
+        // Mock window events
+        globalThis.window = {
+            addEventListener: vi.fn(),
+            removeEventListener: vi.fn(),
+        } as any;
+
+        // Mock document visibility
+        globalThis.document = {
+            visibilityState: "visible",
+        } as any;
     });
 
     beforeEach(() => {
         // Reset AudioModel singleton
         (AudioModel as any).instance = null;
         audioController = new AudioController();
+        
+        // Simulate user interaction
+        (audioController as any).hasUserInteracted = true;
     });
 
     /**
@@ -40,148 +54,128 @@ describe("AudioController", () => {
     });
 
     /**
-     * Test 2: playBGM with valid BGM key
+     * Test 2: registerSound registers a new sound
      */
-    it("should play music when valid BGM key is provided", () => {
+    it("should register a new sound", () => {
+        audioController.registerSound("test_bgm", "/test/path.mp3");
         const model = (audioController as any).model;
-        const sound = model.sounds["home_bgm"];
+        expect(model.sounds["test_bgm"]).toBeDefined();
+    });
+
+    /**
+     * Test 3: play with loop for BGM
+     */
+    it("should play BGM with loop when loop is true", () => {
+        audioController.registerSound("test_bgm", "/test/path.mp3");
+        const model = (audioController as any).model;
+        const sound = model.sounds["test_bgm"];
         const playSpy = vi.spyOn(sound, "play");
         
-        audioController.playBGM("home_bgm");
+        audioController.play("test_bgm", true);
         
-        expect(sound.muted).toBe(false);
+        expect(sound.loop).toBe(true);
         expect(playSpy).toHaveBeenCalled();
     });
 
     /**
-     * Test 3: playBGM rejects non-BGM keys
+     * Test 4: play without loop for SFX
      */
-    it("should not play music when non-BGM key is provided", () => {
-        const consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    it("should play SFX without loop and reset currentTime", () => {
+        audioController.registerSound("test_sfx", "/test/path.mp3");
         const model = (audioController as any).model;
-        const sound = model.sounds["click_sfx"];
+        const sound = model.sounds["test_sfx"];
+        sound.currentTime = 10; // Set to non-zero
         const playSpy = vi.spyOn(sound, "play");
         
-        audioController.playBGM("click_sfx");
+        audioController.play("test_sfx", false);
         
-        expect(consoleSpy).toHaveBeenCalled();
-        expect(playSpy).not.toHaveBeenCalled();
-        consoleSpy.mockRestore();
-    });
-
-    /**
-     * Test 4: playBGM with invalid key
-     */
-    it("should not throw error when invalid key is provided", () => {
-        expect(() => {
-            audioController.playBGM("invalid_key");
-        }).not.toThrow();
-    });
-
-    /**
-     * Test 5: playSFX with valid SFX key
-     */
-    it("should play SFX when valid SFX key is provided", () => {
-        const model = (audioController as any).model;
-        const sound = model.sounds["click_sfx"];
-        const playSpy = vi.spyOn(sound, "play");
-        
-        audioController.playSFX("click_sfx");
-        
-        expect(sound.muted).toBe(false);
+        expect(sound.loop).toBe(false);
         expect(sound.currentTime).toBe(0);
         expect(playSpy).toHaveBeenCalled();
     });
 
     /**
-     * Test 6: playSFX rejects non-SFX keys
+     * Test 5: play with invalid key
      */
-    it("should not play SFX when non-SFX key is provided", () => {
-        const consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
-        const model = (audioController as any).model;
-        const sound = model.sounds["home_bgm"];
-        const playSpy = vi.spyOn(sound, "play");
-        
-        audioController.playSFX("home_bgm");
-        
-        expect(consoleSpy).toHaveBeenCalled();
-        expect(playSpy).not.toHaveBeenCalled();
-        consoleSpy.mockRestore();
-    });
-
-    /**
-     * Test 7: playSFX with invalid key
-     */
-    it("should not throw error when invalid SFX key is provided", () => {
+    it("should not throw error when invalid key is provided", () => {
         expect(() => {
-            audioController.playSFX("invalid_key");
+            audioController.play("invalid_key");
         }).not.toThrow();
     });
 
     /**
-     * Test 8: playBGM doesn't restart if already playing
+     * Test 6: play doesn't play if user hasn't interacted
      */
-    it("should not restart BGM if already playing", () => {
+    it("should not play if user hasn't interacted", () => {
+        (audioController as any).hasUserInteracted = false;
+        audioController.registerSound("test_bgm", "/test/path.mp3");
         const model = (audioController as any).model;
-        const sound = model.sounds["home_bgm"];
-        sound.paused = false;
-        sound.ended = false;
+        const sound = model.sounds["test_bgm"];
         const playSpy = vi.spyOn(sound, "play");
         
-        audioController.playBGM("home_bgm");
+        audioController.play("test_bgm", true);
         
-        expect(sound.muted).toBe(false);
         expect(playSpy).not.toHaveBeenCalled();
     });
 
     /**
-     * Test 9: stopBGM stops looping sounds
+     * Test 7: stop stops a specific sound
      */
-    it("should stop all looping sounds", () => {
+    it("should stop a specific sound", () => {
+        audioController.registerSound("test_bgm", "/test/path.mp3");
         const model = (audioController as any).model;
-        const sound = model.sounds["home_bgm"]; // home_bgm has loop = true
+        const sound = model.sounds["test_bgm"];
         const pauseSpy = vi.spyOn(sound, "pause");
         
-        audioController.stopBGM();
+        audioController.stop("test_bgm");
         
         expect(pauseSpy).toHaveBeenCalled();
+        expect(sound.currentTime).toBe(0);
     });
 
     /**
-     * Test 10: changeVolume for BGM
+     * Test 8: stopAll stops all sounds
      */
-    it("should change BGM volume", () => {
-        audioController.changeVolume(0.7, "bgm");
-        expect(audioController.getVolume("bgm")).toBe(0.7);
-    });
-
-    /**
-     * Test 11: changeVolume for SFX
-     */
-    it("should change SFX volume", () => {
-        audioController.changeVolume(0.8, "sfx");
-        expect(audioController.getVolume("sfx")).toBe(0.8);
-    });
-
-    /**
-     * Test 12: getVolume returns correct values
-     */
-    it("should return correct volume values", () => {
-        audioController.changeVolume(0.6, "bgm");
-        audioController.changeVolume(0.4, "sfx");
+    it("should stop all sounds", () => {
+        audioController.registerSound("test_bgm", "/test/path.mp3");
+        audioController.registerSound("test_sfx", "/test/path2.mp3");
+        const model = (audioController as any).model;
+        const sound1 = model.sounds["test_bgm"];
+        const sound2 = model.sounds["test_sfx"];
+        const pauseSpy1 = vi.spyOn(sound1, "pause");
+        const pauseSpy2 = vi.spyOn(sound2, "pause");
         
-        expect(audioController.getVolume("bgm")).toBe(0.6);
-        expect(audioController.getVolume("sfx")).toBe(0.4);
+        audioController.stopAll();
+        
+        expect(pauseSpy1).toHaveBeenCalled();
+        expect(pauseSpy2).toHaveBeenCalled();
     });
 
     /**
-     * Test 13: Volume validation - invalid values
+     * Test 9: setBgmVolume and get bgmVolume
      */
-    it("should clamp volume to valid range", () => {
-        audioController.changeVolume(-1, "bgm");
-        expect(audioController.getVolume("bgm")).toBeGreaterThanOrEqual(0);
+    it("should set and get BGM volume", () => {
+        audioController.setBgmVolume(0.7);
+        expect(audioController.bgmVolume).toBe(0.7);
+    });
+
+    /**
+     * Test 10: setSfxVolume and get sfxVolume
+     */
+    it("should set and get SFX volume", () => {
+        audioController.setSfxVolume(0.8);
+        expect(audioController.sfxVolume).toBe(0.8);
+    });
+
+    /**
+     * Test 11: Volume is applied to registered sounds
+     */
+    it("should apply volume to registered sounds", () => {
+        audioController.setBgmVolume(0.6);
+        audioController.registerSound("test_bgm", "/test/path.mp3");
+        const model = (audioController as any).model;
+        const sound = model.sounds["test_bgm"];
         
-        audioController.changeVolume(2, "bgm");
-        expect(audioController.getVolume("bgm")).toBeLessThanOrEqual(1);
+        expect(sound.volume).toBe(0.6);
     });
 });
