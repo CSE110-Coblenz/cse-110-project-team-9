@@ -47,11 +47,11 @@ export class MainGameScreenView implements View {
 
         // Score Text
         const currentPlayerID = this.model.getCurrentPlayerID();
-        const score = this.model.getPlayerScore(currentPlayerID);
+        //const score = this.model.getPlayerScore(currentPlayerID);
         this.scoreText = new Konva.Text({
             x: 20,
             y: 20,
-            text: `Score: ${score}`,
+            //text: `Score: ${score}`,
             fontSize: 24,
             fontStyle: 'bold',
             fill: '#333',
@@ -367,7 +367,7 @@ export class MainGameScreenView implements View {
     }
     disableRollButton(): void {
         const buttonRect = this.diceRollButton.findOne('.buttonRect');
-        if (buttonRect && buttonRect instanceof Konva.Rect) {
+        if (buttonRect instanceof Konva.Rect) {
             buttonRect.listening(false);
             buttonRect.fill('#b2bec3'); // A disabled grey color
             this.group.getLayer()?.batchDraw();
@@ -396,8 +396,8 @@ export class MainGameScreenView implements View {
         }, 3000); // Hide after 3 seconds
     }
 
-    updateScoreDisplay(newScore: number): void {
-        this.scoreText.text(`Score: ${newScore}`);
-        this.group.getLayer()?.batchDraw();
-    }
+    // updateScoreDisplay(newScore: number): void {
+    //     this.scoreText.text(`Score: ${newScore}`);
+    //     this.group.getLayer()?.batchDraw();
+    // }
 }

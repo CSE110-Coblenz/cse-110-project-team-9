@@ -77,15 +77,15 @@ export class MainGameScreenController extends ScreenController {
             case NodeType.MEDIUM_QUESTION:
             case NodeType.HARD_QUESTION:
                 this.view.displayNodeEvent("You landed on a Question tile!");
-                const newQuestionScore = this.gameModel.getPlayerScore("default") + 5;
-                this.gameModel.setPlayerScore("default", newQuestionScore);
-                this.view.updateScoreDisplay(newQuestionScore);
+                //const newQuestionScore = this.gameModel.getPlayerScore("default") + 5;
+                //this.gameModel.setPlayerScore("default", newQuestionScore);
+                //this.view.updateScoreDisplay(newQuestionScore);
                 break;
             case NodeType.MINIGAME:
                 this.view.displayNodeEvent("You landed on a Minigame tile!");
-                const newMinigameScore = this.gameModel.getPlayerScore("default") + 10;
-                this.gameModel.setPlayerScore("default", newMinigameScore);
-                this.view.updateScoreDisplay(newMinigameScore);
+                // const newMinigameScore = this.gameModel.getPlayerScore("default") + 10;
+                // this.gameModel.setPlayerScore("default", newMinigameScore);
+                // this.view.updateScoreDisplay(newMinigameScore);
                 break;
             case NodeType.START:
                 // No action needed for the start tile

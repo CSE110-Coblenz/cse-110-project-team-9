@@ -20,12 +20,12 @@ export class MainGameScreenModel {
     NodeType.EASY_QUESTION,    // 2
     NodeType.MEDIUM_QUESTION,  // 3
     NodeType.HARD_QUESTION,    // 4
-    NodeType.EASY_QUESTION,    // 5
+    NodeType.MINIGAME,    // 5
     NodeType.MEDIUM_QUESTION,  // 6
     NodeType.MINIGAME,         // 7
     NodeType.HARD_QUESTION,    // 8
     NodeType.EASY_QUESTION,    // 9
-    NodeType.MEDIUM_QUESTION,  // 10
+    NodeType.MINIGAME,  // 10
     NodeType.HARD_QUESTION,    // 11
     NodeType.EASY_QUESTION,    // 12
     NodeType.MEDIUM_QUESTION,  // 13
@@ -47,7 +47,7 @@ export class MainGameScreenModel {
     NodeType.MEDIUM_QUESTION,  // 29
     NodeType.EASY_QUESTION,    // 30
     NodeType.MEDIUM_QUESTION,  // 31
-    NodeType.HARD_QUESTION,    // 32
+    NodeType.MINIGAME,    // 32
     NodeType.MEDIUM_QUESTION,  // 33
     NodeType.EASY_QUESTION,    // 34
     NodeType.MINIGAME,         // 35
@@ -101,13 +101,13 @@ export class MainGameScreenModel {
         this.getPlayer(playerID).position = position;
     }
 
-    public getPlayerScore(playerID: string): number {
-        return this.getPlayer(playerID).score;
-    }
+    // public getPlayerScore(playerID: string): number {
+    //     return this.getPlayer(playerID).score;
+    // }
 
-    public setPlayerScore(playerID: string, score: number): void {
-        this.getPlayer(playerID).score = score;
-    }
+    // public setPlayerScore(playerID: string, score: number): void {
+    //     this.getPlayer(playerID).score = score;
+    // }
 
 
 }

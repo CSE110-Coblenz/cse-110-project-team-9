@@ -22,13 +22,13 @@ describe('MainGameScreenModel', () => {
     expect(model.getPlayerPosition(playerID)).toBe(newPosition);
   });
 
-  it('should correctly set and get player score', () => {
-    const playerID = 'player1';
-    const newScore = 100;
+  // it('should correctly set and get player score', () => {
+  //   const playerID = 'player1';
+  //   const newScore = 100;
 
-    model.setPlayerScore(playerID, newScore);
-    expect(model.getPlayerScore(playerID)).toBe(newScore);
-  });
+  //   model.setPlayerScore(playerID, newScore);
+  //   expect(model.getPlayerScore(playerID)).toBe(newScore);
+  // });
 
   it('should advance to the next player correctly', () => {
     expect(model.getCurrentPlayerID()).toBe('player1');
@@ -60,9 +60,9 @@ describe('MainGameScreenModel', () => {
     expect(() => model.getNodeType(41)).toThrow('Node index out of bounds.');
   });
 
-  it('should initialize players with a default position of 0 and score of 0', () => {
-    const playerID = 'player1';
-    expect(model.getPlayerPosition(playerID)).toBe(0);
-    expect(model.getPlayerScore(playerID)).toBe(0);
-  });
+  // it('should initialize players with a default position of 0 and score of 0', () => {
+  //   const playerID = 'player1';
+  //   expect(model.getPlayerPosition(playerID)).toBe(0);
+  //   expect(model.getPlayerScore(playerID)).toBe(0);
+  // });
 });
