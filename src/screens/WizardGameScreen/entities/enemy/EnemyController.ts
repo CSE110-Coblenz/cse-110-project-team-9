@@ -1,5 +1,3 @@
-import Konva from "konva";
-
 //Enemy MVC
 import { EnemyModel } from "./EnemyModel";
 import { EnemyViewer } from "./EnemyViewer";

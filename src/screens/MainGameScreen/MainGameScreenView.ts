@@ -363,9 +363,9 @@ export class MainGameScreenView implements View {
     }
     disableRollButton(): void {
         const buttonRect = this.diceRollButton.findOne('.buttonRect');
-        if (buttonRect) {
+        if (buttonRect) {   
             buttonRect.listening(false);
-            //buttonRect.fill('#b2bec3'); // A disabled grey color
+            // buttonRect.fill('#b2bec3'); // A disabled grey color
             this.group.getLayer()?.batchDraw();
         }
     }

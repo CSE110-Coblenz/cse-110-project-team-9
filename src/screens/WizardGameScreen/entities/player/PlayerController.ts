@@ -1,5 +1,3 @@
-import Konva from "konva";
-
 //Player MVC
 import { PlayerModel } from "./PlayerModel";
 import { PlayerViewer } from "./PlayerViewer";
@@ -44,7 +42,7 @@ export class PlayerController implements Collidable {
      * @param other
      */
     public onCollision?(other: Collidable): void{
-        this._model.damage(1);
+        this._model.damage(5);
     }
 
 

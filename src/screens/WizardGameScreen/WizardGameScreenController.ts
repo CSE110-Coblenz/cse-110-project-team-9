@@ -46,16 +46,6 @@ export class WizardGameScreenController extends ScreenController {
         }
     }
 
-    private debugKey = (e: KeyboardEvent) => {
-        console.log({
-            key: e.key,
-            keyLower: (e.key || "").toLowerCase(),
-            code: e.code,
-            isRepeat: e.repeat,
-            capsLockOn: e.getModifierState && e.getModifierState("CapsLock")
-        });
-    };
-
     constructor(private screenSwitcher: ScreenSwitcher, private audio: AudioController) {
         super();
         //Game MVC
@@ -101,8 +91,6 @@ export class WizardGameScreenController extends ScreenController {
         this.view.show();
         this.windowBind();
         this.input.bind();
-
-        window.addEventListener("keydown", this.debugKey);
 
         //register collidables e.g. player for now. projectiles and blocks to added later
         this.collisionManager.register(this.playerController);
@@ -164,16 +152,18 @@ export class WizardGameScreenController extends ScreenController {
     }
 }
 
-
 /**
  * TODO: notepad
  * 
  * NEED TO COMPLETE:
- * seperate attack image from player / same thing with enemy
+ * seperate attack image from player / same thing with enemy HARD
+ * 
  * add boundary box for window
- * add boundary box for all collidabl entities no overlap
- * attacks can overlap perhaps
+ * add boundary box for all collidable entities no overlap
+ * 
  * Add hurt animation
+ * 
+ * when player dies end game result screen  
  * 
  * Generate AI SFX and Grab BGM
  * 

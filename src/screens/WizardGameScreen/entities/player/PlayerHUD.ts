@@ -5,7 +5,7 @@ export class PlayerHUD {
     private healthBar: Konva.Rect;
     private manaBar: Konva.Rect;
 
-    private readonly barWidth: number = 75; // full width
+    private readonly barWidth: number = 70;
     private readonly barHeight: number = 5;
 
     constructor(private group: Konva.Group, private model: PlayerModel) {
