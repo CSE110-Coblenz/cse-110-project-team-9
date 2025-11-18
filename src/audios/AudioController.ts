@@ -97,5 +97,5 @@ export class AudioController {
     get sfxVolume(): number { return this.model.sfxVolume; }
 
     set bgmVolume(v: number) { this.model.setBgmVolume(v); }
-    set sfxVolume(v: number) { this.model.setBgmVolume(v); }
+    set sfxVolume(v: number) { this.model.setSfxVolume(v); }
 }

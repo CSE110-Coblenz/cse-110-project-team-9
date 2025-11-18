@@ -109,7 +109,7 @@ describe("HomeScreenController", () => {
         const callback = viewInstance.getSettingsButton().on.mock.calls[0][1];
         callback();
 
-        expect(mockAudio.playSFX).toHaveBeenCalledWith("click_sfx");
+        expect(mockAudio.play).toHaveBeenCalledWith("click_sfx");
         expect(mockScreenSwitcher.layerOnScreen).toHaveBeenCalledWith({ type: "settings", returnTo: { type: "home" } });
     });
 
@@ -120,7 +120,7 @@ describe("HomeScreenController", () => {
         const callback = viewInstance.getStartButton().on.mock.calls[0][1];
         callback();
 
-        expect(mockAudio.playSFX).toHaveBeenCalledWith("click_sfx");
+        expect(mockAudio.play).toHaveBeenCalledWith("click_sfx");
         expect(mockScreenSwitcher.switchToScreen).toHaveBeenCalledWith({ type: "mainGame" });
     });
 
@@ -131,7 +131,7 @@ describe("HomeScreenController", () => {
         const callback = viewInstance.getGroup().on.mock.calls[0][1];
         callback();
 
-        expect(mockAudio.playBGM).toHaveBeenCalledWith("home_bgm");
+        expect(mockAudio.play).toHaveBeenCalledWith("home_bgm");
         expect(viewInstance.getGroup().off).toHaveBeenCalledWith("click");
     });
 
@@ -140,7 +140,7 @@ describe("HomeScreenController", () => {
      */
     it("should stop BGM and hide view when hide() is called", () => {
         controller.hide();
-        expect(mockAudio.stopBGM).toHaveBeenCalled();
+        expect(mockAudio.stopAll).toHaveBeenCalled();
         expect(viewInstance.hide).toHaveBeenCalled();
     });
 });

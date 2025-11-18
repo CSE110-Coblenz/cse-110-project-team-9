@@ -45,8 +45,8 @@ describe("AudioModel", () => {
     it("should initialize with default volumes", () => {
         const model = AudioModel.getInstance();
         
-        expect(model.getVolume("bgm")).toBe(0.5);
-        expect(model.getVolume("sfx")).toBe(0.5);
+        expect(model.bgmVolume).toBe(0.5);
+        expect(model.sfxVolume).toBe(0.5);
     });
 
     /**
@@ -54,9 +54,9 @@ describe("AudioModel", () => {
      */
     it("should validate and clamp negative volume values", () => {
         const model = AudioModel.getInstance();
-        model.setVolume(-1, "bgm");
+        model.setBgmVolume(-1);
         
-        expect(model.getVolume("bgm")).toBe(0.5); // Default fallback
+        expect(model.bgmVolume).toBe(0.5); // Default fallback
     });
 
     /**
@@ -64,9 +64,9 @@ describe("AudioModel", () => {
      */
     it("should validate and clamp volume values over 1", () => {
         const model = AudioModel.getInstance();
-        model.setVolume(2, "bgm");
+        model.setBgmVolume(2);
         
-        expect(model.getVolume("bgm")).toBe(0.5); // Default fallback
+        expect(model.bgmVolume).toBe(0.5); // Default fallback
     });
 
     /**
@@ -74,71 +74,8 @@ describe("AudioModel", () => {
      */
     it("should validate and handle NaN values", () => {
         const model = AudioModel.getInstance();
-        model.setVolume(NaN, "bgm");
+        model.setBgmVolume(NaN);
         
-        expect(model.getVolume("bgm")).toBe(0.5); // Default fallback
-    });
-
-    /**
-     * Test 5: registerSound creates new audio
-     */
-    it("should register a new sound", () => {
-        const model = AudioModel.getInstance();
-        model.registerSound("test_sound", "/path/to/sound.mp3", false);
-        
-        expect(model.sounds["test_sound"]).toBeDefined();
-    });
-
-    /**
-     * Test 6: registerSound with loop
-     */
-    it("should register sound with loop enabled", () => {
-        const model = AudioModel.getInstance();
-        model.registerSound("loop_sound", "/path/to/sound.mp3", true);
-        
-        expect(model.sounds["loop_sound"].loop).toBe(true);
-    });
-
-    /**
-     * Test 7: registerSound with overwrite
-     */
-    it("should overwrite existing sound when overwrite is true", () => {
-        const model = AudioModel.getInstance();
-        model.registerSound("existing", "/path/to/sound1.mp3", false);
-        const firstAudio = model.sounds["existing"];
-        
-        model.registerSound("existing", "/path/to/sound2.mp3", true, true);
-        
-        expect(model.sounds["existing"]).not.toBe(firstAudio);
-    });
-
-    /**
-     * Test 8: registerSound without overwrite
-     */
-    it("should not overwrite existing sound when overwrite is false", () => {
-        const model = AudioModel.getInstance();
-        model.registerSound("existing", "/path/to/sound1.mp3", false);
-        const firstAudio = model.sounds["existing"];
-        
-        model.registerSound("existing", "/path/to/sound2.mp3", false, false);
-        
-        expect(model.sounds["existing"]).toBe(firstAudio);
-    });
-
-    /**
-     * Test 9: applyVolume updates all sounds
-     */
-    it("should apply volume to all registered sounds", () => {
-        const model = AudioModel.getInstance();
-        model.registerSound("test_bgm", "/path/to/bgm.mp3", false);
-        model.registerSound("test_sfx", "/path/to/sfx.mp3", false);
-        
-        model.setVolume(0.9, "bgm");
-        model.setVolume(0.3, "sfx");
-        
-        // Note: This test depends on the key naming convention (includes "bgm")
-        // In real implementation, sounds with "bgm" in key get bgmVolume
-        expect(model.sounds["test_bgm"].volume).toBe(0.9);
-        expect(model.sounds["test_sfx"].volume).toBe(0.3);
+        expect(model.bgmVolume).toBe(0.5); // Default fallback
     });
 });
