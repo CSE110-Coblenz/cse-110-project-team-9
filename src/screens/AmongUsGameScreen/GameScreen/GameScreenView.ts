@@ -1,10 +1,10 @@
 import Konva from "konva";
-import type { View } from "../../../types.ts";
-import { STAGE_WIDTH, STAGE_HEIGHT } from "../../../constants.ts";
-import { Obstacle } from "./_Entity/EntityObstacle.ts";
-import { PuzzleModel } from "./_Puzzle/PuzzleModel.ts";
-import { PuzzleView } from "./_Puzzle/PuzzleView.ts";
-import { PlayerSprite } from "./_Entity/EntityPlayer.ts";
+import type { View } from "../../../types";
+import { STAGE_WIDTH, STAGE_HEIGHT } from "../../../constants";
+import { Obstacle } from "./_Entity/EntityObstacle";
+import { PuzzleModel } from "./_Puzzle/PuzzleModel";
+import { PuzzleView } from "./_Puzzle/PuzzleView";
+import { PlayerSprite } from "./_Entity/EntityPlayer";
 
 /**
  * GameScreenView - Renders the game UI using Konva

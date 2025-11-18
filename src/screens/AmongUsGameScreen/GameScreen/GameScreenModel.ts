@@ -1,4 +1,4 @@
-import { PuzzleModel } from "./_Puzzle/PuzzleModel.ts";
+import { PuzzleModel } from "./_Puzzle/PuzzleModel";
 
 /**
  * AmongUsGameScreenModel - Manages game-level state only

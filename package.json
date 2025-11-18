@@ -21,12 +21,12 @@
   },
   "homepage": "https://github.com/CSE110-Coblenz/cse-110-project-team-9#readme",
   "dependencies": {
-    "konva": "^10.0.8"
+    "konva": "^10.0.2"
   },
   "devDependencies": {
-    "@types/node": "^24.9.2",
+    "jsdom": "^27.1.0",
     "typescript": "^5.9.3",
-    "vite": "^7.1.12",
-    "vitest": "^4.0.6"
+    "vite": "^7.1.10",
+    "vitest": "^4.0.8"
   }
 }

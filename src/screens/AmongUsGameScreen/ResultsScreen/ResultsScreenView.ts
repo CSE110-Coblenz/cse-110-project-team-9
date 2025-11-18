@@ -1,115 +1,137 @@
 import Konva from "konva";
-import type { View } from "../../../types.ts";
-import type { LeaderboardEntry } from "./ResultsScreenModel.ts";
-import { STAGE_WIDTH } from "../../../constants.ts";
+import type { View } from "../../../types";
+import { STAGE_WIDTH, STAGE_HEIGHT } from "../../../constants";
 
 /**
- * ResultsScreenView - Renders the results screen
+ * ResultsScreenView - Renders the results screen UI
  */
 export class AmongUsResultsScreenView implements View {
 	private group: Konva.Group;
-	private finalScoreText: Konva.Text;
-	private leaderboardText: Konva.Text;
+	private scoreText: Konva.Text;
+	private messageText: Konva.Text;
 
-	constructor(onPlayAgainClick: () => void) {
+	constructor(
+		onPlayAgain: () => void,
+		onReturnToMainGame: () => void
+	) {
 		this.group = new Konva.Group({ visible: false });
 
-		// "Game Over" title
-		const title = new Konva.Text({
-			x: STAGE_WIDTH / 2,
-			y: 100,
-			text: "GAME OVER!",
+		// Background
+		const background = new Konva.Rect({
+			x: 0,
+			y: 0,
+			width: STAGE_WIDTH,
+			height: STAGE_HEIGHT,
+			fill: "#1e272e",
+		});
+		this.group.add(background);
+
+		// Congratulations text
+		this.messageText = new Konva.Text({
+			x: 0,
+			y: 150,
+			width: STAGE_WIDTH,
+			text: "Mission Complete!",
 			fontSize: 48,
 			fontFamily: "Arial",
-			fill: "red",
+			fill: "#00d2d3",
 			align: "center",
 		});
-		title.offsetX(title.width() / 2);
-		this.group.add(title);
+		this.group.add(this.messageText);
 
-		// Final score display
-		this.finalScoreText = new Konva.Text({
-			x: STAGE_WIDTH / 2,
-			y: 200,
-			text: "Final Score: 0",
+		// Score text
+		this.scoreText = new Konva.Text({
+			x: 0,
+			y: 250,
+			width: STAGE_WIDTH,
+			text: "",
 			fontSize: 36,
 			fontFamily: "Arial",
-			fill: "black",
+			fill: "white",
 			align: "center",
 		});
-		this.group.add(this.finalScoreText);
+		this.group.add(this.scoreText);
 
-		// Leaderboard display
-		this.leaderboardText = new Konva.Text({
-			x: STAGE_WIDTH / 2,
-			y: 260,
-			text: "Top Scores:\n(Play to see your scores!)",
-			fontSize: 18,
-			fontFamily: "Arial",
-			fill: "#666",
-			align: "center",
-			lineHeight: 1.5,
-		});
-		this.leaderboardText.offsetX(this.leaderboardText.width() / 2);
-		this.group.add(this.leaderboardText);
-
-		// Play Again button (grouped) - moved down to make room for leaderboard
-		const playAgainButtonGroup = new Konva.Group();
-		const playAgainButton = new Konva.Rect({
-			x: STAGE_WIDTH / 2 - 100,
-			y: 480,
+		// Play Again Button
+		const playAgainButton = new Konva.Group({ x: STAGE_WIDTH / 2 - 120, y: 350 });
+		const playAgainRect = new Konva.Rect({
+			x: 0,
+			y: 0,
 			width: 200,
 			height: 60,
-			fill: "blue",
+			fill: "#4cd137",
 			cornerRadius: 10,
-			stroke: "darkblue",
-			strokeWidth: 3,
+			shadowBlur: 10,
 		});
 		const playAgainText = new Konva.Text({
-			x: STAGE_WIDTH / 2,
-			y: 495,
-			text: "PLAY AGAIN",
+			x: 0,
+			y: 15,
+			width: 200,
+			text: "Play Again",
 			fontSize: 24,
 			fontFamily: "Arial",
 			fill: "white",
 			align: "center",
 		});
-		playAgainText.offsetX(playAgainText.width() / 2);
-		playAgainButtonGroup.add(playAgainButton);
-		playAgainButtonGroup.add(playAgainText);
+		playAgainButton.add(playAgainRect, playAgainText);
+		playAgainButton.on("click tap", onPlayAgain);
+		this.group.add(playAgainButton);
 
-		// Button interaction - on the group
-		playAgainButtonGroup.on("click", onPlayAgainClick);
+		// Return to Main Game Button
+		const returnButton = new Konva.Group({ x: STAGE_WIDTH / 2 - 120, y: 450 });
+		const returnRect = new Konva.Rect({
+			x: 0,
+			y: 0,
+			width: 200,
+			height: 60,
+			fill: "#7f8fa6",
+			cornerRadius: 10,
+			shadowBlur: 10,
+		});
+		const returnText = new Konva.Text({
+			x: 0,
+			y: 15,
+			width: 200,
+			text: "Return to Game",
+			fontSize: 24,
+			fontFamily: "Arial",
+			fill: "white",
+			align: "center",
+		});
+		returnButton.add(returnRect, returnText);
+		returnButton.on("click tap", onReturnToMainGame);
+		this.group.add(returnButton);
 
-		this.group.add(playAgainButtonGroup);
-	}
-
-	/**
-	 * Update the final score display
-	 */
-	updateFinalScore(score: number): void {
-		this.finalScoreText.text(`Final Score: ${score}`);
-		// Re-center after text change
-		this.finalScoreText.offsetX(this.finalScoreText.width() / 2);
-		this.group.getLayer()?.draw();
-	}
-
-	/**
-	 * Update the leaderboard display
-	 */
-	updateLeaderboard(entries: LeaderboardEntry[]): void {
-		if (entries.length === 0) {
-			this.leaderboardText.text("Top Scores:\n(No scores yet!)");
-		} else {
-			let text = "Top Scores:\n";
-			entries.forEach((entry, index) => {
-				text += `${index + 1}. ${entry.score} - ${entry.timestamp}\n`;
+		// Add hover effects
+		[playAgainButton, returnButton].forEach(button => {
+			const rect = button.findOne('Rect');
+			button.on("mouseenter", () => {
+				rect?.opacity(0.8);
+				document.body.style.cursor = "pointer";
+				this.group.getLayer()?.draw();
 			});
-			this.leaderboardText.text(text);
+			button.on("mouseleave", () => {
+				rect?.opacity(1);
+				document.body.style.cursor = "default";
+				this.group.getLayer()?.draw();
+			});
+		});
+	}
+
+	/**
+	 * Display the final score
+	 */
+	displayResults(score: number): void {
+		this.scoreText.text(`Final Score: ${score}`);
+		
+		// Update message based on score
+		if (score >= 3) {
+			this.messageText.text("Excellent Work!");
+		} else if (score >= 2) {
+			this.messageText.text("Mission Complete!");
+		} else {
+			this.messageText.text("Try Again!");
 		}
-		// Re-center after text change
-		this.leaderboardText.offsetX(this.leaderboardText.width() / 2);
-		this.group.getLayer()?.draw();
 	}
 
 	/**
@@ -128,6 +150,9 @@ export class AmongUsResultsScreenView implements View {
 		this.group.getLayer()?.draw();
 	}
 
+	/**
+	 * Get the Konva group
+	 */
 	getGroup(): Konva.Group {
 		return this.group;
 	}

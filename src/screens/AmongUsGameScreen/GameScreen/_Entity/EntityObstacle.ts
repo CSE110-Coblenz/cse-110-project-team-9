@@ -1,5 +1,5 @@
 import Konva from "konva";
-import { PuzzleModel } from "../_Puzzle/PuzzleModel.ts";
+import { PuzzleModel } from "../_Puzzle/PuzzleModel";
 
 /**
  * Obstacle entity - visual + puzzle data

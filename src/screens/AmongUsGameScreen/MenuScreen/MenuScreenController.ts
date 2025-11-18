@@ -1,6 +1,6 @@
-import { ScreenController } from "../../../types.ts";
-import type { ScreenSwitcher } from "../../../types.ts";
-import { AmongUsMenuScreenView } from "./MenuScreenView.ts";
+import { ScreenController } from "../../../types";
+import type { ScreenSwitcher } from "../../../types";
+import { AmongUsMenuScreenView } from "./MenuScreenView";
 
 /**
  * MenuScreenController - Handles menu interactions
@@ -20,7 +20,7 @@ export class AmongUsMenuScreenController extends ScreenController {
 	 */
 	private handleStartClick(): void {
 		// TODO: Task 1 - Implement screen transition from menu to game
-		this.screenSwitcher.switchToScreen({type : "game"});
+		this.screenSwitcher.switchToScreen({type : "amongUsGame"});
 	}
 
 	/**

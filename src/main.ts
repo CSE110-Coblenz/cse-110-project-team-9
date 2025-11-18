@@ -1,90 +1,138 @@
 import Konva from "konva";
-import type { ScreenSwitcher, Screen } from "./types.ts";
-import { AmongUsMenuScreenController } from "./screens/AmongUsGameScreen/MenuScreen/MenuScreenController.ts";
-import { AmongUsGameScreenController } from "./screens/AmongUsGameScreen/GameScreen/GameScreenController.ts";
-import { AmongUsResultsScreenController } from "./screens/AmongUsGameScreen/ResultsScreen/ResultsScreenController.ts";
-import { STAGE_WIDTH, STAGE_HEIGHT } from "./constants.ts";
+import type { ScreenSwitcher, Screen } from "./types";
+import { StartingScreenController } from "./screens/StartingScreen/StartingScreenController";
+import { HomeScreenController } from "./screens/HomeScreen/HomeScreenController";
+import { SettingsScreenController } from "./screens/SettingsScreen/SettingsScreenController";
+import { MainGameScreenController } from "./screens/MainGameScreen/MainGameScreenController";
+import { AmongUsMenuScreenController } from "./screens/AmongUsGameScreen/MenuScreen/MenuScreenController";
+import { AmongUsGameScreenController } from "./screens/AmongUsGameScreen/GameScreen/GameScreenController";
+import { AmongUsResultsScreenController } from "./screens/AmongUsGameScreen/ResultsScreen/ResultsScreenController";
+import { STAGE_WIDTH, STAGE_HEIGHT } from "./constants";
+import { AudioController } from "./audios/AudioController";
 
 /**
- * Main Application - Coordinates all screens
- *
- * This class demonstrates screen management using Konva Groups.
- * Each screen (Menu, Game, Results) has its own Konva.Group that can be
- * shown or hidden independently.
- *
- * Key concept: All screens are added to the same layer, but only one is
- * visible at a time. This is managed by the switchToScreen() method.
+ * Main Application - Coordinates all screens including minigames
  */
 class App implements ScreenSwitcher {
 	private stage: Konva.Stage;
 	private layer: Konva.Layer;
+	private _lastScreen: Screen;
 
-	private AmongUsMenuController: AmongUsMenuScreenController;
-	private AmongUsGameController: AmongUsGameScreenController;
-	private AmongUsResultsController: AmongUsResultsScreenController;
+	// Main game screens
+	private startingController: StartingScreenController;
+	private homeController: HomeScreenController;
+	private settingsController: SettingsScreenController;
+	private mainGameController: MainGameScreenController;
+
+	// Among Us minigame screens
+	private amongUsMenuController: AmongUsMenuScreenController;
+	private amongUsGameController: AmongUsGameScreenController;
+	private amongUsResultsController: AmongUsResultsScreenController;
+
+	private audio: AudioController;
 
 	constructor(container: string) {
-		// Initialize Konva stage (the main canvas)
+		// Initialize Konva stage
 		this.stage = new Konva.Stage({
 			container,
 			width: STAGE_WIDTH,
 			height: STAGE_HEIGHT,
 		});
 
-		// Create a layer (screens will be added to this layer)
 		this.layer = new Konva.Layer();
 		this.stage.add(this.layer);
 
-		// Initialize all screen controllers
-		// Each controller manages a Model, View, and handles user interactions
-		this.AmongUsMenuController = new AmongUsMenuScreenController(this);
-		this.AmongUsGameController = new AmongUsGameScreenController(this);
-		this.AmongUsResultsController = new AmongUsResultsScreenController(this);
+		// Initialize AudioController
+		this.audio = new AudioController();
+
+		// Initialize main game screens
+		this.startingController = new StartingScreenController(this, this.audio);
+		this.homeController = new HomeScreenController(this, this.audio);
+		this.settingsController = new SettingsScreenController(this, this.audio);
+		this.mainGameController = new MainGameScreenController(this, this.audio);
+
+		// Initialize Among Us minigame screens
+		this.amongUsMenuController = new AmongUsMenuScreenController(this);
+		this.amongUsGameController = new AmongUsGameScreenController(this);
+		this.amongUsResultsController = new AmongUsResultsScreenController(this);
 
 		// Add all screen groups to the layer
-		// All screens exist simultaneously but only one is visible at a time
-		this.layer.add(this.AmongUsMenuController.getView().getGroup());
-		this.layer.add(this.AmongUsGameController.getView().getGroup());
-		this.layer.add(this.AmongUsResultsController.getView().getGroup());
+		this.layer.add(this.startingController.getView().getGroup());
+		this.layer.add(this.homeController.getView().getGroup());
+		this.layer.add(this.settingsController.getView().getGroup());
+		this.layer.add(this.mainGameController.getView().getGroup());
+		this.layer.add(this.amongUsMenuController.getView().getGroup());
+		this.layer.add(this.amongUsGameController.getView().getGroup());
+		this.layer.add(this.amongUsResultsController.getView().getGroup());
 
-		// Draw the layer (render everything to the canvas)
 		this.layer.draw();
 
-		// Start with menu screen visible
-		this.AmongUsMenuController.getView().show();
+		this._lastScreen = { type: "starting" };
+
+		// Start with starting screen visible
+		this.switchToScreen({ type: "starting" });
 	}
 
 	/**
 	 * Switch to a different screen
-	 *
-	 * This method implements screen management by:
-	 * 1. Hiding all screens (setting their Groups to invisible)
-	 * 2. Showing only the requested screen
-	 *
-	 * This pattern ensures only one screen is visible at a time.
 	 */
 	switchToScreen(screen: Screen): void {
-		// Hide all screens first by setting their Groups to invisible
-		this.AmongUsMenuController.hide();
-		this.AmongUsGameController.hide();
-		this.AmongUsResultsController.hide();
+		// Hide all main game screens
+		this.startingController.hide();
+		this.homeController.hide();
+		this.settingsController.hide();
+		this.mainGameController.hide();
 
-		// Show the requested screen based on the screen type
+		// Hide all minigame screens
+		this.amongUsMenuController.hide();
+		this.amongUsGameController.hide();
+		this.amongUsResultsController.hide();
+
+		this._lastScreen = screen;
+
+		// Show the requested screen
 		switch (screen.type) {
-			case "menu":
-				this.AmongUsMenuController.show();
+			case "starting":
+				this.startingController.show();
 				break;
 
-			case "game":
-				// Start the game (which also shows the game screen)
-				this.AmongUsGameController.startGame();
+			case "home":
+				this.homeController.show();
 				break;
 
-			case "result":
-				// Show results with the final score
-				this.AmongUsResultsController.showResults(screen.score);
+			case "mainGame":
+				this.mainGameController.show();
+				break;
+
+			case "settings":
+				this.settingsController.show();
+				break;
+
+			// Among Us minigame screens
+			case "amongUsMenu":
+				this.amongUsMenuController.show();
+				break;
+
+			case "amongUsGame":
+				this.amongUsGameController.startGame();
+				break;
+
+			case "amongUsResult":
+				this.amongUsResultsController.showResults(screen.score);
 				break;
 		}
+	}
+
+	layerOnScreen(screen: Screen): void {
+		switch (screen.type) {
+			case "settings":
+				this.settingsController.show();
+				break;
+		}
+	}
+
+	get lastScreen() {
+		return this._lastScreen;
 	}
 }
 

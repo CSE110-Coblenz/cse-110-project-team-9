@@ -24,11 +24,17 @@
 				border: 1px solid #ddd;
 				overflow: hidden;
 			}
+
+			@font-face {
+				font-family: 'HomescreenFont';
+				src : url('/fonts/medieval.ttf') format('truetype'), /* Window or Linux */
+				      url('/fonts/medievalMac.ttf') format('truetype'); /* MacOS */
+			}
 		</style>
+		<link rel="icon" type="image/x-icon" href="/favicon.ico" />
 	</head>
 	<body>
 		<div id="container"></div>
 		<script type="module" src="./src/main.ts"></script>
 	</body>
-
 </html>

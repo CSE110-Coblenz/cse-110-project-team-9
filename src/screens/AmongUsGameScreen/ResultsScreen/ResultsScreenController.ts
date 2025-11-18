@@ -1,87 +1,51 @@
-import { ScreenController } from "../../../types.ts";
-import type { ScreenSwitcher } from "../../../types.ts";
-import {
-	AmongUsResultsScreenModel,
-	type LeaderboardEntry,
-} from "./ResultsScreenModel.ts";
-import { AmongUsResultsScreenView } from "./ResultsScreenView.ts";
-
-const LEADERBOARD_KEY = "lemonClickerLeaderboard";
-const MAX_LEADERBOARD_ENTRIES = 5;
+import { ScreenController } from "../../../types";
+import type { ScreenSwitcher } from "../../../types";
+import { AmongUsResultsScreenModel } from "./ResultsScreenModel";
+import { AmongUsResultsScreenView } from "./ResultsScreenView";
 
 /**
- * ResultsScreenController - Handles results screen interactions
+ * ResultsScreenController - Handles results screen logic
  */
 export class AmongUsResultsScreenController extends ScreenController {
 	private model: AmongUsResultsScreenModel;
 	private view: AmongUsResultsScreenView;
 	private screenSwitcher: ScreenSwitcher;
 
-	private gameOverSound: HTMLAudioElement;
-
 	constructor(screenSwitcher: ScreenSwitcher) {
 		super();
 		this.screenSwitcher = screenSwitcher;
+
 		this.model = new AmongUsResultsScreenModel();
-		this.view = new AmongUsResultsScreenView(() => this.handlePlayAgainClick());
-
-		// TODO: Task 4 - Initialize game over sound audio
-		this.gameOverSound = new Audio("AmongUsMiniGame/Audio/gameover.mp3"); // Placeholder
+		this.view = new AmongUsResultsScreenView(
+			() => this.handlePlayAgain(),
+			() => this.handleReturnToMainGame()
+		);
 	}
 
 	/**
-	 * Show results screen with final score
+	 * Show results screen with the final score
 	 */
-	showResults(finalScore: number): void {
-		this.model.setFinalScore(finalScore);
-		this.view.updateFinalScore(finalScore);
-
-		// Load and update leaderboard
-		const entries = this.loadLeaderboard();
-		entries.push({
-			score: finalScore,
-			timestamp: new Date().toLocaleString(),
-		});
-		entries.sort((a, b) => b.score - a.score); // Sort descending
-		const top5 = entries.slice(0, MAX_LEADERBOARD_ENTRIES); // Keep top 5
-		this.saveLeaderboard(top5);
-		this.model.setLeaderboard(top5);
-		this.view.updateLeaderboard(top5);
-
+	showResults(score: number): void {
+		this.model.setFinalScore(score);
+		this.view.displayResults(score);
 		this.view.show();
-
-		// TODO: Task 4 - Play the game over sound
-		this.gameOverSound.play();
-		this.gameOverSound.currentTime = 0;
 	}
 
 	/**
-	 * Load leaderboard from localStorage
+	 * Handle "Play Again" button click
 	 */
-	private loadLeaderboard(): LeaderboardEntry[] {
-		// TODO: Task 5 - Load leaderboard from localStorage
-		let leaderboard = localStorage.getItem(LEADERBOARD_KEY);
-		if(leaderboard === null) {
-			return [];
-		}
-		let sLeaderBoard = JSON.parse(leaderboard) as LeaderboardEntry[];
-		return sLeaderBoard;
+	private handlePlayAgain(): void {
+		// Restart the Among Us minigame
+		this.screenSwitcher.switchToScreen({ type: "amongUsGame" });
 	}
 
 	/**
-	 * Save leaderboard to localStorage
+	 * Handle "Return to Main Game" button click
 	 */
-	private saveLeaderboard(entries: LeaderboardEntry[]): void {
-		// TODO: Task 5 - Save leaderboard to localStorage
-		let jsonString = JSON.stringify(entries);
-		localStorage.setItem(LEADERBOARD_KEY, jsonString);
-	}
-
-	/**
-	 * Handle play again button click
-	 */
-	private handlePlayAgainClick(): void {
-		this.screenSwitcher.switchToScreen({ type: "menu" });
+	private handleReturnToMainGame(): void {
+		// Return to the main game board
+		// Note: You might want to pass the score back to MainGameController here
+		this.screenSwitcher.switchToScreen({ type: "mainGame" });
 	}
 
 	/**

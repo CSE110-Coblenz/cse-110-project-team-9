@@ -1,9 +1,9 @@
-import { ScreenController } from "../../../types.ts";
-import type { ScreenSwitcher } from "../../../types.ts";
-import { AmongUsGameScreenModel } from "./GameScreenModel.ts";
-import { AmongUsGameScreenView } from "./GameScreenView.ts";
-import { PuzzleModel } from "./_Puzzle/PuzzleModel.ts";
-import { GAME_DURATION, STAGE_WIDTH, STAGE_HEIGHT } from "../../../constants.ts";
+import { ScreenController } from "../../../types";
+import type { ScreenSwitcher } from "../../../types";
+import { AmongUsGameScreenModel } from "./GameScreenModel";
+import { AmongUsGameScreenView } from "./GameScreenView";
+import { PuzzleModel } from "./_Puzzle/PuzzleModel";
+import { GAME_DURATION, STAGE_WIDTH, STAGE_HEIGHT } from "../../../constants";
 
 /**
  * GameScreenController - Coordinates game logic between Model and View
@@ -201,7 +201,7 @@ export class AmongUsGameScreenController extends ScreenController {
 		this.stopGameInput();
 
 		this.screenSwitcher.switchToScreen({
-			type: "result",
+			type: "amongUsResult",
 			score: this.model.getScore(),
 		});
 	}

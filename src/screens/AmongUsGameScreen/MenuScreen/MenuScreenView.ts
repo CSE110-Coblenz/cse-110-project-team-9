@@ -1,6 +1,6 @@
 import Konva from "konva";
-import type { View } from "../../../types.ts";
-import { STAGE_WIDTH, STAGE_HEIGHT } from "../../../constants.ts";
+import type { View } from "../../../types";
+import { STAGE_WIDTH, STAGE_HEIGHT } from "../../../constants";
 
 /**
  * MenuScreenView - Renders the menu screen
