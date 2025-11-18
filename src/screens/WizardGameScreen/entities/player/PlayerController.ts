@@ -74,26 +74,30 @@ export class PlayerController implements Collidable {
             dx /= mag;
             dy /= mag;
         }
-        
+
+        //flips player image based on what direction you are going
+        if (dx < 0) this._model.direction = "left";
+        if (dx > 0) this._model.direction = "right";
+                
         //speed on time about x(for given model) pixel per second from last move
         this._model.move(dx * this._model.speed * deltaTime, dy * this._model.speed * deltaTime);
 
         //actions and animation only one at a time
         if (dx !== 0 || dy !== 0) {
-            this._model.setAnimation("walk");
+            this._model.animation = "walk";
             this.audio.play("walk", true);
         } else if (this.input.isDown("f")) {
-            this._model.setAnimation("attackslash");
+            this._model.animation = "attackslash";
             this.audio.play("attackslash");
         } else if (this.input.isDown("e")) {
-            this._model.setAnimation("attackdown");
+            this._model.animation = "attackdown";
             this.audio.play("attackdown");
         } else if (this.input.isDown("r")) {
-            this._model.setAnimation("attackbow");
+            this._model.animation = "attackbow";
             this.audio.play("attackbow");
         } else {
             this.audio.stop("walk");
-            this._model.setAnimation("idle");            
+            this._model.animation = "idle";            
         }
         this.view.render(this._model);
     }
@@ -103,7 +107,7 @@ export class PlayerController implements Collidable {
      */
     get model() { return this._model; }
     shape() { return this.view.group; }
-    boundingBox() { return this.view.getCurrentWorldBoundingBox(); }
+    boundingBox() { return this.view.boundingBoxes; }
     dead() { return this.model.dead; }
     destroy() { this.destructor(); }
 }

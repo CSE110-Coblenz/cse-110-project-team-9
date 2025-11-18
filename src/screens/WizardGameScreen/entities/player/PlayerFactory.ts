@@ -22,6 +22,8 @@ export type PlayerType = "wizard" | "knight";
  */
 export class PlayerFactory {
     static create(
+        x: number,
+        y: number,  
         type: PlayerType, 
         group: Konva.Group, 
         audio: AudioController, 
@@ -30,24 +32,23 @@ export class PlayerFactory {
 
         let model: PlayerModel;
         let viewer: PlayerViewer;
+        let scale = 4;
 
         switch(type) {
             case "wizard":
-                model = new PlayerModel(150, 60, 150, WIZARD_AUDIO);
-                viewer = new PlayerViewer(
-                    group,
+                model = new PlayerModel(x, y, 150, WIZARD_AUDIO, WIZARD_BOUNDING_BOXES);
+                viewer = new PlayerViewer(group,
                     { image: wizardSrc, animations: WIZARD_ANIMATIONS },
                     model,
-                    WIZARD_BOUNDING_BOXES,
+                    scale,
                 );
                 break;
             case "knight":
-                model = new PlayerModel(150, 60, 150, KNIGHT_AUDIO);
-                viewer = new PlayerViewer(
-                    group,
+                model = new PlayerModel(x, y, 150, KNIGHT_AUDIO, KNIGHT_BOUNDING_BOXES);
+                viewer = new PlayerViewer(group,
                     { image: knightSrc, animations: KNIGHT_ANIMATIONS },
                     model,
-                    KNIGHT_BOUNDING_BOXES,
+                    scale,
                 );
                 break;
             default:

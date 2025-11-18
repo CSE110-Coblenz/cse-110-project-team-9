@@ -44,6 +44,7 @@ export class EnemyController implements Collidable {
      * @param deltaTime different in time from last animation event
      */
     update(deltaTime: number, playerX: number, playerY: number) {
+        //TODO: for now to just linearly follow player i guess 
         let dx = playerX - this._model.x;
         let dy = playerY - this._model.y;
 
@@ -54,13 +55,17 @@ export class EnemyController implements Collidable {
             dy /= mag;
         }
 
+        //flips enemy image based on what direction you are going
+        if (dx < 0) this._model.direction = "left";
+        if (dx > 0) this._model.direction = "right";
+
         //speed on time about x(for given model) pixel per second from last move
         this._model.move(dx * this._model.speed * deltaTime, dy * this._model.speed * deltaTime);
 
         if (dx !== 0 || dy !== 0) {
-            this._model.setAnimation("walk");
+            this._model.animation = "walk";
         } else {
-            this._model.setAnimation("idle"); 
+            this._model.animation = "idle"; 
         }
         
         this.view.render(this._model);
@@ -69,8 +74,8 @@ export class EnemyController implements Collidable {
     /**
      * Getter methods for various utility
      */
-    shape(): Konva.Group { return this.view.group;}
-    boundingBox(): AABB { return this.view.getCurrentWorldBoundingBox(); }
-    dead(): boolean { return this._model.dead; }
-    destroy(): void { this.destructor(); }
+    shape() { return this.view.group;}
+    boundingBox() { return this.view.boundingBoxes; }
+    dead() { return this._model.dead; }
+    destroy() { this.destructor(); }
 }

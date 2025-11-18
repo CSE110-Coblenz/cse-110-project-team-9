@@ -9,25 +9,25 @@ export class PlayerViewer {
      * with built in animatons
      * @param _group konva sprite group
      * @param entity knight/wizard type of imgatlas and animations
-     * @param model current player model
-     * @param boundingBoxes bounding box for player given type 
+     * @param _model current player model
+     * @param _scale scaling of sprite
      */
     constructor(
         private _group: Konva.Group,
         private entity: { image: string; animations: Record<string, number[]> },
-        private model: PlayerModel,
-        private boundingBoxes: Record<string, { x: number; y: number; width: number; height: number }[]>
+        private _model: PlayerModel,
+        private _scale: number
     ) {
         const player = new Image();
 
         this.sprite = new Konva.Sprite({
             image: player,
             animations: this.entity.animations,
-            animation: this.model.currentAnimation,
+            animation: this._model.currentAnimation,
             frameRate: 10, //about .100 seconds
             frameIndex: 0,
-            scaleX: 4,
-            scaleY: 4,
+            scaleX: this._scale,
+            scaleY: this._scale,
         });
         this.group.add(this.sprite);
 
@@ -36,54 +36,39 @@ export class PlayerViewer {
         player.src = this.entity.image;
     }
 
-    /**
-     * 
-     */
-    destructor() {
-        this.sprite.destroy();
-    }
+    destructor() { this.sprite.destroy(); }
 
     /**
      * Renders parameters for controller movement x and y pos
-     * @param model player parmeters speed,x,y
+     * @param _model player parmeters speed,x,y
      * @returns Nonexistent entity
      */
-    public render(model: PlayerModel): void {
-        this.sprite.x(model.x);
-        this.sprite.y(model.y);
+    public render(_model: PlayerModel): void {
 
-        if (this.sprite.animation() !== model.currentAnimation) {
-            this.sprite.animation(model.currentAnimation);
+        //flip direction
+        if (_model.direction === "left") {
+            this.sprite.scaleX(-this._scale);
+            this.sprite.offsetX(100); //TODO: abstract atlas iamge 
+        } else {
+            this.sprite.scaleX(this._scale);
+            this.sprite.offsetX(0);
+        }
+
+        this.sprite.x(_model.x);
+        this.sprite.y(_model.y);
+
+        if (this.sprite.animation() !== _model.currentAnimation) {
+            this.sprite.animation(_model.currentAnimation);
             this.sprite.start();
         }
         
     }
 
     /**
-     * getters for visual elements;
+     * getters for model;
      */
     get group() { return this._group; }
-    
-    /**
-     * 
-     * @returns 
-     */
-    public getCurrentWorldBoundingBox(): { x: number; y: number; width: number; height: number } {
-        const frames = this.boundingBoxes[this.model.currentAnimation];
-
-        const frameIndex = Math.max(0, Math.min(frames.length - 1, this.sprite.frameIndex()));
-        const frameBox = frames[frameIndex];
-
-        const scaleX = this.sprite.scaleX();
-        const scaleY = this.sprite.scaleY();
-
-        return{
-            x: this.sprite.x() + frameBox.x * scaleX,
-            y: this.sprite.y() + frameBox.y * scaleY,
-            width: frameBox.width * scaleX,
-            height: frameBox.height * scaleY
-        }
-    }
+    get boundingBoxes() {return this._model.worldBoundingBox(this.sprite.frameIndex(), this._scale); }
 }
 
 

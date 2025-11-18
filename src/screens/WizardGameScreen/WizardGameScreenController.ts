@@ -68,7 +68,7 @@ export class WizardGameScreenController extends ScreenController {
         this.input = new InputHandler();
         
         //player
-        this.playerController = PlayerFactory.create("knight", this.view.getGroup(), this.audio, this.input);
+        this.playerController = PlayerFactory.create(150, 150, "knight", this.view.getGroup(), this.audio, this.input);
 
         //collision between entities
         this.collisionManager = new CollisionManager();
@@ -161,8 +161,25 @@ export class WizardGameScreenController extends ScreenController {
 
 /**
  * TODO: notepad
+ * 
+ * NEED TO COMPLETE:
+ * seperate attack image from player / same thing with enemy
+ * add boundary box for window
+ * add boundary box for all collidabl entities no overlap
+ * attacks can overlap perhaps
+ * add damage hurt modifer to enemies on damage and player
+ * 
+ * generat ai audio for sound effects perhaps
+ * grab game audio bgm music list perhaps
+ * 
+ * 
+ * BUGS/FIX:
  * holding down attack button does not repeat the audio
  * fix escape key not returning back to main menu
  * holding shift key down while walking
  * main game board assets need a change
+ * added flip image when 
+ * 
+ * 
+ * add image sprite size and scale size actrascitons
  */

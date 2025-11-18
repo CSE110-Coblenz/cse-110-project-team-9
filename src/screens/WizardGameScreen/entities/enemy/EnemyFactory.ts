@@ -27,33 +27,35 @@ export class EnemyFactory {
     ): EnemyController {
         let model: EnemyModel;
         let viewer: EnemyViewer;
+        let scale = 4;
+
 
         switch(type) {
             case "wizard":
-                model = new EnemyModel(x, y, 150, WIZARD_AUDIO);
+                model = new EnemyModel(x, y, 150, WIZARD_AUDIO, WIZARD_BOUNDING_BOXES);
                 viewer =  new EnemyViewer(
                     group,
                     { image: wizardSrc, animations: WIZARD_ANIMATIONS },
                     model,
-                    WIZARD_BOUNDING_BOXES,
+                    scale,
                 );
                 break;
             case "knight":
-                model = new EnemyModel(x, y, 150, KNIGHT_AUDIO);
+                model = new EnemyModel(x, y, 150, KNIGHT_AUDIO, KNIGHT_BOUNDING_BOXES);
                 viewer = new EnemyViewer(
                     group,
                     { image: knightSrc, animations: KNIGHT_ANIMATIONS },
                     model,
-                    KNIGHT_BOUNDING_BOXES,
+                    scale,
                 );
                 break;
             case "orc":
-                model = new EnemyModel(x, y, 100, ORC_AUDIO);
+                model = new EnemyModel(x, y, 100, ORC_AUDIO, ORC_BOUNDING_BOXES);
                 viewer = new EnemyViewer(
                     group,
                     { image: orcSrc, animations: ORC_ANIMATIONS },
                     model,
-                    ORC_BOUNDING_BOXES,
+                    scale,
                 );
                 break;
             default:

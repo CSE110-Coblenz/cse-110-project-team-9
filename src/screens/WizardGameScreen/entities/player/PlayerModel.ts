@@ -6,6 +6,10 @@ export class PlayerModel {
     private _currentAnimation: string;
     //this is a audio mapping
     private _AUDIO: Record<string, string>;
+    //flips image left or right looks more natural
+    private _direction: "left" | "right";
+    //collsion bounding boxes per frame
+    private _boundingBoxes: Record<string, { x: number; y: number; width: number; height: number }[]>
     
     /**
      * 
@@ -14,13 +18,19 @@ export class PlayerModel {
      * @param speed average speed in pixels a second
      * @param AUDIO audio files for animations/events
      */
-    constructor(x = 150, y = 60, speed = 150, AUDIO: Record<string,string>) {
+      constructor(
+        x: number, y: number, speed: number, 
+        AUDIO: Record<string,string>,
+        boundingBoxes: Record<string, { x: number; y: number; width: number; height: number }[]>
+    ) {
         this._x = x;
         this._y = y;
         this._speed = speed;
         this._health = 100;
         this._currentAnimation = "idle";
         this._AUDIO = AUDIO;
+        this._direction = "right";
+        this._boundingBoxes = boundingBoxes;
     }
 
     /**
@@ -32,6 +42,7 @@ export class PlayerModel {
         this._speed = 150;
         this._health = 100;
         this._currentAnimation = "idle";
+        this._direction = "right";
     }
 
     /**
@@ -53,13 +64,32 @@ export class PlayerModel {
     get currentAnimation() { return this._currentAnimation; }
     get audio() { return this._AUDIO }
     get health() { return this._health; }
+    get direction() { return this._direction; }
+
+    public worldBoundingBox(frameIndex: number, scale: number): { x: number; y: number; width: number; height: number } {
+        const frames = this._boundingBoxes[this._currentAnimation];
+        const frameBox = frames[frameIndex];
         
+        let x = this._x;
+        if (this._direction === "left") {
+            x += 100 * scale - frameBox.width * scale - frameBox.x * scale; // shift collision when flipped
+        } else {
+            x += frameBox.x * scale;
+        }
+
+        return{
+            x,
+            y: this._y + frameBox.y * scale,
+            width: frameBox.width * scale,
+            height: frameBox.height * scale
+        }
+    }
+
     /**
      * setters for private values
      */
-    setAnimation(animation: string){
-        this._currentAnimation = animation;
-    }
+    set direction(value: "left" | "right") { this._direction = value; }
+    set animation(animation: string) {this._currentAnimation = animation; }
 
     move(dx: number, dy: number){
         this._x += dx;
