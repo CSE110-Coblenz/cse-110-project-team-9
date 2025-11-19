@@ -1,21 +1,14 @@
-//Player MVC
 import { PlayerModel } from "./PlayerModel";
 import { PlayerViewer } from "./PlayerViewer";
-
-//Input Handling
 import { InputHandler } from "../../InputHandler";
-
-//Collision Handling
-import { Collidable, AABB } from "../CollisionManager";
-
-//Audio Controller
+import { Collidable } from "../CollisionManager";
 import { AudioController } from "../../../../audios/AudioController";
-
-//PlayerHUD
 import { PlayerHUD } from "./PlayerHUD";
 
-export class PlayerController implements Collidable {
+//todo: config file
+const DAMAGE_ON_COLLISION = 5;
 
+export class PlayerController implements Collidable {
     constructor(
         private _model: PlayerModel, 
         private _hud: PlayerHUD,
@@ -23,48 +16,28 @@ export class PlayerController implements Collidable {
         private audio: AudioController,
         private input: InputHandler 
     ) {
-
-        for (const key in this._model.audio){
-            this.audio.registerSound(key, _model.audio[key]);
+        for (const key in this._model.audio) {
+            this.audio.registerSound(key, this._model.audio[key]);
         }
     }
 
     destructor() {
         this.view.destructor();
-
-        //mark for garbage collection
-        (this as any)._model = null;
-        (this as any).view = null;
     }
     
-    /**
-     * check collision
-     * @param other
-     */
-    public onCollision?(other: Collidable): void{
-        this._model.damage(5);
+    public onCollision?(_other: Collidable): void {
+        this._model.damage(DAMAGE_ON_COLLISION);
     }
 
-
-    /**
-     * reset function;
-     */
-    public reset(){
+    public reset() {
         this._model.reset();
     }
 
-    /**
-     * take damage function
-     * @param amount amount of damage
-     */
-    public damage(amount: number){
+    public damage(amount: number) {
         this._model.damage(amount);
     }
     
-    /**
-     * after 
-     * @param deltaTime different in time from last animation event
-     */
+
     update(deltaTime: number) {
         let dx = 0, dy = 0;
 
@@ -85,33 +58,39 @@ export class PlayerController implements Collidable {
         if (dx > 0) this._model.direction = "right";
                 
         //speed on time about x(for given model) pixel per second from last move
-        this._model.move(dx * this._model.speed * deltaTime, dy * this._model.speed * deltaTime);
+        this._model.x += dx * this._model.speed * deltaTime;
+        this._model.y += dy * this._model.speed * deltaTime;
+        
+        this._model.attackCurrentAnimation = null;
 
         //actions and animation only one at a time
         if (dx !== 0 || dy !== 0) {
-            this._model.animation = "walk";
+            this._model.bodyCurrentAnimation = "walk";
             this.audio.play("walk", true);
         } else if (this.input.isDown("f")) {            
-            if(this._model.currentAnimation !== "attackslash"){
+            if(this._model.bodyCurrentAnimation !== "attackslash"){
                 this.audio.play("attackslash", true);
             }
-            this._model.animation = "attackslash";
+            this._model.bodyCurrentAnimation = "attackslash";
+            this._model.attackCurrentAnimation = "attackslash";
         } else if (this.input.isDown("e")) {
-            if(this._model.currentAnimation !== "attackdown"){
+            if(this._model.bodyCurrentAnimation !== "attackdown"){
                 this.audio.play("attackdown", true);
             }
-            this._model.animation = "attackdown";
+            this._model.bodyCurrentAnimation = "attackdown";
+            this._model.attackCurrentAnimation = "attackdown";
         } else if (this.input.isDown("r")) {
-            if(this._model.currentAnimation !== "attackbow"){
+            if(this._model.bodyCurrentAnimation !== "attackbow"){
                 this.audio.play("attackbow", true);
             }
-            this._model.animation = "attackbow";
+            this._model.bodyCurrentAnimation = "attackbow";
+            this._model.attackCurrentAnimation = "attackbow";
         } else {
             this.audio.stop("attackslash");
             this.audio.stop("attackdown");
             this.audio.stop("attackbow");
             this.audio.stop("walk");
-            this._model.animation = "idle";            
+            this._model.bodyCurrentAnimation = "idle";            
         }
         this._hud.render();
         this.view.render(this._model);
@@ -122,7 +101,9 @@ export class PlayerController implements Collidable {
      */
     get model() { return this._model; }
     shape() { return this.view.group; }
-    boundingBox() { return this.view.boundingBoxes; }
+    boundingBox() { return this.view.bodyBoxes; }
+    bodyBox() { return this.view.bodyBoxes; }
+    attackBox() { return this.view.attackBoxes; }
     dead() { return this.model.dead; }
     destroy() { this.destructor(); }
 }
