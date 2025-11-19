@@ -158,7 +158,7 @@ export class DebugBoundingBoxViewer {
 			y: 0,
 			width: 0,
 			height: 0,
-			stroke: 'red',
+			stroke: 'yellow',
 			strokeWidth: 1,
 			visible: false,
 		});

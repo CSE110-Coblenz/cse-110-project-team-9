@@ -20,15 +20,16 @@ export function computeTightBoundingBoxForFrame(
     canvas.width = frame.width;
     canvas.height = frame.height;
     const ctx = canvas.getContext("2d");
-
-    //return full frame if no context default bounding box
-    if (!ctx) return { x: 0, y: 0, width: frame.width, height: frame.height };
+    
+    //return nothing if no default bounding box since get context returns null
+    if (!ctx) return { x: 0, y: 0, width: 0, height: 0 };
     //clear working offscreen canvas from previous
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     //draw animation frame
     ctx.drawImage(image, frame.x, frame.y, frame.width, frame.height, 0, 0, frame.width, frame.height);
     const imgData = ctx.getImageData(0, 0, frame.width, frame.height);
+    
     //gives array of RGBA pixels e.g 32*32*4 = 4096 1D array of RGBA
     const data = imgData.data;
 
@@ -65,6 +66,7 @@ export function computeTightBoundingBoxForFrame(
 
     return { x: minX, y: minY, width: maxX - minX + 1, height: maxY - minY + 1 };
 }
+
 /**
  * computers a tight pixel perfect boudning boxes for every frame in each animation
  * and caches them. Runs once image load. make offscreen and read pixel alpha
