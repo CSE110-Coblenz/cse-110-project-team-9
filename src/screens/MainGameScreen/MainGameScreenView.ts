@@ -23,26 +23,36 @@ export class MainGameScreenView implements View {
         const boardLength = 40;
         this.group = new Konva.Group({ visible: false });
 
-        const background = new Konva.Rect({
-        x: 0,
-        y: 0,
-        width: STAGE_WIDTH,
-        height: STAGE_HEIGHT,
-        fill: "#f5f5dc",
-        });
-        this.group.add(background);
-
-        const titleText = new Konva.Text({
+        // Grass background
+        const grass = new Konva.Rect({
             x: 0,
-            y: 20,
+            y: 0,
             width: STAGE_WIDTH,
-            text: "main game board",
-            fontSize: 30,
-            fontStyle: 'bold',
-            fill: '#333',
-            align: 'center'
+            height: STAGE_HEIGHT,
+            fill: "#90EE90", // LightGreen
         });
-        this.group.add(titleText);
+        this.group.add(grass);
+
+        // Dirt path
+        const road = new Konva.Rect({
+            x: 0,
+            y: STAGE_HEIGHT / 2 - 70, // Centered vertically around the tiles
+            width: STAGE_WIDTH,
+            height: 140, // A bit wider than the tiles
+            fill: '#f5f5dc', // Beige
+        });
+        this.group.add(road);
+        // const titleText = new Konva.Text({
+        //     x: 0,
+        //     y: 20,
+        //     width: STAGE_WIDTH,
+        //     text: "main game board",
+        //     fontSize: 30,
+        //     fontStyle: 'bold',
+        //     fill: '#333',
+        //     align: 'center'
+        // });
+        // this.group.add(titleText);
 
         // Score Text
         //const score = this.model.getPlayerScore(currentPlayerID);
@@ -299,11 +309,6 @@ export class MainGameScreenView implements View {
             default:
                 return { label: "Unknown", color: "#dfe6e9" };
         }
-    }
-
-
-    movePlayerToTile(index: number): void {
-        return;
     }
 
     getTiles(): Konva.Circle[] {
