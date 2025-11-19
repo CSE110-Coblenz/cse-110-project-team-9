@@ -8,14 +8,14 @@ export class MainGameScreenController extends ScreenController {
     private audio: AudioController;
     private view: MainGameScreenView;
     private screenSwitcher: ScreenSwitcher;
-    private gameModel: MainGameScreenModel = new MainGameScreenModel(["default"]);
+    private gameModel: MainGameScreenModel = new MainGameScreenModel();
 
     private readonly BOARD_LENGTH = 40;
 
     constructor(screenSwitcher: ScreenSwitcher, audio: AudioController) {
         super();
 
-        this.view = new MainGameScreenView(this.gameModel);
+        this.view = new MainGameScreenView(this.gameModel, audio);
         this.screenSwitcher = screenSwitcher;
         this.audio = audio;
 
@@ -27,6 +27,15 @@ export class MainGameScreenController extends ScreenController {
 
         audio.registerSound("mainboard_bgm", "/mainboard/audio/mainboardBGM.mp3");
         audio.registerSound("click_sfx", "/homescreen/audio/click.mp3");
+        audio.registerSound("dice_sfx", "/mainboard/audio/dice_roll.mp3");
+        audio.registerSound("piece_move_sfx", "/mainboard/audio/piece_move.mp3");
+
+        const tiles = this.view.getTiles();
+
+        // tiles[0].on("click", () => this.screenSwitcher.switchToScreen({ type: "wizard" }));
+        // tiles[1].on("click", () => this.screenSwitcher.switchToScreen({ type: "amongus" }));
+        // tiles[2].on("click", () => this.screenSwitcher.switchToScreen({ type: "basicQuestion1" }));
+        // tiles[3].on("click", () => this.screenSwitcher.switchToScreen({ type: "basicQuestion2" }));
     }
 
     public diceRoll(): number {
@@ -39,41 +48,47 @@ export class MainGameScreenController extends ScreenController {
         this.audio.play("click_sfx");
 
         const roll = this.diceRoll();
+        this.audio.play("dice_sfx", false);
         console.log(`Player rolled a ${roll}.`);
         this.view.displayRollResult(roll);
-        await this.view.animatePlayerPieceRoll(roll);
 
-        const currentPlayerID = this.gameModel.getCurrentPlayerID();
-        const currentPosition = this.gameModel.getPlayerPosition(currentPlayerID);
+        // Play the sound effect immediately, before any async operations.
+        this.audio.play("dice_sfx", false);
+
+        // Execute the rest of the turn logic asynchronously.
+        this.executeTurn(roll);
+    }
+
+    private async executeTurn(roll: number): Promise<void> {
+        await this.view.animatePlayerPieceRoll(roll);
+        const currentPosition = this.gameModel.getPlayerPosition();
 
         const newPosition = (currentPosition + roll) % this.BOARD_LENGTH;
-        console.log("Player moved to position " + (newPosition + 1));
-        this.gameModel.setPlayerPosition(currentPlayerID, newPosition);
-        this.triggerNodeEvent(currentPlayerID, newPosition + 1);
+        this.gameModel.setPlayerPosition(newPosition); // newPosition is 0-indexed
+        console.log(`Player moved to position ${newPosition + 1}`);
+        this.triggerNodeEvent(newPosition + 1); // getNodeType is 1-indexed
 
         this.view.enableRollButton();
     }
 
-    public triggerNodeEvent(playerID: string, nodeIndex: number): void {
-        const nodeType = this.gameModel.getNodeType(nodeIndex);
-        
-        switch (nodeType) {
+    public triggerNodeEvent(nodeIndex: number): void {
+        const nodeType = this.gameModel.getNodeType(nodeIndex); 
+        switch (nodeType)
+        {
             case NodeType.EASY_QUESTION:
             case NodeType.MEDIUM_QUESTION:
             case NodeType.HARD_QUESTION:
                 this.view.displayNodeEvent("You landed on a Question tile!");
-                const newQuestionScore = this.gameModel.getPlayerScore("default") + 5;
-                this.gameModel.setPlayerScore("default", newQuestionScore);
-                this.view.updateScoreDisplay(newQuestionScore);
+                //const newQuestionScore = this.gameModel.getPlayerScore("default") + 5;
+                //this.gameModel.setPlayerScore("default", newQuestionScore);
+                //this.view.updateScoreDisplay(newQuestionScore);
                 break;
 
             case NodeType.MINIGAME:
                 this.view.displayNodeEvent("You landed on a Minigame tile!");
-                
-                // Wait for the message to display, then trigger minigame
-                setTimeout(() => {
-                    this.triggerRandomMinigame();
-                }, 1000);
+                // const newMinigameScore = this.gameModel.getPlayerScore("default") + 10;
+                // this.gameModel.setPlayerScore("default", newMinigameScore);
+                // this.view.updateScoreDisplay(newMinigameScore);
                 break;
 
             case NodeType.START:
@@ -85,43 +100,8 @@ export class MainGameScreenController extends ScreenController {
         }
     }
 
-    /**
-     * Randomly select and launch a minigame
-     */
-    private triggerRandomMinigame(): void {
-        const minigameChoice = Math.floor(Math.random() * 2) + 1; // 1 or 2
-        
-        console.log(`Launching minigame ${minigameChoice}`);
-        
-        if (minigameChoice === 1) {
-            // Launch Among Us minigame
-            this.screenSwitcher.switchToScreen({ type: "amongUsMenu" });
-        } else {
-            // Launch Wizard minigame (not implemented yet)
-            this.screenSwitcher.switchToScreen({ type: "amongUsMenu" });
-        }
-    }
-
-    /**
-     * Called when returning from a minigame
-     * Updates player score based on minigame performance
-     */
-    public returnFromMinigame(minigameScore: number): void {
-        const currentPlayerID = this.gameModel.getCurrentPlayerID();
-        const currentScore = this.gameModel.getPlayerScore(currentPlayerID);
-        const newScore = currentScore + minigameScore;
-        
-        this.gameModel.setPlayerScore(currentPlayerID, newScore);
-        this.view.updateScoreDisplay(newScore);
-        
-        console.log(`Minigame completed! Score: ${minigameScore}. Total: ${newScore}`);
-    }
-
-    public advanceToNextPlayer(): void {
-        this.gameModel.advanceToNextPlayer();
-
-        const nextPlayerID = this.gameModel.getCurrentPlayerID();
-        console.log(`Advancing to player ${nextPlayerID}.`);
+    public getView(): MainGameScreenView {
+        return this.view;
     }
 
     public show(): void {
@@ -132,9 +112,5 @@ export class MainGameScreenController extends ScreenController {
     public hide(): void {
         this.audio.stopAll();
         this.view.hide();
-    }
-
-    public getView(): MainGameScreenView {
-        return this.view;
     }
 }
