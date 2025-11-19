@@ -81,7 +81,7 @@ describe("StartingScreenController", () => {
             stopAll: vi.fn(),
         } as unknown as AudioController;
 
-        controller = new StartingScreenController(mockScreenSwitcher, mockAudio);
+        controller = new StartingScreenController(mockScreenSwitcher);
     });
 
     /**
