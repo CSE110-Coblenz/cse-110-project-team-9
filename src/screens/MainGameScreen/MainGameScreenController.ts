@@ -9,7 +9,7 @@ export class MainGameScreenController extends ScreenController {
     private audio: AudioController;
     private view: MainGameScreenView;
     private screenSwitcher: ScreenSwitcher;
-    private gameModel: MainGameScreenModel = new MainGameScreenModel(["default"]);
+    private gameModel: MainGameScreenModel = new MainGameScreenModel();
 
     private readonly BOARD_LENGTH = 40;
 
@@ -57,19 +57,17 @@ export class MainGameScreenController extends ScreenController {
 
     private async executeTurn(roll: number): Promise<void> {
         await this.view.animatePlayerPieceRoll(roll);
-
-        const currentPlayerID = this.gameModel.getCurrentPlayerID();
-        const currentPosition = this.gameModel.getPlayerPosition(currentPlayerID);
+        const currentPosition = this.gameModel.getPlayerPosition();
 
         const newPosition = (currentPosition + roll) % this.BOARD_LENGTH;
-        this.gameModel.setPlayerPosition(currentPlayerID, newPosition); // newPosition is 0-indexed
+        this.gameModel.setPlayerPosition(newPosition); // newPosition is 0-indexed
         console.log(`Player moved to position ${newPosition + 1}`);
-        this.triggerNodeEvent(currentPlayerID, newPosition + 1); // getNodeType is 1-indexed
+        this.triggerNodeEvent(newPosition + 1); // getNodeType is 1-indexed
 
         this.view.enableRollButton();
     }
 
-    public triggerNodeEvent(playerID: string, nodeIndex: number): void {
+    public triggerNodeEvent(nodeIndex: number): void {
         const nodeType = this.gameModel.getNodeType(nodeIndex); 
         switch (nodeType)
         {
@@ -93,13 +91,6 @@ export class MainGameScreenController extends ScreenController {
             default:
                 console.warn(`Unknown node type encountered at index ${nodeIndex}.`);
         }
-    }
-
-    public advanceToNextPlayer(): void {
-        this.gameModel.advanceToNextPlayer();
-
-        const nextPlayerID = this.gameModel.getCurrentPlayerID();
-        console.log(`Advancing to player ${nextPlayerID}.`);
     }
 
     public getView(): MainGameScreenView {

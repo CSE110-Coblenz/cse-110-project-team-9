@@ -10,10 +10,7 @@ export enum NodeType {
 
 export class MainGameScreenModel {
 
-    private players: Map<string, Player> = new Map<string, Player>();
-
-    private currentPlayerID: string;
-    private playerOrder: string[];
+    private position: number;
 
     private readonly mainGameBoard : NodeType[] =[
     NodeType.START,            // 1
@@ -58,18 +55,12 @@ export class MainGameScreenModel {
     NodeType.MINIGAME          // 40
     ]
 
-    constructor(playerIDs: string[]){
+    constructor(){
         if (this.mainGameBoard.length !== 40)
         {
             throw new Error("Main game board must have exactly 40 nodes.");
         }
-
-        this.playerOrder = playerIDs;
-        this.currentPlayerID = playerIDs[0];
-
-        for(const id of playerIDs){
-            this.players.set(id, new Player(id));
-        }
+        this.position = 0;
     }
 
     public getNodeType( nodeIndex: number ) : NodeType {
@@ -79,26 +70,13 @@ export class MainGameScreenModel {
         return this.mainGameBoard[nodeIndex - 1];
     }
 
-    public advanceToNextPlayer(): void {
-        const currentIndex = this.playerOrder.indexOf(this.currentPlayerID);
-        const nextIndex = (currentIndex + 1) % this.playerOrder.length;
-        this.currentPlayerID = this.playerOrder[nextIndex];
+
+    public getPlayerPosition(): number {
+        return this.position;
     }
 
-    private getPlayer(playerID: string): Player {
-        return this.players.get(playerID)!;
-    }
-
-    public getCurrentPlayerID(): string {
-        return this.currentPlayerID;
-    }
-
-    public getPlayerPosition(playerID: string): number {
-        return this.getPlayer(playerID).position;
-    }
-
-    public setPlayerPosition(playerID: string, position: number): void {
-        this.getPlayer(playerID).position = position;
+    public setPlayerPosition( position: number): void {
+        this.position = position;
     }
 
     // public getPlayerScore(playerID: string): number {

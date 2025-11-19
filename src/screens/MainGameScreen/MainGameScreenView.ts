@@ -10,7 +10,6 @@ export class MainGameScreenView implements View {
     private tileLabels: Konva.Text[] = [];
     private diceRollButton: Konva.Group;
     private settingsButton: Konva.Group;
-    private scoreText: Konva.Text;
     private nodeEventText: Konva.Text;
     private diceResultText: Konva.Text;
     private pieceImage?: Konva.Image;
@@ -46,17 +45,16 @@ export class MainGameScreenView implements View {
         this.group.add(titleText);
 
         // Score Text
-        const currentPlayerID = this.model.getCurrentPlayerID();
         //const score = this.model.getPlayerScore(currentPlayerID);
-        this.scoreText = new Konva.Text({
-            x: 20,
-            y: 20,
-            //text: `Score: ${score}`,
-            fontSize: 24,
-            fontStyle: 'bold',
-            fill: '#333',
-        });
-        this.group.add(this.scoreText);
+        // this.scoreText = new Konva.Text({
+        //     x: 20,
+        //     y: 20,
+        //     //text: `Score: ${score}`,
+        //     fontSize: 24,
+        //     fontStyle: 'bold',
+        //     fill: '#333',
+        // });
+        //this.group.add(this.scoreText);
 
 
         const nodeSize = 100;
