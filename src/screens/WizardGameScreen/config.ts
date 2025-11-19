@@ -14,3 +14,5 @@ export const DEFAULT_STAMINA = 100;
 export const PLAYER_SPEED = 150;
 //Enemy visual scale 
 export const ENEMY_SCALE = 4;
+//enemy Stats
+export const ENEMY_SPEED = 100;

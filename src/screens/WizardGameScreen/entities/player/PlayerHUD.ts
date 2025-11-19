@@ -1,5 +1,6 @@
 import Konva from 'konva';
 import { PlayerModel } from './PlayerModel';
+import { DEFAULT_HEALTH } from '../../config';
 
 export class PlayerHUD {
     private healthBar: Konva.Rect;
@@ -31,8 +32,8 @@ export class PlayerHUD {
 
     render() {
         // calculate percentage
-        const healthPercent = Math.max(0, this.model.health / 100);
-        const manaPercent = Math.max(0, this.model.mana / 100);
+        const healthPercent = Math.max(0, this.model.health / DEFAULT_HEALTH);
+        const staminaPercent = Math.max(0, this.model.stamina / 100);
 
         // move above player
         this.healthBar.x(this.model.x + 200 - this.barWidth / 2);
@@ -41,7 +42,7 @@ export class PlayerHUD {
 
         this.staminaBar.x(this.model.x + 200 - this.barWidth / 2);
         this.staminaBar.y(this.model.y + 140 - (5 + this.barHeight));
-        this.staminaBar.width(this.barWidth * manaPercent);
+        this.staminaBar.width(this.barWidth * staminaPercent);
 
         this.group.getLayer()?.batchDraw();
     }

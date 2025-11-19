@@ -106,7 +106,7 @@ export class PlayerModel {
     get attackCurrentAnimation(): string | null { return this._attackCurrentAnimation; }
     get audio() { return this._audio; }
     get health() { return this._health; }
-    get mana() { return this._stamina; }
+    get stamina() { return this._stamina; }
     get direction() { return this._direction; }
 
     set x(x: number) { this._x = x; }
@@ -114,5 +114,5 @@ export class PlayerModel {
     set direction(d: "left" | "right") { this._direction = d; }
     set bodyCurrentAnimation(a: string) { this._bodyCurrentAnimation = a; }
     set attackCurrentAnimation(a: string | null) { this._attackCurrentAnimation = a; }
-    set mana(m: number) { this._stamina = m; }
+    set stamina(m: number) { this._stamina = m; }
 }

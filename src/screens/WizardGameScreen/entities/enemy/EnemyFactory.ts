@@ -3,6 +3,7 @@ import { EnemyViewer } from './EnemyViewer';
 import { EnemyModel } from './EnemyModel'; 
 import { EnemyController } from './EnemyController';
 import { AudioController } from '../../../../audios/AudioController';
+import { ENEMY_SPEED } from '../../config';
 
 //Types of assets
 import { orcSrc, orcAttackSrc, ORC_ANIMATIONS, ORC_ATTACK_ANIMATIONS, ORC_BOUNDING_BOXES, ORC_ATTACK_BOUNDING_BOXES, ORC_AUDIO} from "../types/Orc";
@@ -26,7 +27,7 @@ export class EnemyFactory {
                 model = new EnemyModel(
                     x, 
                     y, 
-                    100, 
+                    ENEMY_SPEED, 
                     ORC_AUDIO, 
                     ORC_BOUNDING_BOXES,
                     ORC_ATTACK_BOUNDING_BOXES
