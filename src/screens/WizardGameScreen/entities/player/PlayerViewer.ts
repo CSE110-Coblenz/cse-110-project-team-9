@@ -1,9 +1,6 @@
 import Konva from "konva";
 import { PlayerModel } from "./PlayerModel";
-
-const FRAME_RATE = 10;
-const SPRITE_WIDTH = 100;
-const SPRITE_HEIGHT = 100;
+import { FRAME_RATE, SPRITE_WIDTH } from "../../config";
 
 export class PlayerViewer {
     private bodySprite: Konva.Sprite;
@@ -24,6 +21,11 @@ export class PlayerViewer {
         this.group.add(this.attackSprite);
     }
 
+    destructor() { 
+        this.bodySprite.destroy();
+        this.attackSprite.destroy(); 
+    }
+
     private createSprite(
         entity: { image: string; animations: Record<string, number[]> },
         animation: string,
@@ -42,11 +44,6 @@ export class PlayerViewer {
             scaleY: this._scale,
             visible,
         });
-    }
-
-    destructor() { 
-        this.bodySprite.destroy();
-        this.attackSprite.destroy(); 
     }
 
     /**
@@ -127,7 +124,6 @@ export class PlayerViewer {
                 this.attackSprite.stop();
             }
         }
-        
     }
 
     /**

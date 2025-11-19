@@ -3,6 +3,7 @@ import { EnemyFactory, EnemyType } from "./EnemyFactory";
 import { EnemyController } from "./EnemyController";
 import { CollisionManager } from "../CollisionManager";
 import { AudioController } from "../../../../audios/AudioController";
+import { ENEMY_SCALE } from "../../config";
 
 export class EnemyManager {
     private enemies: EnemyController[]
@@ -44,7 +45,7 @@ export class EnemyManager {
         const types: EnemyType[] = ["orc"];
         const type = types[Math.floor(Math.random() * types.length)];
 
-        const enemy = EnemyFactory.create(x, y, type, this.group, this.audio);
+        const enemy = EnemyFactory.create(x, y, ENEMY_SCALE ,type, this.group, this.audio);
 
         this.enemies.push(enemy);
         this.collision.register(enemy);

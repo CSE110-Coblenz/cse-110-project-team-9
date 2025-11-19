@@ -3,7 +3,7 @@ import { PlayerModel } from './PlayerModel';
 
 export class PlayerHUD {
     private healthBar: Konva.Rect;
-    private manaBar: Konva.Rect;
+    private staminaBar: Konva.Rect;
 
     private readonly barWidth: number = 70;
     private readonly barHeight: number = 5;
@@ -17,16 +17,16 @@ export class PlayerHUD {
             fill: "red",
         });
 
-        this.manaBar = new Konva.Rect({
+        this.staminaBar = new Konva.Rect({
             x: 0,
             y: 0,
             width: this.barWidth,
             height: this.barHeight,
-            fill: "blue",
+            fill: "yellow",
         });
 
         group.add(this.healthBar);
-        group.add(this.manaBar);
+        group.add(this.staminaBar);
     }
 
     render() {
@@ -39,9 +39,9 @@ export class PlayerHUD {
         this.healthBar.y(this.model.y + 140 - (10 + this.barHeight));
         this.healthBar.width(this.barWidth * healthPercent);
 
-        this.manaBar.x(this.model.x + 200 - this.barWidth / 2);
-        this.manaBar.y(this.model.y + 140 - (5 + this.barHeight));
-        this.manaBar.width(this.barWidth * manaPercent);
+        this.staminaBar.x(this.model.x + 200 - this.barWidth / 2);
+        this.staminaBar.y(this.model.y + 140 - (5 + this.barHeight));
+        this.staminaBar.width(this.barWidth * manaPercent);
 
         this.group.getLayer()?.batchDraw();
     }

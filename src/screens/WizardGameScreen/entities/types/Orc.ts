@@ -1,11 +1,13 @@
 import { computeAllAnimationBoundingBoxes } from "./CreateBoundingBox";
+import { knightAttackSrc } from "./Knight";
 
 //image atlas export
 export const orcSrc = "/wizardminigame/sprites/orc/Orc.png";
+export const orcAttackSrc = "/wizardminigame/sprites/orc/Orc-Attack_Effect.png"
 
 //animation types
 export type OrcAnimation = "idle" | "walk" | "attacklight" | "attackheavy" | "damage" | "death";
-
+export type OrcAttackAnimation = "attacklight" | "attackheavy";
 //[x, y, width, height] per frame
 export const ORC_ANIMATIONS: Record<OrcAnimation, number[]> = {
     idle: [
@@ -56,9 +58,27 @@ export const ORC_ANIMATIONS: Record<OrcAnimation, number[]> = {
     ]
 };
 
+export const ORC_ATTACK_ANIMATIONS: Record<OrcAttackAnimation, number[]> = {
+    attacklight: [
+        0, 0, 100, 100,
+        100, 0, 100, 100,
+        200, 0, 100, 100,
+        300, 0, 100, 100,
+        400, 0, 100, 100,
+        500, 0, 100, 100
+    ],
+    attackheavy: [
+        0, 100, 100, 100,
+        100, 100, 100, 100,
+        200, 100, 100, 100,
+        300, 100, 100, 100,
+        400, 100, 100, 100,
+        500, 100, 100, 100
+    ],
+};
+
 export type OrcAudioMap = typeof ORC_AUDIO;
 
-//TODO: grab correct foramt .100 seconds per frame for any given animation mp4
 export const ORC_AUDIO = {
     walk: "/wizardminigame/audio/footsteps.mp3",
     attacklight: "/wizardminigame/audio/slash.mp3",
@@ -69,11 +89,18 @@ export const ORC_AUDIO = {
 
 //bounding box for collision frames
 export const ORC_BOUNDING_BOXES: Record<OrcAnimation, { x: number; y: number; width: number; height: number }[] > = {} as any;
+export const ORC_ATTACK_BOUNDING_BOXES: Record<OrcAttackAnimation, { x: number; y: number; width: number; height: number }[] > = {} as any;
+
 
 //pre-computed bounding boxes
 const orcImg = new Image();
+const orcAttackImg = new Image();
 orcImg.src = orcSrc;
+orcAttackImg.src = knightAttackSrc;
 orcImg.onload = () => {
-    const boxes = computeAllAnimationBoundingBoxes(orcImg, ORC_ANIMATIONS);
-    Object.assign(ORC_BOUNDING_BOXES, boxes);
+    const orcBoxes = computeAllAnimationBoundingBoxes(orcImg, ORC_ANIMATIONS);
+    const orcAttackBoxes = computeAllAnimationBoundingBoxes(orcAttackImg, ORC_ATTACK_ANIMATIONS)
+
+    Object.assign(ORC_ATTACK_BOUNDING_BOXES, orcAttackBoxes);
+    Object.assign(ORC_BOUNDING_BOXES, orcBoxes);
 };

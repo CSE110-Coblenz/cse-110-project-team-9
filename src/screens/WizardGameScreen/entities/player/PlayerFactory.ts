@@ -5,14 +5,12 @@ import { PlayerController } from "./PlayerController";
 import { PlayerHUD } from './PlayerHUD';
 import { InputHandler } from '../../InputHandler';
 import { AudioController } from '../../../../audios/AudioController';
+import { PLAYER_SPEED } from '../../config';
 
 //Types of assets
 import { knightSrc, knightAttackSrc, KNIGHT_ANIMATIONS, KNIGHT_ATTACK_ANIMATIONS, KNIGHT_BOUNDING_BOXES, KNIGHT_ATTACK_BOUNDING_BOXES, KNIGHT_AUDIO} from "../types/Knight";
 
 export type PlayerType = "knight";  //addable classes here
-
-//TODO: move to config
-const DEFAULT_PLAYER_SPEED = 150;
 
 export class PlayerFactory {
     static create(
@@ -32,7 +30,7 @@ export class PlayerFactory {
                 model = new PlayerModel(
                     x, 
                     y, 
-                    DEFAULT_PLAYER_SPEED, 
+                    PLAYER_SPEED, 
                     KNIGHT_AUDIO, 
                     KNIGHT_BOUNDING_BOXES, 
                     KNIGHT_ATTACK_BOUNDING_BOXES

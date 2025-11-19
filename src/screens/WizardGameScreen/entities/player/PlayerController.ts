@@ -101,7 +101,6 @@ export class PlayerController implements Collidable {
      */
     get model() { return this._model; }
     shape() { return this.view.group; }
-    boundingBox() { return this.view.bodyBoxes; }
     bodyBox() { return this.view.bodyBoxes; }
     attackBox() { return this.view.attackBoxes; }
     dead() { return this.model.dead; }

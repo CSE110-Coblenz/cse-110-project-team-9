@@ -99,7 +99,6 @@ export const KNIGHT_ATTACK_ANIMATIONS: Record<KnightAttackAnimation, number[]> =
 
 export type KnightAudioMap = typeof KNIGHT_AUDIO;
 
-//TODO: grab correct foramt .100 seconds per frame for any given animation mp4
 export const KNIGHT_AUDIO = {
     walk: "/wizardminigame/audio/footsteps.mp3",
     attackbow: "/wizardminigame/audio/bowrelease.mp3",
@@ -115,14 +114,13 @@ export const KNIGHT_ATTACK_BOUNDING_BOXES: Record<KnightAttackAnimation, { x: nu
 
 //pre-computed bounding boxes
 const knightImg = new Image();
-const attackKnightImg = new Image();
+const knightAttackImg = new Image();
 knightImg.src = knightSrc;
-attackKnightImg.src = knightAttackSrc;
+knightAttackImg.src = knightAttackSrc;
 knightImg.onload = () => {
     const knightBoxes = computeAllAnimationBoundingBoxes(knightImg, KNIGHT_ANIMATIONS);
-    const attackKnightBoxes = computeAllAnimationBoundingBoxes(attackKnightImg, KNIGHT_ATTACK_ANIMATIONS);
+    const knightAttackBoxes = computeAllAnimationBoundingBoxes(knightAttackImg, KNIGHT_ATTACK_ANIMATIONS);
 
-    //object assignment for boxes
-    Object.assign(KNIGHT_ATTACK_BOUNDING_BOXES, attackKnightBoxes);
+    Object.assign(KNIGHT_ATTACK_BOUNDING_BOXES, knightAttackBoxes);
     Object.assign(KNIGHT_BOUNDING_BOXES, knightBoxes);
 };  

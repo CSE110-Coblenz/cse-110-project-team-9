@@ -1,26 +1,20 @@
+import { SPRITE_WIDTH, PLAYER_START_X, PLAYER_START_Y, 
+    DEFAULT_HEALTH, DEFAULT_STAMINA, PLAYER_SPEED} from "../../config";
 //player bounding boxes for list of animations
 //[x, y, width, height] per frame
 type BoundingBox = { x: number; y: number; width: number; height: number };
 type BoundingBoxMap = Record<string, BoundingBox[]>;
-
-//TODO: default parameters might move constants to config file
-const DEFAULT_HEALTH = 100;
-const DEFAULT_MANA = 100;
-const DEFAULT_SPEED = 150;
-const RESET_X = 200;
-const RESET_Y = 100;
-const SPRITE_WIDTH = 100;
 
 export class PlayerModel {
     private _x: number;
     private _y: number;
     private _speed: number;
     private _health: number;
-    private _mana: number;
+    private _stamina: number;
     private _bodyCurrentAnimation: string;
     private _attackCurrentAnimation: string | null;
     //audio key to audio file mapping
-    private _AUDIO: Record<string, string>;
+    private _audio: Record<string, string>;
     //to flip the player ot look natural and directional attacks
     private _direction: "left" | "right";
     //to take damage
@@ -40,10 +34,10 @@ export class PlayerModel {
         this._y = y;
         this._speed = speed;
         this._health = DEFAULT_HEALTH;
-        this._mana = DEFAULT_MANA;
+        this._stamina = DEFAULT_STAMINA;
         this._bodyCurrentAnimation = "idle";
         this._attackCurrentAnimation = null;
-        this._AUDIO = audio;
+        this._audio = audio;
         this._direction = "right";
         this._bodyBoxes = bodyBoxes;
         this._attackBoxes = attackBoxes;
@@ -51,11 +45,11 @@ export class PlayerModel {
 
     //reset function after every game and delete player function
     reset() {
-        this._x = RESET_X;
-        this._y = RESET_Y;
-        this._speed = DEFAULT_SPEED;
+        this._x = PLAYER_START_X;
+        this._y = PLAYER_START_Y;
+        this._speed = PLAYER_SPEED;
         this._health = DEFAULT_HEALTH;
-        this._mana = DEFAULT_MANA;
+        this._stamina = DEFAULT_STAMINA;
         this._bodyCurrentAnimation = "idle";
         this._attackCurrentAnimation = null;
         this._direction = "right";
@@ -110,9 +104,9 @@ export class PlayerModel {
     get dead() { return this._health <= 0; }
     get bodyCurrentAnimation() { return this._bodyCurrentAnimation; }
     get attackCurrentAnimation(): string | null { return this._attackCurrentAnimation; }
-    get audio() { return this._AUDIO; }
+    get audio() { return this._audio; }
     get health() { return this._health; }
-    get mana() { return this._mana; }
+    get mana() { return this._stamina; }
     get direction() { return this._direction; }
 
     set x(x: number) { this._x = x; }
@@ -120,5 +114,5 @@ export class PlayerModel {
     set direction(d: "left" | "right") { this._direction = d; }
     set bodyCurrentAnimation(a: string) { this._bodyCurrentAnimation = a; }
     set attackCurrentAnimation(a: string | null) { this._attackCurrentAnimation = a; }
-    set mana(m: number) { this._mana = m; }
+    set mana(m: number) { this._stamina = m; }
 }

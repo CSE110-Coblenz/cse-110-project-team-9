@@ -8,10 +8,7 @@ import { PlayerFactory } from "./entities/player/PlayerFactory";
 import { AudioController } from "../../audios/AudioController";
 import { InputHandler } from "./InputHandler";
 import { EnemyManager } from "./entities/enemy/EnemyManager";
-
-const PLAYER_START_X = 200;
-const PLAYER_START_Y = 100;
-const PlAYER_SCALE = 4;
+import { PLAYER_START_X, PLAYER_START_Y, PlAYER_SCALE } from "./config";
 
 export class WizardGameScreenController extends ScreenController {
     private model: WizardGameScreenModel;
@@ -79,7 +76,6 @@ export class WizardGameScreenController extends ScreenController {
 
     startGame() {
         this.view.show();
-        //TODO: combine input handling
         //global keys for game
         this.windowBind();
         //input keys for player
@@ -148,20 +144,16 @@ export class WizardGameScreenController extends ScreenController {
  * 
  * NEED TO COMPLETE:
  * add collision for player on enemy and enemy on enemy just don't overlap
- * 
  * add collision for player on enemy or enemy on player hit or attack
- * 
+ * grab correct foramt .100 seconds per frame for any given animation mp4
+ * combine input handling
  * add boundary box for window
- * 
  * Add hurt animation
  * Add death animation
  * 
  * when player dies end game result screen  
- * 
- * Generate AI SFX and Grab BGM
- * 
+* 
  * BUGS/FIX:
  * Fix exit game/ mem cleanup
  * holding shift key down while walking
- * 
   */

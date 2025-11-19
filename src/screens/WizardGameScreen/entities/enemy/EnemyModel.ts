@@ -1,87 +1,102 @@
+import { SPRITE_WIDTH, DEFAULT_HEALTH, } from "../../config";
+//enemy bounding boxes for list of animations
+//[x, y, width, height] per frame
+type BoundingBox = { x: number; y: number; width: number; height: number };
+type BoundingBoxMap = Record<string, BoundingBox[]>;
+
 export class EnemyModel {
     private _x: number;
     private _y: number;
     private _speed: number;
     private _health: number; //out of 100
-    private _currentAnimation: string;
-    //this is a audio mapping
-    private _AUDIO: Record<string, string>;
-    //flips image left or right looks more natural
+    private _bodyCurrentAnimation: string;
+    private _attackCurrentAnimation: string | null;
+    //audio key to audio file mapping
+    private _audio: Record<string, string>;
+    //to flip the player ot look natural and directional attacks
     private _direction: "left" | "right";
-    //collsion bounding boxes per frame
-    private _boundingBoxes: Record<string, { x: number; y: number; width: number; height: number }[]>
+    //to take damage
+    private _bodyBoxes: BoundingBoxMap;
+    //to do damage
+    private _attackBoxes: BoundingBoxMap;
 
 
-    /**
-     * 
-     * @param x x pos in screen
-     * @param y y pos in screen
-     * @param speed average speed in pixels a second
-     * @param AUDIO audio files for animations/events
-     */
     constructor(
-        x: number, y: number, speed: number, 
-        AUDIO: Record<string,string>,
-        boundingBoxes: Record<string, { x: number; y: number; width: number; height: number }[]>
+        x: number, 
+        y: number, 
+        speed: number, 
+        audio: Record<string,string>,
+        bodyBoxes: BoundingBoxMap,
+        attackBoxes: BoundingBoxMap    
     ) {
         this._x = x;
         this._y = y;
         this._speed = speed;
-        this._health = 100;
-        this._currentAnimation = "idle";
-        this._AUDIO = AUDIO;
+        this._health = DEFAULT_HEALTH;
+        this._bodyCurrentAnimation = "idle";
+        this._attackCurrentAnimation = null;
+        this._audio = audio;
         this._direction = "right";
-        this._boundingBoxes = boundingBoxes;
+        this._bodyBoxes = bodyBoxes;
+        this._attackBoxes = attackBoxes;
     }
 
-    /**
-     * take daamage functions
-     * @param amount damage taken ammount
-     */
     damage(amount: number) {
-        this._health -= amount;
-        if (this._health < 0) this._health = 0;
+        //take damage floors to 0
+        this._health = Math.max(0, this._health - amount);
+    }
+
+    bodyBox(frameIndex: number, scale: number): BoundingBox {
+        //generate collision box for body
+        const frames = this._bodyBoxes[this._bodyCurrentAnimation];
+        const frameBox = frames[frameIndex];
+        return this.calculateBoundingBox(frameBox, scale);
+    }
+
+    attackBox(frameIndex: number, scale: number): BoundingBox {
+        //no collision box for attacks to hit essentially delete box
+        if (this._attackCurrentAnimation === null) {
+            return { x: 0, y: 0, width: 0, height: 0 };
+        }
+        
+        //otherwise generate box as normal
+        const frames = this._attackBoxes[this._attackCurrentAnimation];
+        const frameBox = frames[frameIndex];
+        return this.calculateBoundingBox(frameBox, scale);
+    }
+
+    private calculateBoundingBox(frameBox: BoundingBox, scale: number): BoundingBox {
+        let x = this._x;
+        if (this._direction === "left") {
+            x += SPRITE_WIDTH * scale - frameBox.width * scale - frameBox.x * scale;
+        } else {
+            x += frameBox.x * scale;
+        }
+
+        return {
+            x,
+            y: this._y + frameBox.y * scale,
+            width: frameBox.width * scale,
+            height: frameBox.height * scale
+        };
     }
 
     /**
-     * getters for private values
+     * setters and getter methods to keep values private
      */
     get x() { return this._x; }
     get y() { return this._y; }
     get speed() { return this._speed; }
     get dead() { return this._health <= 0; }
-    get currentAnimation() { return this._currentAnimation; }
-    get audio() { return this._AUDIO }
+    get bodyCurrentAnimation() { return this._bodyCurrentAnimation; }
+    get attackCurrentAnimation(): string | null { return this._attackCurrentAnimation; }
+    get audio() { return this._audio; }
     get health() { return this._health; }
     get direction() { return this._direction; }
 
-    public worldBoundingBox(frameIndex: number, scale: number): { x: number; y: number; width: number; height: number } {
-        const frames = this._boundingBoxes[this._currentAnimation];
-        const frameBox = frames[frameIndex];
-        
-        let x = this._x;
-        if (this._direction === "left") {
-            x += 100 * scale - frameBox.width * scale - frameBox.x * scale; // shift collision when flipped
-        } else {
-            x += frameBox.x * scale;
-        }
-
-        return{
-            x,
-            y: this._y + frameBox.y * scale,
-            width: frameBox.width * scale,
-            height: frameBox.height * scale
-        }
-    }
-
-    /**
-     * setters for private values
-     */
-    set direction(value: "left" | "right") { this._direction = value; }
-    set animation(animation: string) {this._currentAnimation = animation; }
-
-    move(dx: number, dy: number){
-        this._x += dx;
-        this._y += dy;
-    }
+    set x(x: number) { this._x = x; }
+    set y(y: number) { this._y = y; }
+    set direction(d: "left" | "right") { this._direction = d; }
+    set bodyCurrentAnimation(a: string) { this._bodyCurrentAnimation = a; }
+    set attackCurrentAnimation(a: string | null) { this._attackCurrentAnimation = a; }
 }
