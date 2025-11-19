@@ -1,16 +1,11 @@
 import Konva from "konva";
 import type { ScreenSwitcher, Screen } from "./types";
 import { STAGE_WIDTH, STAGE_HEIGHT } from "./constants";
-
 import { StartingScreenController } from "./screens/StartingScreen/StartingScreenController";
-
 import { HomeScreenController } from "./screens/HomeScreen/HomeScreenController";
 import { SettingsScreenController } from "./screens/SettingsScreen/SettingsScreenController";
-
 import { MainGameScreenController } from "./screens/MainGameScreen/MainGameScreenController";
-
 import { WizardGameScreenController } from "./screens/WizardGameScreen/WizardGameScreenController";
-
 import { AudioController } from "./audios/AudioController";
 
 class App implements ScreenSwitcher {
@@ -36,7 +31,7 @@ class App implements ScreenSwitcher {
 		// Create a layer
 		this.layer = new Konva.Layer();
 		this.stage.add(this.layer);
-
+		
 		// Initialize AudioController
 		this.audio = new AudioController();
 
