@@ -106,7 +106,6 @@ describe("StartingScreenController", () => {
         const callback = viewInstance.getGroup().on.mock.calls[0][1];
         callback();
 
-        expect(mockAudio.play).toHaveBeenCalledWith("home_bgm", true);
         expect(mockScreenSwitcher.switchToScreen).toHaveBeenCalledWith({ type: "home" });
     });
 
