@@ -73,7 +73,7 @@ export class MainGameScreenController extends ScreenController {
                 // Wait for the message to display, then trigger minigame
                 setTimeout(() => {
                     this.triggerRandomMinigame();
-                }, 2000);
+                }, 1000);
                 break;
 
             case NodeType.START:
