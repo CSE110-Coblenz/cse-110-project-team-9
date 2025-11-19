@@ -31,8 +31,7 @@ export class WizardGameScreenController extends ScreenController {
             this.collisionManager.toggleDebugMode(this.showBoundingBoxes);
         } 
         if (e.key === 'Escape'){
-            this.stopGame();
-            this.screenSwitcher.switchToScreen({ type:"home" });
+            this.exit();
         } 
         if (e.key === '1'){
             this.screenSwitcher.layerOnScreen({ type:"settings" });
@@ -44,6 +43,8 @@ export class WizardGameScreenController extends ScreenController {
         this.model = new WizardGameScreenModel();
         this.view = new WizardGameScreenViewer();
         this.input = new InputHandler();
+
+        this.audio.registerSound("wizard_bgm","/wizardminigame/audio/WizardBgm.mp3");
         
         this.playerController = PlayerFactory.create(
             PLAYER_START_X,
@@ -52,7 +53,8 @@ export class WizardGameScreenController extends ScreenController {
             "knight", 
             this.view.getGroup(),
             this.audio, 
-            this.input
+            this.input,
+            () => this.exit(),
         );
 
         this.collisionManager = new CollisionManager();
@@ -63,7 +65,7 @@ export class WizardGameScreenController extends ScreenController {
             this.audio,
             this.model.height,
             this.model.width 
-        );
+        );  
     }
 
     windowBind() {
@@ -82,11 +84,14 @@ export class WizardGameScreenController extends ScreenController {
         this.input.bind();
         this.collisionManager.register(this.playerController);
         this.disableImageSmoothing();
+
+        this.audio.play("wizard_bgm");
         this.lastUpdateTime = performance.now();
         this.updateLoop();
     }
 
     private disableImageSmoothing(): void {
+        //weird fix to make sure the pixels are not smoothed over
         const layer = this.view.getGroup().getLayer();
         if (layer) {
             const ctx = layer.getContext() as unknown as CanvasRenderingContext2D;
@@ -126,6 +131,9 @@ export class WizardGameScreenController extends ScreenController {
         //remove all colldiable left
         this.collisionManager.unregisterAll();
 
+        //bgm
+        this.audio.stop("wizard_bgm");
+
         //delete objects
         this.enemyManager.clear();
         this.playerController.reset();
@@ -134,26 +142,12 @@ export class WizardGameScreenController extends ScreenController {
         this.input.unbind();
     }
 
+    exit() {
+        this.stopGame();
+        this.screenSwitcher.switchToScreen({ type:"mainGame" });
+    }
+
     getView(): WizardGameScreenViewer {
         return this.view;
     }
 }
-
-/**
- * TODO: notepad
- * 
- * NEED TO COMPLETE:
- * add collision for player on enemy and enemy on enemy just don't overlap
- * add collision for player on enemy or enemy on player hit or attack
- * grab correct foramt .100 seconds per frame for any given animation mp4
- * combine input handling
- * add boundary box for window
- * Add hurt animation
- * Add death animation
- * 
- * when player dies end game result screen  
-* 
- * BUGS/FIX:
- * Fix exit game/ mem cleanup
- * holding shift key down while walking
-  */

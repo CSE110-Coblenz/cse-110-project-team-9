@@ -60,6 +60,11 @@ export class PlayerModel {
         this._health = Math.max(0, this._health - amount);
     }
 
+    staminaDrain(amount: number){
+        //take stamina floors to 0
+        this._stamina = Math.max(0, this._stamina - amount);
+    }
+
     bodyBox(frameIndex: number, scale: number): BoundingBox {
         //generate collision box for body
         const frames = this._bodyBoxes[this._bodyCurrentAnimation];
@@ -101,7 +106,7 @@ export class PlayerModel {
     get x() { return this._x; }
     get y() { return this._y; }
     get speed() { return this._speed; }
-    get dead() { return this._health <= 0; }
+    get dead(): boolean { return this._health == 0; }
     get bodyCurrentAnimation() { return this._bodyCurrentAnimation; }
     get attackCurrentAnimation(): string | null { return this._attackCurrentAnimation; }
     get audio() { return this._audio; }
@@ -114,5 +119,4 @@ export class PlayerModel {
     set direction(d: "left" | "right") { this._direction = d; }
     set bodyCurrentAnimation(a: string) { this._bodyCurrentAnimation = a; }
     set attackCurrentAnimation(a: string | null) { this._attackCurrentAnimation = a; }
-    set stamina(m: number) { this._stamina = m; }
 }

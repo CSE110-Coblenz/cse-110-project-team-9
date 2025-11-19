@@ -31,7 +31,7 @@ export class EnemyManager {
         }
 
         for (const enemy of this.enemies) {
-            if (!enemy.dead()) {
+            if (!enemy.dead) {
                 enemy.update(delta, playerX, playerY);
             }
         }

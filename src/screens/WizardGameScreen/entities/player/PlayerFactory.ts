@@ -20,7 +20,8 @@ export class PlayerFactory {
         type: PlayerType, 
         group: Konva.Group, 
         audio: AudioController, 
-        input: InputHandler
+        input: InputHandler,
+        exit?: () => void
     ): PlayerController {
         let model: PlayerModel;
         let viewer: PlayerViewer;

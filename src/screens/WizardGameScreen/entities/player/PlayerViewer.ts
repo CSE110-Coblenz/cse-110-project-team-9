@@ -21,7 +21,7 @@ export class PlayerViewer {
         this.group.add(this.attackSprite);
     }
 
-    destructor() { 
+    destroy() { 
         this.bodySprite.destroy();
         this.attackSprite.destroy(); 
     }

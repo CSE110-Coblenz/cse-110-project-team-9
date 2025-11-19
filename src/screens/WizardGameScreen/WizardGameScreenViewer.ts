@@ -7,13 +7,18 @@ export class WizardGameScreenViewer implements View {
 
     constructor() {
         this.group = new Konva.Group({ visible: false });
+        const backgroundSrc = "/wizardminigame/Grass_Sample.png";
 
-        const bg = new Konva.Rect({
+        const imageObj = new Image();
+        imageObj.src = backgroundSrc;
+
+        const bg = new Konva.Image({
             x: 0,
             y: 0,
+            image: imageObj,
             width: STAGE_WIDTH,
             height: STAGE_HEIGHT,
-            fill: "#3a7389ff",
+            name: 'background',
         });
         this.group.add(bg);
     }

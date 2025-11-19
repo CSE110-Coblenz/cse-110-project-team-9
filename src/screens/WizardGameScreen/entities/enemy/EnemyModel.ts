@@ -1,4 +1,4 @@
-import { SPRITE_WIDTH, DEFAULT_HEALTH, } from "../../config";
+import { SPRITE_WIDTH, DEFAULT_HEALTH } from "../../config";
 //enemy bounding boxes for list of animations
 //[x, y, width, height] per frame
 type BoundingBox = { x: number; y: number; width: number; height: number };

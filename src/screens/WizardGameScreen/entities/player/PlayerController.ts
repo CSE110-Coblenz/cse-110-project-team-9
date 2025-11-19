@@ -4,9 +4,7 @@ import { InputHandler } from "../../InputHandler";
 import { Collidable } from "../CollisionManager";
 import { AudioController } from "../../../../audios/AudioController";
 import { PlayerHUD } from "./PlayerHUD";
-
-//todo: config file
-const DAMAGE_ON_COLLISION = 5;
+import { ENEMY_DAMAGE, PLAYER_STAMINA_DRAIN } from "../../config";
 
 export class PlayerController implements Collidable {
     constructor(
@@ -14,21 +12,24 @@ export class PlayerController implements Collidable {
         private _hud: PlayerHUD,
         private view: PlayerViewer,
         private audio: AudioController,
-        private input: InputHandler 
+        private input: InputHandler,
+        private exit?: () => void
     ) {
         for (const key in this._model.audio) {
             this.audio.registerSound(key, this._model.audio[key]);
         }
     }
 
-    destructor() {
-        this.view.destructor();
-        // this.model.destructor();
-        // this._hud.destructor();
+    destroy() {
+        this.view.destroy();
+        this.exit?.();
     }
     
     public onCollision?(_other: Collidable): void {
-        this._model.damage(DAMAGE_ON_COLLISION);
+        this.damage(ENEMY_DAMAGE);
+    }
+
+    public onAttackCollision?(_attacker: Collidable): void {
     }
 
     public reset() {
@@ -38,7 +39,6 @@ export class PlayerController implements Collidable {
     public damage(amount: number) {
         this._model.damage(amount);
     }
-    
 
     update(deltaTime: number) {
         let dx = 0, dy = 0;
@@ -69,19 +69,22 @@ export class PlayerController implements Collidable {
         if (dx !== 0 || dy !== 0) {
             this._model.bodyCurrentAnimation = "walk";
             this.audio.play("walk", true);
-        } else if (this.input.isDown("f")) {            
+        } else if (this.input.isDown("f")) {   
+            this._model.staminaDrain(PLAYER_STAMINA_DRAIN);
             if(this._model.bodyCurrentAnimation !== "attackslash"){
                 this.audio.play("attackslash", true);
             }
             this._model.bodyCurrentAnimation = "attackslash";
             this._model.attackCurrentAnimation = "attackslash";
         } else if (this.input.isDown("e")) {
+            this._model.staminaDrain(PLAYER_STAMINA_DRAIN);
             if(this._model.bodyCurrentAnimation !== "attackdown"){
                 this.audio.play("attackdown", true);
             }
             this._model.bodyCurrentAnimation = "attackdown";
             this._model.attackCurrentAnimation = "attackdown";
         } else if (this.input.isDown("r")) {
+            this._model.staminaDrain(PLAYER_STAMINA_DRAIN);
             if(this._model.bodyCurrentAnimation !== "attackbow"){
                 this.audio.play("attackbow", true);
             }
@@ -102,10 +105,18 @@ export class PlayerController implements Collidable {
      * Getter methods for various utility
      */
     get model() { return this._model; }
-    shape() { return this.view.group; }
-    boundingBox() { return this.view.bodyBoxes; }
-    bodyBox() { return this.view.bodyBoxes; }
-    attackBox() { return this.view.attackBoxes; }
-    dead() { return this.model.dead; }
-    destroy() { this.destructor(); }
+    get shape() { return this.view.group; }
+    get boundingBox() { return this.view.bodyBoxes; }
+    get bodyBox() { return this.view.bodyBoxes; }
+    get attackBox() { return this.view.attackBoxes; }
+    get dead(): boolean { return this.model.dead; }
+    get type(): "enemy" | "player" { return "player"; }
+
+    set x(x: number) { this._model.x = x; }
+    set y(y: number) { this._model.y = y; }
+
+    moveBy(dx: number, dy: number) {
+        this._model.x += dx/2;
+        this._model.y += dy/2;
+    }
 }

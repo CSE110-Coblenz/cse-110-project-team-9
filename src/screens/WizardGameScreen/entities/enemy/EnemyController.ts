@@ -2,9 +2,7 @@ import { EnemyModel } from "./EnemyModel";
 import { EnemyViewer } from "./EnemyViewer";
 import { Collidable } from "../CollisionManager";
 import { AudioController } from "../../../../audios/AudioController";
-
-//todo: config file
-const DAMAGE_ON_COLLISION = 5;
+import { PLAYER_DAMAGE } from "../../config";
 
 export class EnemyController implements Collidable {
 
@@ -18,7 +16,7 @@ export class EnemyController implements Collidable {
         }
     }
 
-    destructor() {
+    destroy() {
         this.view.destructor();
     }
 
@@ -26,8 +24,10 @@ export class EnemyController implements Collidable {
      * check collision
      * @param other
      */
-    public onCollision?(other: Collidable): void{
-        this._model.damage(DAMAGE_ON_COLLISION);
+    public onCollision?(_other: Collidable): void{ }
+
+    public onAttackCollision?(_attacker: Collidable): void {
+        this._model.damage(PLAYER_DAMAGE);
     }
 
     /**
@@ -65,10 +65,18 @@ export class EnemyController implements Collidable {
     /**
      * Getter methods for various utility
      */
-    shape() { return this.view.group;}
-    boundingBox() { return this.view.bodyBoxes; }
-    bodyBox() { return this.view.bodyBoxes; }
-    attackBox() { return this.view.attackBoxes; }
-    dead() { return this._model.dead; }
-    destroy() { this.destructor(); }
+    get shape() { return this.view.group;}
+    get boundingBox() { return this.view.bodyBoxes; }
+    get bodyBox() { return this.view.bodyBoxes; }
+    get attackBox() { return this.view.attackBoxes; }
+    get dead() { return this._model.dead; }
+    get type(): "enemy" | "player" { return "enemy"; }
+
+    set x(x: number) { this._model.x = x; }
+    set y(y: number) { this._model.y = y; }
+
+    moveBy(dx: number, dy: number) {
+        this._model.x += dx;
+        this._model.y += dy;
+    }
 }
