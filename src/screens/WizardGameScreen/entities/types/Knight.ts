@@ -101,10 +101,10 @@ export type KnightAudioMap = typeof KNIGHT_AUDIO;
 
 //TODO: grab correct foramt .100 seconds per frame for any given animation mp4
 export const KNIGHT_AUDIO = {
-    walk: "/wizardminigame/audio/8-bit-grass-footsteps-2-408574.mp3",
-    attackbow: "/wizardminigame/audio/bow_release-85040.mp3",
-    attackslash: "/wizardminigame/audio/sword-slash-and-swing-185432.mp3",
-    attackdown: "/wizardminigame/audio/sword-slash-and-swing-185432.mp3",
+    walk: "/wizardminigame/audio/footsteps.mp3",
+    attackbow: "/wizardminigame/audio/bowrelease.mp3",
+    attackslash: "/wizardminigame/audio/slash.mp3",
+    attackdown: "/wizardminigame/audio/slash.mp3",
     damage: "/wizardminigame/audio/x",
     death: "/wizardminigame/audio/x",
 };
