@@ -86,9 +86,11 @@ export class MainGameScreenController extends ScreenController {
 
             case NodeType.MINIGAME:
                 this.view.displayNodeEvent("You landed on a Minigame tile!");
-                // const newMinigameScore = this.gameModel.getPlayerScore("default") + 10;
-                // this.gameModel.setPlayerScore("default", newMinigameScore);
-                // this.view.updateScoreDisplay(newMinigameScore);
+                
+                // Wait for the message to display, then trigger minigame
+                setTimeout(() => {
+                    this.triggerRandomMinigame();
+                }, 1000);
                 break;
 
             case NodeType.START:
@@ -100,10 +102,27 @@ export class MainGameScreenController extends ScreenController {
         }
     }
 
+    /**
+     * Randomly select and launch a minigame
+     */
+    private triggerRandomMinigame(): void {
+        const minigameChoice = Math.floor(Math.random() * 2) + 1; // 1 or 2
+        
+        console.log(`Launching minigame ${minigameChoice}`);
+        
+        if (minigameChoice === 1) {
+            // Launch Among Us minigame
+            this.screenSwitcher.switchToScreen({ type: "amongUsMenu" });
+        } else {
+            // Launch Wizard minigame (not implemented yet)
+            this.screenSwitcher.switchToScreen({ type: "amongUsMenu" });
+        }
+    }
+
     public getView(): MainGameScreenView {
         return this.view;
     }
-
+    
     public show(): void {
         this.audio.play("mainboard_bgm", true);
         this.view.show();
