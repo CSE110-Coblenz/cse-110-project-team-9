@@ -9,7 +9,7 @@ export class MainGameScreenController extends ScreenController {
     private audio: AudioController;
     private view: MainGameScreenView;
     private screenSwitcher: ScreenSwitcher;
-    private gameModel: MainGameScreenModel = new MainGameScreenModel(["default"]);
+    private gameModel: MainGameScreenModel = new MainGameScreenModel();
 
     private readonly BOARD_LENGTH = 40;
 
@@ -17,7 +17,7 @@ export class MainGameScreenController extends ScreenController {
         
         super();
 
-        this.view = new MainGameScreenView(this.gameModel);
+        this.view = new MainGameScreenView(this.gameModel, audio);
         this.screenSwitcher = screenSwitcher;
         this.audio = audio;
 
@@ -29,6 +29,8 @@ export class MainGameScreenController extends ScreenController {
 
         audio.registerSound("mainboard_bgm", "/mainboard/audio/mainboardBGM.mp3");
         audio.registerSound("click_sfx", "/homescreen/audio/click.mp3");
+        audio.registerSound("dice_sfx", "/mainboard/audio/dice_roll.mp3");
+        audio.registerSound("piece_move_sfx", "/mainboard/audio/piece_move.mp3");
 
         const tiles = this.view.getTiles();
 
@@ -50,22 +52,30 @@ export class MainGameScreenController extends ScreenController {
 		this.audio.play("click_sfx");
 
         const roll = this.diceRoll();
+        this.audio.play("dice_sfx", false);
         console.log(`Player rolled a ${roll}.`);
         this.view.displayRollResult(roll);
-        await this.view.animatePlayerPieceRoll(roll);
 
-        const currentPlayerID = this.gameModel.getCurrentPlayerID();
-        const currentPosition = this.gameModel.getPlayerPosition(currentPlayerID);
+        // Play the sound effect immediately, before any async operations.
+        this.audio.play("dice_sfx", false);
+
+        // Execute the rest of the turn logic asynchronously.
+        this.executeTurn(roll);
+    }
+
+    private async executeTurn(roll: number): Promise<void> {
+        await this.view.animatePlayerPieceRoll(roll);
+        const currentPosition = this.gameModel.getPlayerPosition();
 
         const newPosition = (currentPosition + roll) % this.BOARD_LENGTH;
-        console.log("Player moved to position " + (newPosition + 1));
-        this.gameModel.setPlayerPosition(currentPlayerID, newPosition); // newPosition is 0-indexed
-        this.triggerNodeEvent(currentPlayerID, newPosition + 1); // getNodeType is 1-indexed
+        this.gameModel.setPlayerPosition(newPosition); // newPosition is 0-indexed
+        console.log(`Player moved to position ${newPosition + 1}`);
+        this.triggerNodeEvent(newPosition + 1); // getNodeType is 1-indexed
 
         this.view.enableRollButton();
     }
 
-    public triggerNodeEvent(playerID: string, nodeIndex: number): void {
+    public triggerNodeEvent(nodeIndex: number): void {
         const nodeType = this.gameModel.getNodeType(nodeIndex); 
         switch (nodeType)
         {
@@ -73,15 +83,15 @@ export class MainGameScreenController extends ScreenController {
             case NodeType.MEDIUM_QUESTION:
             case NodeType.HARD_QUESTION:
                 this.view.displayNodeEvent("You landed on a Question tile!");
-                const newQuestionScore = this.gameModel.getPlayerScore("default") + 5;
-                this.gameModel.setPlayerScore("default", newQuestionScore);
-                this.view.updateScoreDisplay(newQuestionScore);
+                //const newQuestionScore = this.gameModel.getPlayerScore("default") + 5;
+                //this.gameModel.setPlayerScore("default", newQuestionScore);
+                //this.view.updateScoreDisplay(newQuestionScore);
                 break;
             case NodeType.MINIGAME:
                 this.view.displayNodeEvent("You landed on a Minigame tile!");
-                const newMinigameScore = this.gameModel.getPlayerScore("default") + 10;
-                this.gameModel.setPlayerScore("default", newMinigameScore);
-                this.view.updateScoreDisplay(newMinigameScore);
+                // const newMinigameScore = this.gameModel.getPlayerScore("default") + 10;
+                // this.gameModel.setPlayerScore("default", newMinigameScore);
+                // this.view.updateScoreDisplay(newMinigameScore);
                 break;
             case NodeType.START:
                 // No action needed for the start tile
@@ -91,12 +101,11 @@ export class MainGameScreenController extends ScreenController {
         }
     }
 
-    public advanceToNextPlayer(): void {
-        this.gameModel.advanceToNextPlayer();
-
-        const nextPlayerID = this.gameModel.getCurrentPlayerID();
-        console.log(`Advancing to player ${nextPlayerID}.`);
+    public getView(): MainGameScreenView {
+        return this.view;
     }
+
+
 
     public show(): void {
         this.audio.play("mainboard_bgm", true); // true for loop (BGM)
@@ -106,9 +115,5 @@ export class MainGameScreenController extends ScreenController {
     public hide(): void {
         this.audio.stopAll();
         this.view.hide();
-    }
-
-    public getView(): MainGameScreenView {
-        return this.view;
     }
 }

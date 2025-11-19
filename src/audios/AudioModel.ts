@@ -5,10 +5,11 @@ export class AudioModel {
     private _sfxVolume: number;
 
     private constructor() {
+        this.sounds = {};
         this._bgmVolume = 0.5;
         this._sfxVolume = 0.5;
 
-        this.sounds = {};
+        this.applyVolume();
     }
     
     /**

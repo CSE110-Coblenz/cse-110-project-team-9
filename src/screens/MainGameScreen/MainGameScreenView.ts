@@ -2,6 +2,7 @@ import Konva from "konva";
 import type { View } from "../../types";
 import { STAGE_WIDTH, STAGE_HEIGHT } from "../../constants";
 import { MainGameScreenModel, NodeType } from "./MainGameScreenModel";
+import { AudioController } from "../../audios/AudioController";
 
 export class MainGameScreenView implements View {
     private group: Konva.Group;
@@ -9,15 +10,16 @@ export class MainGameScreenView implements View {
     private tileLabels: Konva.Text[] = [];
     private diceRollButton: Konva.Group;
     private settingsButton: Konva.Group;
-    private scoreText: Konva.Text;
     private nodeEventText: Konva.Text;
     private diceResultText: Konva.Text;
     private pieceImage!: Konva.Image;
     private model: MainGameScreenModel;
+    private audio: AudioController;
     private boardHeadIndex = 39; // Start with the 40th tile (index 39) as the leftmost
 
-    constructor(model: MainGameScreenModel) {
+    constructor(model: MainGameScreenModel, audio: AudioController) {
         this.model = model;
+        this.audio = audio;
         const boardLength = 40;
         this.group = new Konva.Group({ visible: false });
 
@@ -43,17 +45,16 @@ export class MainGameScreenView implements View {
         this.group.add(titleText);
 
         // Score Text
-        const currentPlayerID = this.model.getCurrentPlayerID();
-        const score = this.model.getPlayerScore(currentPlayerID);
-        this.scoreText = new Konva.Text({
-            x: 20,
-            y: 20,
-            text: `Score: ${score}`,
-            fontSize: 24,
-            fontStyle: 'bold',
-            fill: '#333',
-        });
-        this.group.add(this.scoreText);
+        //const score = this.model.getPlayerScore(currentPlayerID);
+        // this.scoreText = new Konva.Text({
+        //     x: 20,
+        //     y: 20,
+        //     //text: `Score: ${score}`,
+        //     fontSize: 24,
+        //     fontStyle: 'bold',
+        //     fill: '#333',
+        // });
+        //this.group.add(this.scoreText);
 
 
         const nodeSize = 100;
@@ -172,6 +173,7 @@ export class MainGameScreenView implements View {
     async animatePlayerPieceRoll(count: number): Promise<void> {
         for (let i = 0; i < count; i++) {
             await this.doSinglePieceAnimation();
+            this.audio.play("piece_move_sfx", false);
         }
     }
 
@@ -211,7 +213,7 @@ export class MainGameScreenView implements View {
 
             // Animate piece jumping
             const tweenUp = new Konva.Tween({
-                node: this.pieceImage,
+                node: this.pieceImage!,
                 y: originalY - 75,
                 duration: 0.15,
                 easing: Konva.Easings.EaseOut,
@@ -228,7 +230,7 @@ export class MainGameScreenView implements View {
                     }
 
                     const tweenDown = new Konva.Tween({
-                        node: this.pieceImage,
+                        node: this.pieceImage!,
                         y: originalY,
                         duration: 0.5,
                         easing: Konva.Easings.EaseIn,
@@ -390,8 +392,8 @@ export class MainGameScreenView implements View {
         }, 3000); // Hide after 3 seconds
     }
 
-    updateScoreDisplay(newScore: number): void {
-        this.scoreText.text(`Score: ${newScore}`);
-        this.group.getLayer()?.batchDraw();
-    }
+    // updateScoreDisplay(newScore: number): void {
+    //     this.scoreText.text(`Score: ${newScore}`);
+    //     this.group.getLayer()?.batchDraw();
+    // }
 }
