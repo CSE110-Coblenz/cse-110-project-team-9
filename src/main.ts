@@ -53,7 +53,7 @@ class App implements ScreenSwitcher {
 
 		// Initialize Among Us minigame screens
 		this.amongUsMenuController = new AmongUsMenuScreenController(this);
-		this.amongUsGameController = new AmongUsGameScreenController(this);
+		this.amongUsGameController = new AmongUsGameScreenController(this, this.audio);
 		this.amongUsResultsController = new AmongUsResultsScreenController(this);
 
 		// Add all screen groups to the layer
