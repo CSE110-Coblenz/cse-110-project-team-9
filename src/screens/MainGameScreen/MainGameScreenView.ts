@@ -71,14 +71,12 @@ export class MainGameScreenView implements View {
             const secondTile = this.tiles[1]; // This is now the "Start" tile
 
             if (secondTile) {
-                this.pieceImage.setAttrs({
-                    x: secondTile.x(),
-                    y: secondTile.y() - 25, // Slightly above the tile center
-                    width: 75,
-                    height: 75,
-                    offsetX: 37.5, // Center the image
-                    offsetY: 37.5, // Center the image
-                });
+                this.pieceImage.x(secondTile.x());
+                this.pieceImage.y(secondTile.y() - 25); // Slightly above the tile center
+                this.pieceImage.width(75);
+                this.pieceImage.height(75);
+                this.pieceImage.offsetX(37.5); // Center the image
+                this.pieceImage.offsetY(37.5); // Center the image
                 this.group.add(this.pieceImage);
                 this.group.getLayer()?.batchDraw();
             }
