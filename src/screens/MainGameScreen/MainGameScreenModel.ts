@@ -10,22 +10,19 @@ export enum NodeType {
 
 export class MainGameScreenModel {
 
-    private players: Map<string, Player> = new Map<string, Player>();
-
-    private currentPlayerID: string;
-    private playerOrder: string[];
+    private position: number;
 
     private readonly mainGameBoard : NodeType[] =[
     NodeType.START,            // 1
     NodeType.EASY_QUESTION,    // 2
     NodeType.MEDIUM_QUESTION,  // 3
     NodeType.HARD_QUESTION,    // 4
-    NodeType.EASY_QUESTION,    // 5
+    NodeType.MINIGAME,    // 5
     NodeType.MEDIUM_QUESTION,  // 6
     NodeType.MINIGAME,         // 7
     NodeType.HARD_QUESTION,    // 8
     NodeType.EASY_QUESTION,    // 9
-    NodeType.MEDIUM_QUESTION,  // 10
+    NodeType.MINIGAME,  // 10
     NodeType.HARD_QUESTION,    // 11
     NodeType.EASY_QUESTION,    // 12
     NodeType.MEDIUM_QUESTION,  // 13
@@ -47,7 +44,7 @@ export class MainGameScreenModel {
     NodeType.MEDIUM_QUESTION,  // 29
     NodeType.EASY_QUESTION,    // 30
     NodeType.MEDIUM_QUESTION,  // 31
-    NodeType.HARD_QUESTION,    // 32
+    NodeType.MINIGAME,    // 32
     NodeType.MEDIUM_QUESTION,  // 33
     NodeType.EASY_QUESTION,    // 34
     NodeType.MINIGAME,         // 35
@@ -58,18 +55,12 @@ export class MainGameScreenModel {
     NodeType.MINIGAME          // 40
     ]
 
-    constructor(playerIDs: string[]){
+    constructor(){
         if (this.mainGameBoard.length !== 40)
         {
             throw new Error("Main game board must have exactly 40 nodes.");
         }
-
-        this.playerOrder = playerIDs;
-        this.currentPlayerID = playerIDs[0];
-
-        for(const id of playerIDs){
-            this.players.set(id, new Player(id));
-        }
+        this.position = 0;
     }
 
     public getNodeType( nodeIndex: number ) : NodeType {
@@ -79,35 +70,22 @@ export class MainGameScreenModel {
         return this.mainGameBoard[nodeIndex - 1];
     }
 
-    public advanceToNextPlayer(): void {
-        const currentIndex = this.playerOrder.indexOf(this.currentPlayerID);
-        const nextIndex = (currentIndex + 1) % this.playerOrder.length;
-        this.currentPlayerID = this.playerOrder[nextIndex];
+
+    public getPlayerPosition(): number {
+        return this.position;
     }
 
-    private getPlayer(playerID: string): Player {
-        return this.players.get(playerID)!;
+    public setPlayerPosition( position: number): void {
+        this.position = position;
     }
 
-    public getCurrentPlayerID(): string {
-        return this.currentPlayerID;
-    }
+    // public getPlayerScore(playerID: string): number {
+    //     return this.getPlayer(playerID).score;
+    // }
 
-    public getPlayerPosition(playerID: string): number {
-        return this.getPlayer(playerID).position;
-    }
-
-    public setPlayerPosition(playerID: string, position: number): void {
-        this.getPlayer(playerID).position = position;
-    }
-
-    public getPlayerScore(playerID: string): number {
-        return this.getPlayer(playerID).score;
-    }
-
-    public setPlayerScore(playerID: string, score: number): void {
-        this.getPlayer(playerID).score = score;
-    }
+    // public setPlayerScore(playerID: string, score: number): void {
+    //     this.getPlayer(playerID).score = score;
+    // }
 
 
 }
