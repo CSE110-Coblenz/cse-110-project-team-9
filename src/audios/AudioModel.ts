@@ -1,10 +1,12 @@
 export class AudioModel {
     private static instance: AudioModel | null = null;
     public sounds: Record<string, HTMLAudioElement>;
-    private bgmVolume: number;
-    private sfxVolume: number;
+    private _bgmVolume: number;
+    private _sfxVolume: number;
 
     private constructor() {
+        this._bgmVolume = 0.5;
+        this._sfxVolume = 0.5;
 
         this.bgmVolume = 0.5;
         this.sfxVolume = 0.5;
@@ -27,7 +29,6 @@ export class AudioModel {
     /**
      * @returns The singleton instance of AudioModel
      */
-
     public static getInstance(): AudioModel {
         if (!AudioModel.instance) {
             AudioModel.instance = new AudioModel();
@@ -36,71 +37,29 @@ export class AudioModel {
     }
 
     /**
-     * Register a new sound
-     * @param key
-     * @param path
-     * @param loop Whether the sound should loop
-     * @param overwrite Whether to overwrite an existing sound with the same key
-     */
-
-    public registerSound(key: string, path: string, loop: boolean = false, overwrite = false): void {
-        
-        if (!this.sounds[key] || overwrite) {
-            
-            const audio = new Audio(path);
-            
-            // Set if the sound should loop or not
-            audio.loop = loop;
-
-            // If the key includes "bgm", set volume to bgmVolume, else sfxVolume
-            audio.volume = key.includes("bgm") ? this.bgmVolume : this.sfxVolume;
-
-            this.sounds[key] = audio;
-        }
-    }
-
-    /**
      * Getter and Setter for volume
      * @param volume A number between 0.0 and 1.0
      */
-
     public setBgmVolume(volume: number): void {
-        this.bgmVolume = this.validateVolume(volume);
+        this._bgmVolume = volume;
         this.applyVolume();
     }
 
     public setSfxVolume(volume: number): void {
-        this.sfxVolume = this.validateVolume(volume);
+        this._sfxVolume = volume;
         this.applyVolume();
     }
 
-    public getBgmVolume(): number {
-        return this.bgmVolume;
-    }
-
-    public getSfxVolume(): number {
-        return this.sfxVolume;
-    }
+    get bgmVolume() { return this._bgmVolume; }
+    get sfxVolume() { return this._sfxVolume; }
 
     /**
      * Apply the current volume to all sounds
      */
-
     private applyVolume(): void {
         for (const key in this.sounds) {
-            if (key.includes("bgm")) {
-                this.sounds[key].volume = this.bgmVolume;
-            } else {
-                this.sounds[key].volume = this.sfxVolume;
-            }
+            const audio = this.sounds[key];
+            audio.volume = key.includes("bgm") ? this._bgmVolume : this._sfxVolume;
         }
-    }
-
-    /**
-     * Validate volume
-     */
-
-    private validateVolume(volume: number): number {
-        return !isFinite(volume) || volume < 0 || volume > 1 ? 0.5 : volume;
     }
 }

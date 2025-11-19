@@ -12,7 +12,7 @@ export class MainGameScreenView implements View {
     private settingsButton: Konva.Group;
     private nodeEventText: Konva.Text;
     private diceResultText: Konva.Text;
-    private pieceImage?: Konva.Image;
+    private pieceImage!: Konva.Image;
     private model: MainGameScreenModel;
     private audio: AudioController;
     private boardHeadIndex = 39; // Start with the 40th tile (index 39) as the leftmost
@@ -364,8 +364,8 @@ export class MainGameScreenView implements View {
         }, 3000); // Hide the text after 3 seconds
     }
     disableRollButton(): void {
-        const buttonRect = this.diceRollButton.findOne('.buttonRect');
-        if (buttonRect instanceof Konva.Rect) {
+        const buttonRect = this.diceRollButton.findOne('.buttonRect') as Konva.Shape | undefined;
+        if (buttonRect) {
             buttonRect.listening(false);
             buttonRect.fill('#b2bec3'); // A disabled grey color
             this.group.getLayer()?.batchDraw();
@@ -373,8 +373,8 @@ export class MainGameScreenView implements View {
     }
 
     enableRollButton(): void {
-        const buttonRect = this.diceRollButton.findOne('.buttonRect');
-        if (buttonRect && buttonRect instanceof Konva.Rect) {
+        const buttonRect = this.diceRollButton.findOne('.buttonRect') as Konva.Shape | undefined;
+        if (buttonRect) {
             buttonRect.listening(true);
             buttonRect.fill('#ff7675'); // Original color
             this.group.getLayer()?.batchDraw();
