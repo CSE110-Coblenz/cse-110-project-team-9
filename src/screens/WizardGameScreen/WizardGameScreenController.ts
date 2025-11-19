@@ -1,28 +1,24 @@
-//Game manager Switch
 import { ScreenController } from "../../types";
 import type { ScreenSwitcher } from "../../types";
-//Wizard Main
 import { WizardGameScreenModel } from "./WizardGameScreenModel";
 import { WizardGameScreenViewer } from "./WizardGameScreenViewer";
-//Collision Manager
 import { CollisionManager } from "./entities/CollisionManager";
-//player
 import { PlayerController } from "./entities/player/PlayerController";
-// import { PlayerHUD } from "./entities/player/PlayerHUD";
 import { PlayerFactory } from "./entities/player/PlayerFactory";
-//audio
 import { AudioController } from "../../audios/AudioController";
-//input handler
 import { InputHandler } from "./InputHandler";
-//enemy manager
 import { EnemyManager } from "./entities/enemy/EnemyManager";
+
+const PLAYER_START_X = 200;
+const PLAYER_START_Y = 100;
+const PlAYER_SCALE = 4;
 
 export class WizardGameScreenController extends ScreenController {
     private model: WizardGameScreenModel;
     private view: WizardGameScreenViewer;
 
     private playerController: PlayerController;
-        private enemyManager: EnemyManager;
+    private enemyManager: EnemyManager;
 
     private collisionManager: CollisionManager;
     private input: InputHandler;
@@ -48,27 +44,21 @@ export class WizardGameScreenController extends ScreenController {
 
     constructor(private screenSwitcher: ScreenSwitcher, private audio: AudioController) {
         super();
-        //Game MVC
         this.model = new WizardGameScreenModel();
         this.view = new WizardGameScreenViewer();
-        this.audio = audio;
-
-        //input handler
         this.input = new InputHandler();
         
-        //player
         this.playerController = PlayerFactory.create(
-            150, 
-            150, 
+            PLAYER_START_X,
+            PLAYER_START_Y,
+            PlAYER_SCALE,
             "knight", 
-            this.view.getGroup(),  //maybe add hud for player as seperta layer
+            this.view.getGroup(),
             this.audio, 
             this.input
         );
 
-        //collision between entities
         this.collisionManager = new CollisionManager();
-
         //enemy wave/spawner
         this.enemyManager = new EnemyManager(
             this.view.getGroup(),
@@ -89,23 +79,23 @@ export class WizardGameScreenController extends ScreenController {
 
     startGame() {
         this.view.show();
+        //TODO: combine input handling
+        //global keys for game
         this.windowBind();
+        //input keys for player
         this.input.bind();
-
-        //register collidables e.g. player for now. projectiles and blocks to added later
         this.collisionManager.register(this.playerController);
+        this.disableImageSmoothing();
+        this.lastUpdateTime = performance.now();
+        this.updateLoop();
+    }
 
-        //TODO: remove this goad awful thing
-        //disable image smoothing for sprites
+    private disableImageSmoothing(): void {
         const layer = this.view.getGroup().getLayer();
         if (layer) {
             const ctx = layer.getContext() as unknown as CanvasRenderingContext2D;
             ctx.imageSmoothingEnabled = false;
         }
-
-        //current time to get deltas
-        this.lastUpdateTime = performance.now();
-        this.updateLoop();
     }
 
     private updateLoop = () => {
@@ -128,21 +118,22 @@ export class WizardGameScreenController extends ScreenController {
         //update collison manager
         this.collisionManager.update()
 
-        //repeat update loop keep response time smooth
+        //repeat update loop keep response time smooth calls back at monitor refresh rate
         this.animationFrameId = requestAnimationFrame (this.updateLoop);
     };
 
     stopGame() {
-        //dont run update loop anymore 
-        if (this.animationFrameId) cancelAnimationFrame(this.animationFrameId);
-
-        //remove collidables
+        //no longer need a call back
+        if (this.animationFrameId) {
+            cancelAnimationFrame(this.animationFrameId);
+        }
+        //remove all colldiable left
         this.collisionManager.unregisterAll();
 
         //delete objects
         this.enemyManager.clear();
         this.playerController.reset();
-
+        // unbind input handling
         this.windowUnbind();
         this.input.unbind();
     }
@@ -156,10 +147,11 @@ export class WizardGameScreenController extends ScreenController {
  * TODO: notepad
  * 
  * NEED TO COMPLETE:
- * seperate attack image from player / same thing with enemy HARD
- * add boundary box for window
- * add boundary box for all collidable entities no overlap
+ * add collision for player on enemy and enemy on enemy just don't overlap
  * 
+ * add collision for player on enemy or enemy on player hit or attack
+ * 
+ * add boundary box for window
  * 
  * Add hurt animation
  * Add death animation
