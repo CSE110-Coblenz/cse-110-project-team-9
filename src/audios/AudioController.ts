@@ -2,26 +2,12 @@ import { AudioModel } from "./AudioModel";
 
 export class AudioController {
     private model: AudioModel;
-    private hasUserInteracted;
 
     /**
      * Initializes the AudioController
      */
     constructor() {
         this.model = AudioModel.getInstance();
-        this.hasUserInteracted = false;
-
-        //Chrome DOM fix
-        const userGesture = () => {
-            this.hasUserInteracted = true;
-            window.removeEventListener("keydown", userGesture);
-            window.removeEventListener("mousedown", userGesture);
-            window.removeEventListener("touchstart", userGesture);
-        };
-
-        window.addEventListener("keydown", userGesture);
-        window.addEventListener("mousedown", userGesture);
-        window.addEventListener("touchstart", userGesture);
     }
 
     /**
@@ -52,9 +38,6 @@ export class AudioController {
 
         //reset one shot-sfx
         if(!loop) sound.currentTime = 0;
-
-        //DOM fix user interacted
-        if (!this.hasUserInteracted) return;
 
         //pauses audio until brower confirms play back and catches error for tabbed out as well
         sound.play().catch((err: any) => {
