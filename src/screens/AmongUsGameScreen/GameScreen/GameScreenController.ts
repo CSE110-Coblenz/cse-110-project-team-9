@@ -31,7 +31,7 @@ export class AmongUsGameScreenController extends ScreenController {
 
 	private static readonly PLAYER_SPEED = 45;
 
-	constructor(screenSwitcher: ScreenSwitcher) {
+	constructor(screenSwitcher: ScreenSwitcher, audio: AudioController) {
 		super();
 		this.screenSwitcher = screenSwitcher;
 
