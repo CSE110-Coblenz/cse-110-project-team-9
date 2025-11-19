@@ -56,14 +56,12 @@ export class SettingsScreenView implements View {
         /**
          * Volume Slider (Background Music & Sound Effects)
          */
-
 		this.bgmslider = this.createVolumeSlider("BGM", 230, 250);
 		this.soundeffectslider = this.createVolumeSlider("SFX", 230, 320);
 
         /**
          *  Save Button
          */
-
         this.saveButton = this.createTextButton(
 			"Save",
 			370,
@@ -77,7 +75,6 @@ export class SettingsScreenView implements View {
 	/**
 	 * Helper Funtion — Creating text button (transparent background)
 	 */
-
 	private createTextButton(
 		text: string,
 		x: number,
@@ -110,7 +107,6 @@ export class SettingsScreenView implements View {
 		/**
 		 * Button Animation
 		 */
-
 		buttonGroup.on("mouseover", () => {
 			buttonText.fill("#ffd700");
 			document.body.style.cursor = "pointer";
@@ -127,7 +123,6 @@ export class SettingsScreenView implements View {
 	/**
 	 * Helper Funtion — Creating Volume Slider
 	 */
-
 	private createVolumeSlider(label: string, x: number, y: number) {
 		const volumeSliderGroup = new Konva.Group({ x, y });
 	
@@ -223,7 +218,6 @@ export class SettingsScreenView implements View {
     /*
     * Getters
     */
-
 	getSaveButton(): Konva.Group {
 		return this.saveButton;
 	}
@@ -243,7 +237,6 @@ export class SettingsScreenView implements View {
 	/**
 	 * Show / Hide
 	 */
-
 	show(): void {
 		this.group.visible(true);
 		this.group.moveToTop();

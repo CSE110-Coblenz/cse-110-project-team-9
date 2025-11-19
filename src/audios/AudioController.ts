@@ -2,82 +2,110 @@ import { AudioModel } from "./AudioModel";
 
 export class AudioController {
     private model: AudioModel;
+    private hasUserInteracted;
 
     /**
      * Initializes the AudioController
      */
     constructor() {
         this.model = AudioModel.getInstance();
+        this.hasUserInteracted = false;
+
+        //Chrome DOM fix
+        const userGesture = () => {
+            this.hasUserInteracted = true;
+            window.removeEventListener("keydown", userGesture);
+            window.removeEventListener("mousedown", userGesture);
+            window.removeEventListener("touchstart", userGesture);
+        };
+
+        window.addEventListener("keydown", userGesture);
+        window.addEventListener("mousedown", userGesture);
+        window.addEventListener("touchstart", userGesture);
     }
 
     /**
-     * Play function for BGM
+     * Register a new sound
+     * @param key
+     * @param path
+     * @param loop Whether the sound should loop
+     * @param overwrite Whether to overwrite an existing sound with the same key
      */
-    public playBGM(key: string): void {
-        const bgm = this.model.sounds[key];
-        if (!bgm) return;
-    
-        bgm.muted = false;
-        bgm.currentTime = 0;
-        bgm.play();
+    public registerSound(key: string, path: string, overwrite = false): void {
+        if (!this.model.sounds[key] || overwrite) {
+            const audio = new Audio(path);
+            // If the key includes "bgm", set volume to bgmVolume, else sfxVolume
+            audio.volume = key.includes("bgm") ? this.model.bgmVolume: this.model.sfxVolume;
+            this.model.sounds[key] = audio;
+        }
     }
 
     /**
      * Play function for SOUND EFFECT
      * @param key : string
      */
-    public playSFX(key: string): void {
-        const sfx = this.model.sounds[key];
-        if (!sfx) return;
+    public play(key: string, loop: boolean = false): void {
+        const sound = this.model.sounds[key];
+        if (!sound) return;
 
-        sfx.muted = false;
-        sfx.currentTime = 0;
-        sfx.play();
+        sound.loop = loop;
+
+        //reset one shot-sfx
+        if(!loop) sound.currentTime = 0;
+
+        //DOM fix user interacted
+        if (!this.hasUserInteracted) return;
+
+        //pauses audio until brower confirms play back and catches error for tabbed out as well
+        sound.play().catch((err: any) => {
+            if (err.name !== "AbortError") {
+                console.error(`AudioController: error playing "${key}"`, err);
+            }
+        });
     }
 
     /**
-     * Stop function for BGM
+     * Stop function for inputed audio
      */
-    public stopBGM(): void {
-        for (const key in this.model.sounds) {
-            const sound = this.model.sounds[key];
-            if (sound.loop) {
+    public stop(key: string): void {
+        const sound = this.model.sounds[key];
+        if (!sound) return;
+
+        if (document.visibilityState === "visible") {
+            try {
                 sound.pause();
                 sound.currentTime = 0;
+            } catch (err: any) {
+                console.error(`AudioController: error stopping "${key}"`, err);
             }
         }
     }
 
     /**
-     * Replace BGM function
+     * Stop all audio
      */
-    public replaceBGM(key: string, path: string): void {
-        this.stopBGM();
-        this.model.registerSound(key, path, true, true);
-        this.playBGM(key);
+    public stopAll(): void {
+        for (const key in this.model.sounds) {
+            this.stop(key);
+        }
     }
 
     /**
-     * Change volume function
-     * @param volume : number - A number between 0.0 and 1.0
+     * abtracted getters and setters
      */
-    public changeBgmVolume(volume: number): void {
-        this.model.setBgmVolume(volume);
+    public get bgmVolume(): number {
+        return this.model.bgmVolume;
     }
 
-    public changeSfxVolume(volume: number): void {
-        this.model.setSfxVolume(volume);
+    public get sfxVolume(): number {
+        return this.model.sfxVolume;
     }
 
-    /**
-     * Getter for volume
-     * @returns The current volume level
-     */
-    public getBgmVolume(): number {
-        return this.model.getBgmVolume();
+    public setBgmVolume(v: number) {
+        this.model.setBgmVolume(v);
     }
 
-    public getSfxVolume(): number {
-        return this.model.getSfxVolume();
+    public setSfxVolume(v: number) {
+        this.model.setSfxVolume(v);
     }
 }
