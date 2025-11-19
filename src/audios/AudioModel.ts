@@ -8,9 +8,6 @@ export class AudioModel {
         this._bgmVolume = 0.5;
         this._sfxVolume = 0.5;
 
-        this.bgmVolume = 0.5;
-        this.sfxVolume = 0.5;
-
         // Intial volume (HomeScreen)
         this.sounds = {
             home_bgm: new Audio("/homescreen/audio/medieval.mp3"),

@@ -50,12 +50,12 @@ export class MainGameScreenController extends ScreenController {
 		this.audio.play("click_sfx");
 
         const roll = this.diceRoll();
-        this.audio.playSFX("dice_sfx");
+        this.audio.play("dice_sfx", false);
         console.log(`Player rolled a ${roll}.`);
         this.view.displayRollResult(roll);
 
         // Play the sound effect immediately, before any async operations.
-        this.audio.playSFX("dice_sfx");
+        this.audio.play("dice_sfx", false);
 
         // Execute the rest of the turn logic asynchronously.
         this.executeTurn(roll);
@@ -103,10 +103,7 @@ export class MainGameScreenController extends ScreenController {
         return this.view;
     }
 
-    public onShow(): void {
-        this.view.show();
-        this.audio.playBGM("main_bgm");
-    }
+
 
     public show(): void {
         this.audio.play("mainboard_bgm", true); // true for loop (BGM)
@@ -116,9 +113,5 @@ export class MainGameScreenController extends ScreenController {
     public hide(): void {
         this.audio.stopAll();
         this.view.hide();
-    }
-
-    public getView(): MainGameScreenView {
-        return this.view;
     }
 }

@@ -175,7 +175,7 @@ export class MainGameScreenView implements View {
     async animatePlayerPieceRoll(count: number): Promise<void> {
         for (let i = 0; i < count; i++) {
             await this.doSinglePieceAnimation();
-            this.audio.playSFX("piece_move_sfx");
+            this.audio.play("piece_move_sfx", false);
         }
     }
 
