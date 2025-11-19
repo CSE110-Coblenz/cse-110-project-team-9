@@ -65,6 +65,7 @@ class App implements ScreenSwitcher {
 		this.homeController.hide();
 		this.settingsController.hide();
 		this.mainGameController.hide();
+		this.WizardGameController.hide();
 
 		switch (screen.type) {
 			case "starting":
