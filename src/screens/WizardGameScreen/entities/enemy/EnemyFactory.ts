@@ -8,10 +8,9 @@ import { EnemyController } from './EnemyController';
 import { AudioController } from '../../../../audios/AudioController';
 
 //Types of assets
-import { knightSrc, KNIGHT_ANIMATIONS, type KnightAnimation, KNIGHT_BOUNDING_BOXES, KNIGHT_AUDIO} from "../types/Knight";
-import { orcSrc, ORC_ANIMATIONS, type OrcAnimation, ORC_BOUNDING_BOXES, ORC_AUDIO} from "../types/Orc";
+import { orcSrc, ORC_ANIMATIONS, ORC_BOUNDING_BOXES, ORC_AUDIO} from "../types/Orc";
 
-export type EnemyType = "wizard" | "knight" | "orc";
+export type EnemyType = "orc";
 
 /**
  * creation and instantiated of enemy class 
@@ -30,15 +29,6 @@ export class EnemyFactory {
 
 
         switch(type) {
-            case "knight":
-                model = new EnemyModel(x, y, 150, KNIGHT_AUDIO, KNIGHT_BOUNDING_BOXES);
-                viewer = new EnemyViewer(
-                    group,
-                    { image: knightSrc, animations: KNIGHT_ANIMATIONS },
-                    model,
-                    scale,
-                );
-                break;
             case "orc":
                 model = new EnemyModel(x, y, 100, ORC_AUDIO, ORC_BOUNDING_BOXES);
                 viewer = new EnemyViewer(
@@ -49,7 +39,7 @@ export class EnemyFactory {
                 );
                 break;
             default:
-                throw new Error('unknown player type');
+                throw new Error(`Unknown enemy type: ${type}`);
         }
 
         return new EnemyController(model, viewer, audio);

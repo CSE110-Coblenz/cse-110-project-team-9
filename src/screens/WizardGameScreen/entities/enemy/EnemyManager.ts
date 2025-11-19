@@ -37,6 +37,7 @@ export class EnemyManager {
     }
 
     private spawnRandomEnemy() {
+        //Spawns them anywhere on map
         const x = Math.random() * this.mapWidth;
         const y = Math.random() * this.mapHeight;
 

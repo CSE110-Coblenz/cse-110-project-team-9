@@ -1,7 +1,7 @@
 import { computeAllAnimationBoundingBoxes } from "./CreateBoundingBox";
 
 //image atlas export
-export const orcSrc = "/wizardminigame/sprites/Orc.png";
+export const orcSrc = "/wizardminigame/sprites/orc/Orc.png";
 
 //animation types
 export type OrcAnimation = "idle" | "walk" | "attacklight" | "attackheavy" | "damage" | "death";
@@ -60,9 +60,9 @@ export type OrcAudioMap = typeof ORC_AUDIO;
 
 //TODO: grab correct foramt .100 seconds per frame for any given animation mp4
 export const ORC_AUDIO = {
-    walk: "/wizardminigame/audio/8-bit-grass-footsteps-2-408574.mp3",
-    attacklight: "/wizardminigame/audio/sword-slash-and-swing-185432.mp3",
-    attackheavy: "/wizardminigame/audio/sword-slash-and-swing-185432.mp3",
+    walk: "/wizardminigame/audio/footsteps.mp3",
+    attacklight: "/wizardminigame/audio/slash.mp3",
+    attackheavy: "/wizardminigame/audio/slash.mp3",
     damage: "/wizardminigame/audio/x",
     death: "/wizardminigame/audio/x",
 };
