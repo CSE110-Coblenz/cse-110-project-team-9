@@ -32,17 +32,17 @@ export class MainGameScreenView implements View {
         });
         this.group.add(background);
 
-        const titleText = new Konva.Text({
-            x: 0,
-            y: 20,
-            width: STAGE_WIDTH,
-            text: "main game board",
-            fontSize: 30,
-            fontStyle: 'bold',
-            fill: '#333',
-            align: 'center'
-        });
-        this.group.add(titleText);
+        // const titleText = new Konva.Text({
+        //     x: 0,
+        //     y: 20,
+        //     width: STAGE_WIDTH,
+        //     text: "main game board",
+        //     fontSize: 30,
+        //     fontFamily: 'HomeScreenFont',
+        //     fill: '#333',
+        //     align: 'center'
+        // });
+        // this.group.add(titleText);
 
         // Score Text
         //const score = this.model.getPlayerScore(currentPlayerID);
@@ -101,7 +101,7 @@ export class MainGameScreenView implements View {
         const buttonText = new Konva.Text({
             text: "Roll Dice",
             fontSize: 18,
-            fontStyle: "bold",
+            fontFamily: "homeScreenFont",
             fill: "white",
             width: 120,
             height: 50,
@@ -131,7 +131,7 @@ export class MainGameScreenView implements View {
         const settingsButtonText = new Konva.Text({
             text: "Settings",
             fontSize: 18,
-            fontStyle: "bold",
+            fontFamily: "homeScreenFont",
             fill: "white",
             width: 120,
             height: 50,
@@ -148,7 +148,7 @@ export class MainGameScreenView implements View {
             x: STAGE_WIDTH / 2 - 50,
             y: 50,
             fontSize: 24,
-            fontStyle: "bold",
+            fontFamily: "homeScreenFont",
             fill: "#333",
             visible: false,
         });
@@ -160,7 +160,7 @@ export class MainGameScreenView implements View {
             y: 90, // Below the dice roll result
             width: STAGE_WIDTH,
             fontSize: 24,
-            fontStyle: "bold",
+            fontFamily: "homeScreenFont",
             fill: "#d63031", // A distinct color
             align: 'center',
             visible: false,
@@ -271,7 +271,7 @@ export class MainGameScreenView implements View {
             height: nodeSize,
             text: nodeInfo.label,
             fontSize: 13,
-            fontStyle: "bold",
+            fontFamily: "homeScreenFont",
             fill: "#222",
             align: "center",
             verticalAlign: "middle",

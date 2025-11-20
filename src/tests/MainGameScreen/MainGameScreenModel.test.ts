@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { MainGameScreenModel, NodeType } from '../screens/MainGameScreen/MainGameScreenModel';
+import { MainGameScreenModel, NodeType } from '../../screens/MainGameScreen/MainGameScreenModel';
 
 describe('MainGameScreenModel', () => {
   let model: MainGameScreenModel;
