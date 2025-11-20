@@ -8,5 +8,4 @@ export class Player{
         this.position = 0;
         this.score = 0;
     }   
-
 }
