@@ -33,7 +33,7 @@ export class AmongUsResultsScreenView implements View {
 			width: STAGE_WIDTH,
 			text: "Mission Complete!",
 			fontSize: 48,
-			fontFamily: "Arial",
+			fontFamily: "HomeScreenFont",
 			fill: "#00d2d3",
 			align: "center",
 		});
@@ -46,7 +46,7 @@ export class AmongUsResultsScreenView implements View {
 			width: STAGE_WIDTH,
 			text: "",
 			fontSize: 36,
-			fontFamily: "Arial",
+			fontFamily: "HomeScreenFont",
 			fill: "white",
 			align: "center",
 		});
@@ -69,7 +69,7 @@ export class AmongUsResultsScreenView implements View {
 			width: 200,
 			text: "Play Again",
 			fontSize: 24,
-			fontFamily: "Arial",
+			fontFamily: "HomeScreenFont",
 			fill: "white",
 			align: "center",
 		});
@@ -94,7 +94,7 @@ export class AmongUsResultsScreenView implements View {
 			width: 200,
 			text: "Return to Game",
 			fontSize: 24,
-			fontFamily: "Arial",
+			fontFamily: "HomeScreenFont",
 			fill: "white",
 			align: "center",
 		});

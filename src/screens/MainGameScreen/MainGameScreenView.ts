@@ -32,17 +32,17 @@ export class MainGameScreenView implements View {
         });
         this.group.add(background);
 
-        const titleText = new Konva.Text({
-            x: 0,
-            y: 20,
-            width: STAGE_WIDTH,
-            text: "main game board",
-            fontSize: 30,
-            fontFamily: 'homeScreenFont',
-            fill: '#333',
-            align: 'center'
-        });
-        this.group.add(titleText);
+        // const titleText = new Konva.Text({
+        //     x: 0,
+        //     y: 20,
+        //     width: STAGE_WIDTH,
+        //     text: "main game board",
+        //     fontSize: 30,
+        //     fontFamily: 'HomeScreenFont',
+        //     fill: '#333',
+        //     align: 'center'
+        // });
+        // this.group.add(titleText);
 
         // Score Text
         //const score = this.model.getPlayerScore(currentPlayerID);
