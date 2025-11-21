@@ -4,7 +4,7 @@
   "description": "Fresh repository with main branch.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest run",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
@@ -24,7 +24,9 @@
     "konva": "^10.0.2"
   },
   "devDependencies": {
+    "jsdom": "^27.1.0",
     "typescript": "^5.9.3",
-    "vite": "^7.1.10"
+    "vite": "^7.1.10",
+    "vitest": "^4.0.9"
   }
 }
