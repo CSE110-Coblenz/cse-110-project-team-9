@@ -10,10 +10,9 @@ export class MainGameScreenView implements View {
     private tileLabels: Konva.Text[] = [];
     private diceRollButton: Konva.Group;
     private settingsButton: Konva.Group;
-    private scoreText: Konva.Text;
     private nodeEventText: Konva.Text;
     private diceResultText: Konva.Text;
-    private pieceImage?: Konva.Image;
+    private pieceImage!: Konva.Image;
     private model: MainGameScreenModel;
     private audio: AudioController;
     private boardHeadIndex = 39; // Start with the 40th tile (index 39) as the leftmost
@@ -33,30 +32,29 @@ export class MainGameScreenView implements View {
         });
         this.group.add(background);
 
-        const titleText = new Konva.Text({
-            x: 0,
-            y: 20,
-            width: STAGE_WIDTH,
-            text: "main game board",
-            fontSize: 30,
-            fontStyle: 'bold',
-            fill: '#333',
-            align: 'center'
-        });
-        this.group.add(titleText);
+        // const titleText = new Konva.Text({
+        //     x: 0,
+        //     y: 20,
+        //     width: STAGE_WIDTH,
+        //     text: "main game board",
+        //     fontSize: 30,
+        //     fontFamily: 'HomeScreenFont',
+        //     fill: '#333',
+        //     align: 'center'
+        // });
+        // this.group.add(titleText);
 
         // Score Text
-        const currentPlayerID = this.model.getCurrentPlayerID();
-        const score = this.model.getPlayerScore(currentPlayerID);
-        this.scoreText = new Konva.Text({
-            x: 20,
-            y: 20,
-            text: `Score: ${score}`,
-            fontSize: 24,
-            fontStyle: 'bold',
-            fill: '#333',
-        });
-        this.group.add(this.scoreText);
+        //const score = this.model.getPlayerScore(currentPlayerID);
+        // this.scoreText = new Konva.Text({
+        //     x: 20,
+        //     y: 20,
+        //     //text: `Score: ${score}`,
+        //     fontSize: 24,
+        //     fontStyle: 'bold',
+        //     fill: '#333',
+        // });
+        //this.group.add(this.scoreText);
 
 
         const nodeSize = 100;
@@ -74,14 +72,12 @@ export class MainGameScreenView implements View {
             const secondTile = this.tiles[1]; // This is now the "Start" tile
 
             if (secondTile) {
-                this.pieceImage.setAttrs({
-                    x: secondTile.x(),
-                    y: secondTile.y() - 25, // Slightly above the tile center
-                    width: 75,
-                    height: 75,
-                    offsetX: 37.5, // Center the image
-                    offsetY: 37.5, // Center the image
-                });
+                this.pieceImage.x(secondTile.x());
+                this.pieceImage.y(secondTile.y() - 25); // Slightly above the tile center
+                this.pieceImage.width(75);
+                this.pieceImage.height(75);
+                this.pieceImage.offsetX(37.5); // Center the image
+                this.pieceImage.offsetY(37.5); // Center the image
                 this.group.add(this.pieceImage);
                 this.group.getLayer()?.batchDraw();
             }
@@ -105,7 +101,7 @@ export class MainGameScreenView implements View {
         const buttonText = new Konva.Text({
             text: "Roll Dice",
             fontSize: 18,
-            fontStyle: "bold",
+            fontFamily: "homeScreenFont",
             fill: "white",
             width: 120,
             height: 50,
@@ -135,7 +131,7 @@ export class MainGameScreenView implements View {
         const settingsButtonText = new Konva.Text({
             text: "Settings",
             fontSize: 18,
-            fontStyle: "bold",
+            fontFamily: "homeScreenFont",
             fill: "white",
             width: 120,
             height: 50,
@@ -152,7 +148,7 @@ export class MainGameScreenView implements View {
             x: STAGE_WIDTH / 2 - 50,
             y: 50,
             fontSize: 24,
-            fontStyle: "bold",
+            fontFamily: "homeScreenFont",
             fill: "#333",
             visible: false,
         });
@@ -164,7 +160,7 @@ export class MainGameScreenView implements View {
             y: 90, // Below the dice roll result
             width: STAGE_WIDTH,
             fontSize: 24,
-            fontStyle: "bold",
+            fontFamily: "homeScreenFont",
             fill: "#d63031", // A distinct color
             align: 'center',
             visible: false,
@@ -177,7 +173,7 @@ export class MainGameScreenView implements View {
     async animatePlayerPieceRoll(count: number): Promise<void> {
         for (let i = 0; i < count; i++) {
             await this.doSinglePieceAnimation();
-            this.audio.play("piece_move_sfx");
+            this.audio.play("piece_move_sfx", false);
         }
     }
 
@@ -275,7 +271,7 @@ export class MainGameScreenView implements View {
             height: nodeSize,
             text: nodeInfo.label,
             fontSize: 13,
-            fontStyle: "bold",
+            fontFamily: "homeScreenFont",
             fill: "#222",
             align: "center",
             verticalAlign: "middle",
@@ -366,8 +362,8 @@ export class MainGameScreenView implements View {
         }, 3000); // Hide the text after 3 seconds
     }
     disableRollButton(): void {
-        const buttonRect = this.diceRollButton.findOne('.buttonRect');
-        if (buttonRect && buttonRect instanceof Konva.Rect) {
+        const buttonRect = this.diceRollButton.findOne('.buttonRect') as Konva.Shape | undefined;
+        if (buttonRect) {
             buttonRect.listening(false);
             buttonRect.fill('#b2bec3'); // A disabled grey color
             this.group.getLayer()?.batchDraw();
@@ -375,8 +371,8 @@ export class MainGameScreenView implements View {
     }
 
     enableRollButton(): void {
-        const buttonRect = this.diceRollButton.findOne('.buttonRect');
-        if (buttonRect && buttonRect instanceof Konva.Rect) {
+        const buttonRect = this.diceRollButton.findOne('.buttonRect') as Konva.Shape | undefined;
+        if (buttonRect) {
             buttonRect.listening(true);
             buttonRect.fill('#ff7675'); // Original color
             this.group.getLayer()?.batchDraw();
@@ -396,8 +392,8 @@ export class MainGameScreenView implements View {
         }, 3000); // Hide after 3 seconds
     }
 
-    updateScoreDisplay(newScore: number): void {
-        this.scoreText.text(`Score: ${newScore}`);
-        this.group.getLayer()?.batchDraw();
-    }
+    // updateScoreDisplay(newScore: number): void {
+    //     this.scoreText.text(`Score: ${newScore}`);
+    //     this.group.getLayer()?.batchDraw();
+    // }
 }

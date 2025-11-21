@@ -76,9 +76,19 @@ export class AudioController {
     /**
      * abtracted getters and setters
      */
-    get bgmVolume(): number { return this.model.bgmVolume; }
-    get sfxVolume(): number { return this.model.sfxVolume; }
+    public get bgmVolume(): number {
+        return this.model.bgmVolume;
+    }
 
-    set bgmVolume(v: number) { this.model.setBgmVolume(v); }
-    set sfxVolume(v: number) { this.model.setSfxVolume(v); }
+    public get sfxVolume(): number {
+        return this.model.sfxVolume;
+    }
+
+    public setBgmVolume(v: number) {
+        this.model.setBgmVolume(v);
+    }
+
+    public setSfxVolume(v: number) {
+        this.model.setSfxVolume(v);
+    }
 }

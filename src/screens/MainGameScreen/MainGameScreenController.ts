@@ -1,20 +1,18 @@
 import { NodeType, MainGameScreenModel } from "../MainGameScreen/MainGameScreenModel";
 import { MainGameScreenView } from "../MainGameScreen/MainGameScreenView";
-import { ScreenController, ScreenSwitcher } from "../../types"
+import { ScreenController, ScreenSwitcher } from "../../types";
 import { AudioController } from "../../audios/AudioController";
-
 
 export class MainGameScreenController extends ScreenController {
 
     private audio: AudioController;
     private view: MainGameScreenView;
     private screenSwitcher: ScreenSwitcher;
-    private gameModel: MainGameScreenModel = new MainGameScreenModel(["default"]);
+    private gameModel: MainGameScreenModel = new MainGameScreenModel();
 
     private readonly BOARD_LENGTH = 40;
 
-    constructor(screenSwitcher: ScreenSwitcher, audio: AudioController){
-        
+    constructor(screenSwitcher: ScreenSwitcher, audio: AudioController) {
         super();
 
         this.view = new MainGameScreenView(this.gameModel, audio);
@@ -29,37 +27,49 @@ export class MainGameScreenController extends ScreenController {
 
         audio.registerSound("mainboard_bgm", "/mainboard/audio/mainboardBGM.mp3");
         audio.registerSound("click_sfx", "/homescreen/audio/click.mp3");
-    }
+        audio.registerSound("dice_sfx", "/mainboard/audio/dice_roll.mp3");
+        audio.registerSound("piece_move_sfx", "/mainboard/audio/piece_move.mp3");
 
+        const tiles = this.view.getTiles();
+
+        // tiles[0].on("click", () => this.screenSwitcher.switchToScreen({ type: "wizard" }));
+        // tiles[1].on("click", () => this.screenSwitcher.switchToScreen({ type: "amongus" }));
+        // tiles[2].on("click", () => this.screenSwitcher.switchToScreen({ type: "basicQuestion1" }));
+        // tiles[3].on("click", () => this.screenSwitcher.switchToScreen({ type: "basicQuestion2" }));
+    }
 
     public diceRoll(): number {
-        return 1;
-        // Math.floor(Math.random() * 6) + 1;
+        return Math.floor(Math.random() * 6) + 1;
     }
 
-	public async onPlayerRoll(){
-		this.view.disableRollButton();
-		
-		// Play dice roll sound effect
-		this.audio.play("click_sfx");
+    public async onPlayerRoll() {
+        this.view.disableRollButton();
+        
+        this.audio.play("click_sfx");
 
         const roll = this.diceRoll();
-        console.log(`Player rolled a ${roll}.`);
+        this.audio.play("dice_sfx", false);
         this.view.displayRollResult(roll);
-        await this.view.animatePlayerPieceRoll(roll);
 
-        const currentPlayerID = this.gameModel.getCurrentPlayerID();
-        const currentPosition = this.gameModel.getPlayerPosition(currentPlayerID);
+        // Play the sound effect immediately, before any async operations.
+        this.audio.play("dice_sfx", false);
+
+        // Execute the rest of the turn logic asynchronously.
+        this.executeTurn(roll);
+    }
+
+    private async executeTurn(roll: number): Promise<void> {
+        await this.view.animatePlayerPieceRoll(roll);
+        const currentPosition = this.gameModel.getPlayerPosition();
 
         const newPosition = (currentPosition + roll) % this.BOARD_LENGTH;
-        console.log("Player moved to position " + (newPosition + 1));
-        this.gameModel.setPlayerPosition(currentPlayerID, newPosition); // newPosition is 0-indexed
-        this.triggerNodeEvent(currentPlayerID, newPosition + 1); // getNodeType is 1-indexed
+        this.gameModel.setPlayerPosition(newPosition); // newPosition is 0-indexed
+        this.triggerNodeEvent(newPosition + 1); // getNodeType is 1-indexed
 
         this.view.enableRollButton();
     }
 
-    public triggerNodeEvent(playerID: string, nodeIndex: number): void {
+    public triggerNodeEvent(nodeIndex: number): void {
         const nodeType = this.gameModel.getNodeType(nodeIndex); 
         switch (nodeType)
         {
@@ -67,43 +77,55 @@ export class MainGameScreenController extends ScreenController {
             case NodeType.MEDIUM_QUESTION:
             case NodeType.HARD_QUESTION:
                 this.view.displayNodeEvent("You landed on a Question tile!");
-                const newQuestionScore = this.gameModel.getPlayerScore("default") + 5;
-                this.gameModel.setPlayerScore("default", newQuestionScore);
-                this.view.updateScoreDisplay(newQuestionScore);
+                //const newQuestionScore = this.gameModel.getPlayerScore("default") + 5;
+                //this.gameModel.setPlayerScore("default", newQuestionScore);
+                //this.view.updateScoreDisplay(newQuestionScore);
                 break;
+
             case NodeType.MINIGAME:
                 this.view.displayNodeEvent("You landed on a Minigame tile!");
-                this.screenSwitcher.switchToScreen({ type: "wizardminigame" });
-                const newMinigameScore = this.gameModel.getPlayerScore("default") + 10;
-                this.gameModel.setPlayerScore("default", newMinigameScore);
-                this.view.updateScoreDisplay(newMinigameScore);
+                this.triggerRandomMinigame();
+                // Wait for the message to display, then trigger minigame
+                // setTimeout(() => {
+                //     this.triggerRandomMinigame();
+                // }, 1000);
                 break;
+
             case NodeType.START:
                 // No action needed for the start tile
                 break;
+
             default:
                 console.warn(`Unknown node type encountered at index ${nodeIndex}.`);
         }
     }
 
-    public advanceToNextPlayer(): void {
-        this.gameModel.advanceToNextPlayer();
-
-        const nextPlayerID = this.gameModel.getCurrentPlayerID();
-        console.log(`Advancing to player ${nextPlayerID}.`);
+    /**
+     * Randomly select and launch a minigame
+     */
+    private triggerRandomMinigame(): void {
+        const minigameChoice = Math.floor(Math.random() * 2) + 1; // 1 or 2
+                
+        if (minigameChoice === 1) {
+            // Launch Among Us minigame
+            this.screenSwitcher.switchToScreen({ type: "amongUsMenu" });
+        } else {
+            // Launch Wizard minigame
+            this.screenSwitcher.switchToScreen({ type: "wizardminigame" });
+        }
     }
 
+    public getView(): MainGameScreenView {
+        return this.view;
+    }
+    
     public show(): void {
-        this.audio.play("mainboard_bgm", true); // true for loop (BGM)
+        this.audio.play("mainboard_bgm", true);
         this.view.show();
     }
 
     public hide(): void {
         this.audio.stopAll();
         this.view.hide();
-    }
-
-    public getView(): MainGameScreenView {
-        return this.view;
     }
 }

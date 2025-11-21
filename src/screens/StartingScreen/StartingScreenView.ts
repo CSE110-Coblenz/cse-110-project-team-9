@@ -84,16 +84,6 @@ export class StartingScreenView implements View {
 				duration: 1.5,
 			});
 		});
-
-		/**
-		 * Pulsing animation
-		 */
-		const pulseAnimation = new Konva.Animation(() => {
-			const scale = 1 + Math.sin(Date.now() / 500) * 0.1;
-			this.clickText.scale({ x: scale, y: scale });
-		});
-
-		pulseAnimation.start();
 	}
 
 	/**
@@ -108,10 +98,11 @@ export class StartingScreenView implements View {
 	 */
 	show(): void {
 		this.group.visible(true);
+		this.group.getLayer()?.draw();
 	}
 
 	hide(): void {
 		this.group.visible(false);
+		this.group.getLayer()?.draw();
 	}
 }
-
