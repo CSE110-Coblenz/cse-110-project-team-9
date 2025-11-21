@@ -13,7 +13,7 @@ export class PlayerController implements Collidable {
         private view: PlayerViewer,
         private audio: AudioController,
         private input: InputHandler,
-        private exit?: () => void
+        private exit: () => void
     ) {
         for (const key in this._model.audio) {
             this.audio.registerSound(key, this._model.audio[key]);
@@ -21,7 +21,9 @@ export class PlayerController implements Collidable {
     }
 
     destroy() {
-        this.exit?.();
+        this._hud.render();
+        this.view.render(this._model);
+        this.exit();
     }
     
     public onCollision?(_other: Collidable): void {
@@ -40,6 +42,10 @@ export class PlayerController implements Collidable {
     }
 
     update(deltaTime: number) {
+        if (this._model.health == 0) {
+            this.destroy();
+        }
+
         let dx = 0, dy = 0;
 
         if (this.input.isDown("ArrowUp") || this.input.isDown("w")) dy -= 1;
