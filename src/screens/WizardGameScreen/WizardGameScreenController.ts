@@ -126,9 +126,9 @@ export class WizardGameScreenController extends ScreenController {
     };
 
     stopGame() {
-        //no longer need a call back
         if (this.animationFrameId) {
             cancelAnimationFrame(this.animationFrameId);
+            this.animationFrameId = null;
         }
         // unbind input handling
         this.windowUnbind();
@@ -137,12 +137,23 @@ export class WizardGameScreenController extends ScreenController {
         //remove all colldiable left
         this.collisionManager.unregisterAll();
 
-        //bgm
         this.audio.stopAll();
-
-        //delete objects
-        this.enemyManager.clear();
+        //clear and reset enemies
+        this.enemyManager.reset();
+        //resett plaeyer
         this.playerController.reset();
+
+        //reset game state parameters
+        this.lastUpdateTime = 0;
+        this.showBoundingBoxes = false;
+        this.collisionManager.toggleDebugMode(false);
+
+        //hide the view
+        this.view.hide();
+    }
+
+    hide(): void {
+        this.stopGame();
     }
 
     pauseGame() {

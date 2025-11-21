@@ -23,6 +23,8 @@ export class InputHandler {
         if (!this.listenersBound) return;
         window.removeEventListener("keydown", this.onKeyDown);
         window.removeEventListener("keyup", this.onKeyUp);
+        // Clear all keys to prevent input from continuing after unbinding
+        this.keys = {};
         this.listenersBound = false;
     }
 

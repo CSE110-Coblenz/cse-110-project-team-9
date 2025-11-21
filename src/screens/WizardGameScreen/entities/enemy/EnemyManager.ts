@@ -55,4 +55,9 @@ export class EnemyManager {
         for (const e of this.enemies) e.destroy();
         this.enemies = [];
     }
+
+    reset() {
+        this.clear();
+        this.spawnTimer = 0;
+    }
 }
