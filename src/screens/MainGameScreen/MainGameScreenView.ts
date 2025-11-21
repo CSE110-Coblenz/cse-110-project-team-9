@@ -14,6 +14,8 @@ export class MainGameScreenView implements View {
     private diceResultText: Konva.Text;
     private pieceImage!: Konva.Image;
     private model: MainGameScreenModel;
+    private minigameSelectorGroup!: Konva.Group;
+    private minigameWheel!: Konva.Group;
     private audio: AudioController;
     private boardHeadIndex = 39; // Start with the 40th tile (index 39) as the leftmost
 
@@ -176,6 +178,8 @@ export class MainGameScreenView implements View {
             visible: false,
         });
         this.group.add(this.nodeEventText);
+
+        this.createMinigameWheel();
     }
 
     
@@ -292,6 +296,116 @@ export class MainGameScreenView implements View {
 
         // Ensure the piece image is always on top
         this.pieceImage?.moveToTop();
+    }
+
+    private createMinigameWheel(): void {
+        this.minigameSelectorGroup = new Konva.Group({
+            x: STAGE_WIDTH / 2,
+            y: STAGE_HEIGHT / 2,
+            visible: false,
+        });
+
+        this.minigameWheel = new Konva.Group({
+            // Positioned at the center of the parent group
+            x: 0,
+            y: 0,
+        });
+
+
+        const wheelRadius = 150;
+
+        // Red half
+        const redHalf = new Konva.Arc({
+            innerRadius: 0,
+            outerRadius: wheelRadius,
+            angle: 180,
+            rotation: -90,
+            fill: '#ff7675', // Red
+        });
+
+        // Blue half
+        const blueHalf = new Konva.Arc({
+            innerRadius: 0,
+            outerRadius: wheelRadius,
+            angle: 180,
+            rotation: 90,
+            fill: '#74b9ff', // Blue
+        });
+
+        const pointer = new Konva.Line({
+            points: [wheelRadius + 30, -15, wheelRadius + 5, 0, wheelRadius + 30, 15],
+            fill: '#333',
+            closed: true,
+        });
+
+        // Text for Red half
+        const amongUsText = new Konva.Text({
+            text: "Among Us",
+            fontSize: 24,
+            fontStyle: "bold",
+            fill: "white",
+            x: wheelRadius * 0.5,
+            y: 0,
+            listening: false,
+        });
+        amongUsText.offsetX(amongUsText.width() / 2);
+        amongUsText.offsetY(amongUsText.height() / 2);
+
+        // Text for Blue half
+        const wizardText = new Konva.Text({
+            text: "Wizard",
+            fontSize: 24,
+            fontStyle: "bold",
+            fill: "white",
+            x: -wheelRadius * 0.5,
+            y: 0,
+            listening: false,
+        });
+        wizardText.offsetX(wizardText.width() / 2);
+        wizardText.offsetY(wizardText.height() / 2);
+
+
+        this.minigameWheel.add(redHalf, blueHalf, amongUsText, wizardText);
+        this.minigameSelectorGroup.add(this.minigameWheel, pointer);
+        this.group.add(this.minigameSelectorGroup);
+    }
+
+    public spinMinigameWheel(): Promise<number> {
+        return new Promise((resolve) => {
+            this.minigameSelectorGroup.visible(true);
+            this.minigameSelectorGroup.moveToTop();
+            this.minigameWheel.rotation(0);
+            this.group.getLayer()?.batchDraw();
+
+            const spinDuration = 4; // seconds
+            const minRotations = 5;
+            const result = Math.random(); // 0 to < 1
+            const choice = result < 0.5 ? 1 : 2; // 1 for red, 2 for blue
+
+            // Land in the middle of the chosen color slice
+            // Red is from 270 to 90 degrees. Blue is from 90 to 270.
+            // We want to avoid landing exactly on the line.
+            const redLandingZone = 315; // Middle of red
+            const blueLandingZone = 135; // Middle of blue
+            const finalRotation = choice === 1 ? redLandingZone : blueLandingZone;
+
+            const totalRotation = 360 * minRotations + finalRotation;
+
+            const tween = new Konva.Tween({
+                node: this.minigameWheel,
+                rotation: totalRotation,
+                duration: spinDuration,
+                easing: Konva.Easings.EaseOut,
+                onFinish: () => {
+                    setTimeout(() => {
+                        this.minigameSelectorGroup.visible(false);
+                        this.group.getLayer()?.batchDraw();
+                        resolve(choice);
+                    }, 1500); // Wait a bit before hiding
+                },
+            });
+            tween.play();
+        });
     }
 
     private getNodeInfo(nodeType: NodeType): { label: string; color: string } {

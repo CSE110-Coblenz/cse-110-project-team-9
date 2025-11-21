@@ -42,7 +42,8 @@ export class MainGameScreenController extends ScreenController {
 
 
     public diceRoll(): number {
-        return Math.floor(Math.random() * 6) + 1;
+        // return Math.floor(Math.random() * 6) + 1;
+        return 1;
     }
 
 	public async onPlayerRoll(){
@@ -70,7 +71,7 @@ export class MainGameScreenController extends ScreenController {
         const newPosition = (currentPosition + roll) % this.BOARD_LENGTH;
         this.gameModel.setPlayerPosition(newPosition); // newPosition is 0-indexed
         console.log(`Player moved to position ${newPosition + 1}`);
-        this.triggerNodeEvent(newPosition + 1); // getNodeType is 1-indexed
+        await this.triggerNodeEvent(newPosition + 1); // getNodeType is 1-indexed
 
         this.view.enableRollButton();
     }
@@ -78,7 +79,7 @@ export class MainGameScreenController extends ScreenController {
     public triggerNodeEvent(nodeIndex: number): void {
         const nodeType = this.gameModel.getNodeType(nodeIndex); 
         switch (nodeType)
-        {
+        {   
             case NodeType.EASY_QUESTION:
             case NodeType.MEDIUM_QUESTION:
             case NodeType.HARD_QUESTION:
@@ -89,10 +90,14 @@ export class MainGameScreenController extends ScreenController {
                 break;
             case NodeType.MINIGAME:
                 this.view.displayNodeEvent("You landed on a Minigame tile!");
-                // const newMinigameScore = this.gameModel.getPlayerScore("default") + 10;
-                // this.gameModel.setPlayerScore("default", newMinigameScore);
-                // this.view.updateScoreDisplay(newMinigameScore);
-                break;
+                // Using a Promise to create a delay
+                return new Promise(resolve => {
+                    setTimeout(async () => {
+                        const minigameChoice = await this.view.spinMinigameWheel();
+                        this.launchMinigame(minigameChoice);
+                        resolve();
+                    }, 2000); // Wait 2 seconds for the player to read the message
+                });
             case NodeType.START:
                 // No action needed for the start tile
                 break;
@@ -104,17 +109,15 @@ export class MainGameScreenController extends ScreenController {
         /**
      * Randomly select and launch a minigame
      */
-    private triggerRandomMinigame(): void {
-        const minigameChoice = Math.floor(Math.random() * 2) + 1; // 1 or 2
-        
+    private launchMinigame(minigameChoice: number): void {
         console.log(`Launching minigame ${minigameChoice}`);
         
         if (minigameChoice === 1) {
-            // Launch Among Us minigame
-            this.screenSwitcher.switchToScreen({ type: "amongUsMenu" });
+            // Red side: Launch Among Us minigame
+            //this.screenSwitcher.switchToScreen({ type: "amongUsMenu" });
         } else {
-            // Launch Wizard minigame (not implemented yet)
-            this.screenSwitcher.switchToScreen({ type: "amongUsMenu" });
+            // Blue side: Launch Wizard minigame
+            //this.screenSwitcher.switchToScreen({ type: "wizard" });
         }
     }
 
