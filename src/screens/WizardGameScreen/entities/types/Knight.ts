@@ -100,12 +100,12 @@ export const KNIGHT_ATTACK_ANIMATIONS: Record<KnightAttackAnimation, number[]> =
 export type KnightAudioMap = typeof KNIGHT_AUDIO;
 
 export const KNIGHT_AUDIO = {
-    walk: "/wizardminigame/audio/footsteps.mp3",
-    attackbow: "/wizardminigame/audio/bowrelease.mp3",
-    attackslash: "/wizardminigame/audio/slash.mp3",
-    attackdown: "/wizardminigame/audio/slash.mp3",
-    damage: "/wizardminigame/audio/x",
-    death: "/wizardminigame/audio/x",
+    walk_SFX: "/wizardminigame/audio/footsteps.mp3",
+    attackbow_SFX: "/wizardminigame/audio/bowrelease.mp3",
+    attackslash_SFX: "/wizardminigame/audio/slash.mp3",
+    attackdown_SFX: "/wizardminigame/audio/slash.mp3",
+    damage_SFX: "/wizardminigame/audio/x",
+    death_SFX: "/wizardminigame/audio/x",
 };
 
 //bounding box for collision frames

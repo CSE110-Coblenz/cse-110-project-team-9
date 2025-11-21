@@ -73,33 +73,33 @@ export class PlayerController implements Collidable {
         //actions and animation only one at a time
         if (dx !== 0 || dy !== 0) {
             this._model.bodyCurrentAnimation = "walk";
-            this.audio.play("walk", true);
+            this.audio.play("walk_SFX", true);
         } else if (this.input.isDown("f")) {   
             this._model.staminaDrain(PLAYER_STAMINA_DRAIN);
             if(this._model.bodyCurrentAnimation !== "attackslash"){
-                this.audio.play("attackslash", true);
+                this.audio.play("attackslash_SFX", true);
             }
             this._model.bodyCurrentAnimation = "attackslash";
             this._model.attackCurrentAnimation = "attackslash";
         } else if (this.input.isDown("e")) {
             this._model.staminaDrain(PLAYER_STAMINA_DRAIN);
             if(this._model.bodyCurrentAnimation !== "attackdown"){
-                this.audio.play("attackdown", true);
+                this.audio.play("attackdown_SFX", true);
             }
             this._model.bodyCurrentAnimation = "attackdown";
             this._model.attackCurrentAnimation = "attackdown";
         } else if (this.input.isDown("r")) {
             this._model.staminaDrain(PLAYER_STAMINA_DRAIN);
             if(this._model.bodyCurrentAnimation !== "attackbow"){
-                this.audio.play("attackbow", true);
+                this.audio.play("attackbow_SFX", true);
             }
             this._model.bodyCurrentAnimation = "attackbow";
             this._model.attackCurrentAnimation = "attackbow";
         } else {
-            this.audio.stop("attackslash");
-            this.audio.stop("attackdown");
-            this.audio.stop("attackbow");
-            this.audio.stop("walk");
+            this.audio.stop("attackslash_SFX");
+            this.audio.stop("attackdown_SFX");
+            this.audio.stop("attackbow_SFX");
+            this.audio.stop("walk_SFX");
             this._model.bodyCurrentAnimation = "idle";            
         }
         this._hud.render();
