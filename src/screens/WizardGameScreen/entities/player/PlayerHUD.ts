@@ -5,11 +5,14 @@ import { DEFAULT_HEALTH } from '../../config';
 export class PlayerHUD {
     private healthBar: Konva.Rect;
     private staminaBar: Konva.Rect;
+    private group: Konva.Group
 
     private readonly barWidth: number = 70;
     private readonly barHeight: number = 5;
 
-    constructor(private group: Konva.Group, private model: PlayerModel) {
+    constructor(group: Konva.Group, private model: PlayerModel) {
+        this.group = group;
+
         this.healthBar = new Konva.Rect({
             x: 0,
             y: 0,
@@ -26,8 +29,8 @@ export class PlayerHUD {
             fill: "yellow",
         });
 
-        group.add(this.healthBar);
-        group.add(this.staminaBar);
+        this.group.add(this.healthBar);
+        this.group.add(this.staminaBar);
     }
 
     render() {
@@ -43,6 +46,9 @@ export class PlayerHUD {
         this.staminaBar.x(this.model.x + 200 - this.barWidth / 2);
         this.staminaBar.y(this.model.y + 140 - (5 + this.barHeight));
         this.staminaBar.width(this.barWidth * staminaPercent);
+
+        this.healthBar.moveToTop();
+        this.staminaBar.moveToTop();
 
         this.group.getLayer()?.batchDraw();
     }

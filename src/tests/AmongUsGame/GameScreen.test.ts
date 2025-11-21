@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { STAGE_WIDTH, STAGE_HEIGHT, GAME_DURATION } from "../../../constants";
-import { PuzzleModel } from "../GameScreen/_Puzzle/PuzzleModel";
-import { AmongUsGameScreenModel } from "../GameScreen/GameScreenModel";
+import { STAGE_WIDTH, STAGE_HEIGHT, GAME_DURATION } from "../../constants";
+import { PuzzleModel } from "../../screens/AmongUsGameScreen/GameScreen/_Puzzle/PuzzleModel";
+import { AmongUsGameScreenModel } from "../../screens/AmongUsGameScreen/GameScreen/GameScreenModel";
 
 describe("constants", () => {
   it("exports positive numeric stage dimensions", () => {

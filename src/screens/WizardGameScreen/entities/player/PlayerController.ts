@@ -1,5 +1,5 @@
 import { PlayerModel } from "./PlayerModel";
-import { PlayerViewer } from "./PlayerViewer";
+import { PlayerViewer } from "./PlayerView";
 import { InputHandler } from "../../InputHandler";
 import { Collidable } from "../CollisionManager";
 import { AudioController } from "../../../../audios/AudioController";
@@ -21,7 +21,6 @@ export class PlayerController implements Collidable {
     }
 
     destroy() {
-        this.view.destroy();
         this.exit?.();
     }
     

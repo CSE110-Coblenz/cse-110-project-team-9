@@ -21,11 +21,6 @@ export class PlayerViewer {
         this.group.add(this.attackSprite);
     }
 
-    destroy() { 
-        this.bodySprite.destroy();
-        this.attackSprite.destroy(); 
-    }
-
     private createSprite(
         entity: { image: string; animations: Record<string, number[]> },
         animation: string,

@@ -10,11 +10,12 @@ export interface View {
  * Screen types for navigation
  */
 export type Screen =
-    | { type: "wizardminigame"}
 	| { type: "starting" }
 	| { type: "home" }
 	| { type: "mainGame" }
 	| { type: "settings" }
+	| { type: "wizardminigame"}
+	| { type: "wizardguide" }
 	| { type: "amongUsMenu" }
 	| { type: "amongUsGame" }
 	| { type: "amongUsResult", score: number };

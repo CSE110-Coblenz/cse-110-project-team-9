@@ -1,5 +1,5 @@
 import Konva from 'konva';
-import { PlayerViewer } from "./PlayerViewer";
+import { PlayerViewer } from "./PlayerView";
 import { PlayerModel } from './PlayerModel';
 import { PlayerController } from "./PlayerController";
 import { PlayerHUD } from './PlayerHUD';

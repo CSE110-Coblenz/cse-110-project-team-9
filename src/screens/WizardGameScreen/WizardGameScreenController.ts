@@ -1,7 +1,7 @@
 import { ScreenController } from "../../types";
 import type { ScreenSwitcher } from "../../types";
 import { WizardGameScreenModel } from "./WizardGameScreenModel";
-import { WizardGameScreenViewer } from "./WizardGameScreenViewer";
+import { WizardGameScreenView } from "./WizardGameScreenView";
 import { CollisionManager } from "./entities/CollisionManager";
 import { PlayerController } from "./entities/player/PlayerController";
 import { PlayerFactory } from "./entities/player/PlayerFactory";
@@ -12,7 +12,7 @@ import { PLAYER_START_X, PLAYER_START_Y, PlAYER_SCALE } from "./config";
 
 export class WizardGameScreenController extends ScreenController {
     private model: WizardGameScreenModel;
-    private view: WizardGameScreenViewer;
+    private view: WizardGameScreenView;
 
     private playerController: PlayerController;
     private enemyManager: EnemyManager;
@@ -31,17 +31,15 @@ export class WizardGameScreenController extends ScreenController {
             this.collisionManager.toggleDebugMode(this.showBoundingBoxes);
         } 
         if (e.key === 'Escape'){
-            this.exit();
+            this.pauseGame();
+            this.screenSwitcher.layerOnScreen({ type: "wizardguide" })
         } 
-        if (e.key === '1'){
-            this.screenSwitcher.layerOnScreen({ type:"settings" });
-        }
     }
 
     constructor(private screenSwitcher: ScreenSwitcher, private audio: AudioController) {
         super();
         this.model = new WizardGameScreenModel();
-        this.view = new WizardGameScreenViewer();
+        this.view = new WizardGameScreenView();
         this.input = new InputHandler();
 
         this.audio.registerSound("wizard_bgm","/wizardminigame/audio/WizardBgm.mp3");
@@ -85,9 +83,13 @@ export class WizardGameScreenController extends ScreenController {
         this.collisionManager.register(this.playerController);
         this.disableImageSmoothing();
 
-        this.audio.play("wizard_bgm");
+        this.audio.play("wizard_bgm", true);
         this.lastUpdateTime = performance.now();
         this.updateLoop();
+
+        //start game paused
+        this.pauseGame();
+            this.screenSwitcher.layerOnScreen({ type: "wizardguide" })
     }
 
     private disableImageSmoothing(): void {
@@ -142,12 +144,29 @@ export class WizardGameScreenController extends ScreenController {
         this.input.unbind();
     }
 
+    pauseGame() {
+        //stop update loop
+        if (this.animationFrameId) {
+            cancelAnimationFrame(this.animationFrameId);
+            this.animationFrameId = null;
+        }
+        this.input.unbind();
+    }
+
+    resumeGame() {
+        this.input.bind();
+
+        // restart loop
+        this.lastUpdateTime = performance.now();
+        this.updateLoop();
+    }
+
     exit() {
         this.stopGame();
         this.screenSwitcher.switchToScreen({ type:"mainGame" });
     }
 
-    getView(): WizardGameScreenViewer {
+    getView(): WizardGameScreenView {
         return this.view;
     }
 }

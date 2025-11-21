@@ -5,6 +5,7 @@ import { HomeScreenController } from "./screens/HomeScreen/HomeScreenController"
 import { SettingsScreenController } from "./screens/SettingsScreen/SettingsScreenController";
 import { MainGameScreenController } from "./screens/MainGameScreen/MainGameScreenController";
 import { WizardGameScreenController } from "./screens/WizardGameScreen/WizardGameScreenController";
+import { GuideScreenController } from "./screens/WizardGameScreen/GuideScreen/GuideScreenController";
 import { AmongUsMenuScreenController } from "./screens/AmongUsGameScreen/MenuScreen/MenuScreenController";
 import { AmongUsGameScreenController } from "./screens/AmongUsGameScreen/GameScreen/GameScreenController";
 import { AmongUsResultsScreenController } from "./screens/AmongUsGameScreen/ResultsScreen/ResultsScreenController";
@@ -23,8 +24,11 @@ class App implements ScreenSwitcher {
 	private startingController: StartingScreenController;
 	private homeController: HomeScreenController;
 	private settingsController: SettingsScreenController;
-	private WizardGameController: WizardGameScreenController;
 	private mainGameController: MainGameScreenController;
+
+	// Wizard minigame screens
+	private WizardGameController: WizardGameScreenController;
+	private WizardGuideController: GuideScreenController;
 
 	// Among Us minigame screens
 	private amongUsMenuController: AmongUsMenuScreenController;
@@ -52,7 +56,10 @@ class App implements ScreenSwitcher {
 		this.homeController = new HomeScreenController(this, this.audio);
 		this.settingsController = new SettingsScreenController(this, this.audio);
 		this.mainGameController = new MainGameScreenController(this, this.audio);
+
+		// initalize Wizard minigame screens
 		this.WizardGameController = new WizardGameScreenController(this, this.audio);
+		this.WizardGuideController = new GuideScreenController(this, this.audio, this.WizardGameController);
 
 		// Initialize Among Us minigame screens
 		this.amongUsMenuController = new AmongUsMenuScreenController(this);
@@ -64,13 +71,13 @@ class App implements ScreenSwitcher {
 		this.layer.add(this.homeController.getView().getGroup());
 		this.layer.add(this.settingsController.getView().getGroup());
 		this.layer.add(this.WizardGameController.getView().getGroup());
+		this.layer.add(this.WizardGuideController.getView().getGroup());
 		this.layer.add(this.mainGameController.getView().getGroup());
 		this.layer.add(this.amongUsMenuController.getView().getGroup());
 		this.layer.add(this.amongUsGameController.getView().getGroup());
 		this.layer.add(this.amongUsResultsController.getView().getGroup());
 
 		this.layer.draw();
-
 
 		// Start with starting screen visible
 		this._lastScreen = {type: "starting"};
@@ -112,12 +119,14 @@ class App implements ScreenSwitcher {
 			case "mainGame":
 				this.mainGameController.show();
 				break;
-
-			case "wizardminigame":
-				this.WizardGameController.startGame();
 				
 			case "settings":
 				this.settingsController.show();
+				break;
+			
+			// Wizard minigame screens
+			case "wizardminigame":
+				this.WizardGameController.startGame();
 				break;
 
 			// Among Us minigame screens
@@ -139,6 +148,9 @@ class App implements ScreenSwitcher {
 		switch (screen.type) {
 			case "settings":
 				this.settingsController.show();
+				break;
+			case "wizardguide":
+				this.WizardGuideController.show();
 				break;
 		}
 	}

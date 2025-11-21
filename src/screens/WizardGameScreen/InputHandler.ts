@@ -42,7 +42,7 @@ export class InputHandler {
     };
 
     public isDown(key: string): boolean {
-        //bang operation !! always returns true for that key
+        //bang operation to convert to boolean
         return !!this.keys[key];
     }
 }

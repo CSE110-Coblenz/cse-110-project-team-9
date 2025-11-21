@@ -1,5 +1,5 @@
 import { EnemyModel } from "./EnemyModel";
-import { EnemyViewer } from "./EnemyViewer";
+import { EnemyViewer } from "./EnemyView";
 import { Collidable } from "../CollisionManager";
 import { AudioController } from "../../../../audios/AudioController";
 import { PLAYER_DAMAGE } from "../../config";

@@ -1,5 +1,5 @@
 import Konva from 'konva';
-import { EnemyViewer } from './EnemyViewer';
+import { EnemyViewer } from './EnemyView';
 import { EnemyModel } from './EnemyModel'; 
 import { EnemyController } from './EnemyController';
 import { AudioController } from '../../../../audios/AudioController';
