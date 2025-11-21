@@ -6,6 +6,9 @@ export interface View {
 	hide(): void;
 }
 
+/**
+ * Screen types for navigation
+ */
 export type Screen =
 	| { type: "starting" }
 	| { type: "home" }
@@ -30,6 +33,5 @@ export abstract class ScreenController {
 export interface ScreenSwitcher {
 	switchToScreen(screen: Screen): void;
 	layerOnScreen(screen: Screen): void;
-
 	readonly lastScreen: Screen;
 }

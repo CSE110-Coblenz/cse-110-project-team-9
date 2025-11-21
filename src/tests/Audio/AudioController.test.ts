@@ -3,8 +3,8 @@
  */
 
 import { describe, it, beforeEach, expect, vi, beforeAll } from "vitest";
-import { AudioController } from "../audios/AudioController";
-import { AudioModel } from "../audios/AudioModel";
+import { AudioController } from "../../audios/AudioController";
+import { AudioModel } from "../../audios/AudioModel";
 
 describe("AudioController", () => {
     let audioController: AudioController;

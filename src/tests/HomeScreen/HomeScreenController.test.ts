@@ -8,9 +8,9 @@ import { describe, it, beforeEach, expect, vi, beforeAll } from "vitest";
  * Import the HomeScreenController and its dependencies
  */
 
-import { HomeScreenController } from "../screens/HomeScreen/HomeScreenController";
-import { AudioController } from "../audios/AudioController";
-import type { ScreenSwitcher } from "../types";
+import { HomeScreenController } from "../../screens/HomeScreen/HomeScreenController";
+import { AudioController } from "../../audios/AudioController";
+import type { ScreenSwitcher } from "../../types";
 
 /**
  * Create mock's instance
@@ -22,7 +22,7 @@ let viewInstance: any;
  * Mock the HomeScreenView class
  */
 
-vi.mock("../screens/HomeScreen/HomeScreenView", () => {
+vi.mock("../../screens/HomeScreen/HomeScreenView", () => {
     return {
         HomeScreenView: class {
         constructor() {
@@ -46,7 +46,7 @@ vi.mock("../screens/HomeScreen/HomeScreenView", () => {
  * Mock the AudioController class
  */
 
-vi.mock("../audios/AudioController");
+vi.mock("../../audios/AudioController");
 
 /**
  * Unit tests for HomeScreenController

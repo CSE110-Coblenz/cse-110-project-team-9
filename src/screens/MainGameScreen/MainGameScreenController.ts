@@ -1,8 +1,7 @@
 import { NodeType, MainGameScreenModel } from "../MainGameScreen/MainGameScreenModel";
 import { MainGameScreenView } from "../MainGameScreen/MainGameScreenView";
-import { ScreenController, ScreenSwitcher } from "../../types"
+import { ScreenController, ScreenSwitcher } from "../../types";
 import { AudioController } from "../../audios/AudioController";
-
 
 export class MainGameScreenController extends ScreenController {
 
@@ -13,8 +12,7 @@ export class MainGameScreenController extends ScreenController {
 
     private readonly BOARD_LENGTH = 40;
 
-    constructor(screenSwitcher: ScreenSwitcher, audio: AudioController){
-        
+    constructor(screenSwitcher: ScreenSwitcher, audio: AudioController) {
         super();
 
         this.view = new MainGameScreenView(this.gameModel, audio);
@@ -22,10 +20,10 @@ export class MainGameScreenController extends ScreenController {
         this.audio = audio;
 
         this.view.onPlayerRoll(() => this.onPlayerRoll());
-			this.view.onSettingsOpen(() => {
-				this.audio.play("click_sfx");
-				this.screenSwitcher.layerOnScreen({ type: "settings" });
-			});
+        this.view.onSettingsOpen(() => {
+            this.audio.play("click_sfx");
+            this.screenSwitcher.layerOnScreen({ type: "settings" });
+        });
 
         audio.registerSound("mainboard_bgm", "/mainboard/audio/mainboardBGM.mp3");
         audio.registerSound("click_sfx", "/homescreen/audio/click.mp3");
@@ -40,17 +38,15 @@ export class MainGameScreenController extends ScreenController {
         // tiles[3].on("click", () => this.screenSwitcher.switchToScreen({ type: "basicQuestion2" }));
     }
 
-
     public diceRoll(): number {
         // return Math.floor(Math.random() * 6) + 1;
         return 1;
     }
 
-	public async onPlayerRoll(){
-		this.view.disableRollButton();
-		
-		// Play dice roll sound effect
-		this.audio.play("click_sfx");
+    public async onPlayerRoll() {
+        this.view.disableRollButton();
+        
+        this.audio.play("click_sfx");
 
         const roll = this.diceRoll();
         this.audio.play("dice_sfx", false);
@@ -88,6 +84,7 @@ export class MainGameScreenController extends ScreenController {
                 //this.gameModel.setPlayerScore("default", newQuestionScore);
                 //this.view.updateScoreDisplay(newQuestionScore);
                 break;
+
             case NodeType.MINIGAME:
                 this.view.displayNodeEvent("You landed on a Minigame tile!");
                 // Using a Promise to create a delay
@@ -101,6 +98,7 @@ export class MainGameScreenController extends ScreenController {
             case NodeType.START:
                 // No action needed for the start tile
                 break;
+
             default:
                 console.warn(`Unknown node type encountered at index ${nodeIndex}.`);
         }
@@ -124,11 +122,9 @@ export class MainGameScreenController extends ScreenController {
     public getView(): MainGameScreenView {
         return this.view;
     }
-
-
-
+    
     public show(): void {
-        this.audio.play("mainboard_bgm", true); // true for loop (BGM)
+        this.audio.play("mainboard_bgm", true);
         this.view.show();
     }
 

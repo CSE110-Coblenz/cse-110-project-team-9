@@ -113,7 +113,7 @@ export class MainGameScreenView implements View {
         const buttonText = new Konva.Text({
             text: "Roll Dice",
             fontSize: 18,
-            fontStyle: "bold",
+            fontFamily: "homeScreenFont",
             fill: "white",
             width: 120,
             height: 50,
@@ -143,7 +143,7 @@ export class MainGameScreenView implements View {
         const settingsButtonText = new Konva.Text({
             text: "Settings",
             fontSize: 18,
-            fontStyle: "bold",
+            fontFamily: "homeScreenFont",
             fill: "white",
             width: 120,
             height: 50,
@@ -160,7 +160,7 @@ export class MainGameScreenView implements View {
             x: STAGE_WIDTH / 2 - 50,
             y: 50,
             fontSize: 24,
-            fontStyle: "bold",
+            fontFamily: "homeScreenFont",
             fill: "#333",
             visible: false,
         });
@@ -172,7 +172,7 @@ export class MainGameScreenView implements View {
             y: 90, // Below the dice roll result
             width: STAGE_WIDTH,
             fontSize: 24,
-            fontStyle: "bold",
+            fontFamily: "homeScreenFont",
             fill: "#d63031", // A distinct color
             align: 'center',
             visible: false,
@@ -285,7 +285,7 @@ export class MainGameScreenView implements View {
             height: nodeSize,
             text: nodeInfo.label,
             fontSize: 13,
-            fontStyle: "bold",
+            fontFamily: "homeScreenFont",
             fill: "#222",
             align: "center",
             verticalAlign: "middle",

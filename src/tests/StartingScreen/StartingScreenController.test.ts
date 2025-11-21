@@ -3,9 +3,8 @@
  */
 
 import { describe, it, beforeEach, expect, vi, beforeAll } from "vitest";
-import { StartingScreenController } from "../screens/StartingScreen/StartingScreenController";
-import { AudioController } from "../audios/AudioController";
-import type { ScreenSwitcher } from "../types";
+import { StartingScreenController } from "../../screens/StartingScreen/StartingScreenController";
+import type { ScreenSwitcher } from "../../types";
 
 /**
  * Create mock's instance
@@ -15,7 +14,7 @@ let viewInstance: any;
 /**
  * Mock the StartingScreenView class
  */
-vi.mock("../screens/StartingScreen/StartingScreenView", () => {
+vi.mock("../../screens/StartingScreen/StartingScreenView", () => {
     return {
         StartingScreenView: class {
             constructor() {
@@ -34,17 +33,12 @@ vi.mock("../screens/StartingScreen/StartingScreenView", () => {
     };
 });
 
-/**
- * Mock the AudioController class
- */
-vi.mock("../audios/AudioController");
 
 /**
  * Unit tests for StartingScreenController
  */
 describe("StartingScreenController", () => {
     let mockScreenSwitcher: ScreenSwitcher;
-    let mockAudio: AudioController;
     let controller: StartingScreenController;
 
     /**
@@ -75,13 +69,8 @@ describe("StartingScreenController", () => {
             layerOnScreen: vi.fn(),
             lastScreen: { type: "starting" },
         };
-        mockAudio = {
-            play: vi.fn(),
-            stop: vi.fn(),
-            stopAll: vi.fn(),
-        } as unknown as AudioController;
 
-        controller = new StartingScreenController(mockScreenSwitcher, mockAudio);
+        controller = new StartingScreenController(mockScreenSwitcher);
     });
 
     /**
@@ -100,13 +89,12 @@ describe("StartingScreenController", () => {
     });
 
     /**
-     * Test 3: Click anywhere to go to HomeScreen and start BGM
+     * Test 3: Click anywhere to go to HomeScreen
      */
-    it("should play BGM and switch to home screen when clicked", () => {
+    it("should switch to home screen when clicked", () => {
         const callback = viewInstance.getGroup().on.mock.calls[0][1];
         callback();
 
-        expect(mockAudio.play).toHaveBeenCalledWith("home_bgm", true);
         expect(mockScreenSwitcher.switchToScreen).toHaveBeenCalledWith({ type: "home" });
     });
 
