@@ -63,7 +63,7 @@ export class MathScreenView {
       width: cardWidth - 40,
       text: "Loading question...",
       fontSize: 30,
-      fontFamily: "Arial",
+      fontFamily: "HomeScreenFont",
       fill: "white",
       align: "center",
     });
@@ -75,7 +75,7 @@ export class MathScreenView {
       width: cardWidth - 40,
       text: "",
       fontSize: 18,
-      fontFamily: "Arial",
+      fontFamily: "HomeScreenFont",
       fill: "white",
       align: "center",
     });
@@ -87,7 +87,7 @@ export class MathScreenView {
       width: cardWidth,
       text: "",
       fontSize: 20,
-      fontFamily: "Arial",
+      fontFamily: "HomeScreenFont",
       fill: "white",
       align: "center",
     });
@@ -119,7 +119,7 @@ export class MathScreenView {
       width: answerBoxWidth - 20,
       text: "",
       fontSize: 20,
-      fontFamily: "Arial",
+      fontFamily: "HomeScreenFont",
       fill: "white",
       align: "left",
     });
@@ -153,7 +153,7 @@ export class MathScreenView {
       width: buttonWidth,
       text: "Check Answer",
       fontSize: 15,
-      fontFamily: "Arial",
+      fontFamily: "HomeScreenFont",
       fill: "white",
       align: "center",
     });
