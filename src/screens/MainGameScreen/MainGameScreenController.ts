@@ -101,6 +101,23 @@ export class MainGameScreenController extends ScreenController {
         }
     }
 
+        /**
+     * Randomly select and launch a minigame
+     */
+    private triggerRandomMinigame(): void {
+        const minigameChoice = Math.floor(Math.random() * 2) + 1; // 1 or 2
+        
+        console.log(`Launching minigame ${minigameChoice}`);
+        
+        if (minigameChoice === 1) {
+            // Launch Among Us minigame
+            this.screenSwitcher.switchToScreen({ type: "amongUsMenu" });
+        } else {
+            // Launch Wizard minigame (not implemented yet)
+            this.screenSwitcher.switchToScreen({ type: "amongUsMenu" });
+        }
+    }
+
     public getView(): MainGameScreenView {
         return this.view;
     }
