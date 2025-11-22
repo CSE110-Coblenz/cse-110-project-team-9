@@ -28,7 +28,7 @@ export class AmongUsGameScreenView implements View {
 		this.onObstacleClick = onObstacleClick;
 
 		// Background
-		Konva.Image.fromURL("AmongUsMiniGame/Background/terrace.png", (background) => {
+		Konva.Image.fromURL(`${import.meta.env.BASE_URL}AmongUsMiniGame/Background/terrace.png`, (background) => {
 			background.width(STAGE_WIDTH);
 			background.height(STAGE_HEIGHT);
 			background.x(0);
