@@ -63,6 +63,15 @@ export class AmongUsGameScreenController extends ScreenController {
 	startGame(): void {
 		this.model.reset();
 		
+		// Clear any existing obstacles from previous games
+		this.view.clearObstacles();
+		
+		// Reset puzzle view to clear any open puzzles or feedback
+		this.view.resetPuzzleView();
+		
+		// Reset the currently open puzzle
+		this.currentOpenPuzzle = null;
+		
 		this.view.updateScore(this.model.getScore());
 		this.view.updateTimer(GAME_DURATION);
 		this.view.show();
@@ -168,9 +177,16 @@ export class AmongUsGameScreenController extends ScreenController {
 			// this.wrongSound.play();
 			// this.wrongSound.currentTime = 0;
 			this.audio.play("wrong_answer");
-		}
 
-		this.currentOpenPuzzle = null;
+			// Re-open the same puzzle after feedback (1.5s delay matches feedback timeout)
+			setTimeout(() => {
+				if (this.currentOpenPuzzle) {
+					const question = this.currentOpenPuzzle.getQuestion();
+					const options = this.currentOpenPuzzle.getOptions().map(o => String(o));
+					this.view.renderPuzzle({ question, options });
+				}
+			}, 1500);
+		}
 
 		if (this.model.getIsComplete()) {
 			setTimeout(() => this.endGame(), 1500);

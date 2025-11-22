@@ -84,6 +84,11 @@ export class AmongUsGameScreenView implements View {
 		return ob;
 	}
 
+	clearObstacles(): void {
+		this.obstacles.forEach(ob => ob.destroy());
+		this.obstacles = [];
+	}
+
 	/**
 	 * Mark the obstacle as solved
 	 */
@@ -164,6 +169,13 @@ export class AmongUsGameScreenView implements View {
 	 */
 	getGroup(): Konva.Group {
 		return this.group;
+	}
+
+	/**
+	 * Reset the puzzle view (clear any open puzzles/feedback)
+	 */
+	resetPuzzleView(): void {
+		this.puzzleView.reset();
 	}
 
 	/**
