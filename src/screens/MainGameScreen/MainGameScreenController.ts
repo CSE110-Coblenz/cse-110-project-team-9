@@ -25,10 +25,10 @@ export class MainGameScreenController extends ScreenController {
             this.screenSwitcher.layerOnScreen({ type: "settings" });
         });
 
-        audio.registerSound("mainboard_bgm", "/mainboard/audio/mainboardBGM.mp3");
-        audio.registerSound("click_sfx", "/homescreen/audio/click.mp3");
-        audio.registerSound("dice_sfx", "/mainboard/audio/dice_roll.mp3");
-        audio.registerSound("piece_move_sfx", "/mainboard/audio/piece_move.mp3");
+        audio.registerSound("mainboard_bgm", `${import.meta.env.BASE_URL}mainboard/audio/mainboardBGM.mp3`);
+        audio.registerSound("click_sfx", `${import.meta.env.BASE_URL}homescreen/audio/click.mp3`);
+        audio.registerSound("dice_sfx", `${import.meta.env.BASE_URL}mainboard/audio/dice_roll.mp3`);
+        audio.registerSound("piece_move_sfx", `${import.meta.env.BASE_URL}mainboard/audio/piece_move.mp3`);
 
         const tiles = this.view.getTiles();
 

@@ -40,8 +40,8 @@ export class PlayerSprite {
         this.idleImg.onload = checkReady;
         this.walkImg.onload = checkReady;
 
-        this.idleImg.src = "AmongUsMiniGame/Sprites/Rogue/Idle/idle.png";
-        this.walkImg.src = "AmongUsMiniGame/Sprites/Rogue/Walk/walk.png";
+        this.idleImg.src = `${import.meta.env.BASE_URL}AmongUsMiniGame/Sprites/Rogue/Idle/idle.png`;
+        this.walkImg.src = `${import.meta.env.BASE_URL}AmongUsMiniGame/Sprites/Rogue/Walk/walk.png`;
     }
 
     private createSprite(parentGroup: Konva.Group, x: number, y: number, options?: { scale?: number; frameRate?: number; onReady?: (p: PlayerSprite) => void }) {

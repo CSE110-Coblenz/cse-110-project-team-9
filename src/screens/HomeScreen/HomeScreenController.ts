@@ -14,8 +14,8 @@ export class HomeScreenController extends ScreenController {
 		this.audio = audio;
 
 		//register audio
-		audio.registerSound("home_bgm", "/homescreen/audio/medieval.mp3");
-        audio.registerSound("click_sfx", "/homescreen/audio/click.mp3");
+		audio.registerSound("home_bgm", `${import.meta.env.BASE_URL}homescreen/audio/medieval.mp3`);
+        audio.registerSound("click_sfx", `${import.meta.env.BASE_URL}homescreen/audio/click.mp3`);
 		
 		/**
 		 * Button Event Listeners
