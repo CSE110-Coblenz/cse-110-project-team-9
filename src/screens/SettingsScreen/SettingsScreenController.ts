@@ -28,7 +28,6 @@ export class SettingsScreenController extends ScreenController {
 	}
 
 	hide(): void {
-		// this.audio.stopAll();
 		this.view.hide();    
 	}
 

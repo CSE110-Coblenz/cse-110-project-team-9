@@ -3,7 +3,7 @@ import type { View } from "../../../types";
 import { STAGE_WIDTH, STAGE_HEIGHT } from "../../../constants";
 
 /**
- * MenuScreenView - Renders the menu screen
+ * MenuScreenView - Renders the menu/instruction screen
  */
 export class AmongUsMenuScreenView implements View {
 	private group: Konva.Group;
@@ -11,8 +11,8 @@ export class AmongUsMenuScreenView implements View {
 	constructor(onStartClick: () => void) {
 		this.group = new Konva.Group({ visible: true });
 
-		//Background Image
-		Konva.Image.fromURL("AmongUsMiniGame/Background/terrace.png", (background) => {
+		// Background Image
+		Konva.Image.fromURL(`${import.meta.env.BASE_URL}AmongUsMiniGame/Background/terrace.png`, (background) => {
 			background.width(STAGE_WIDTH);
 			background.height(STAGE_HEIGHT);
 			background.x(0);
@@ -22,6 +22,7 @@ export class AmongUsMenuScreenView implements View {
 			this.group.getLayer()?.draw();
 		});
 
+		// Semi-transparent overlay for readability
 		const overlay = new Konva.Rect({
 			x: 0,
 			y: 0,
@@ -33,51 +34,180 @@ export class AmongUsMenuScreenView implements View {
 			fillLinearGradientEndPoint: { 
 				x: 0, y: STAGE_HEIGHT 
 			},
-			fillLinearGradientColorStops: [0, "rgba(0,155,255,0.7)", 1, "rgba(100,0,100,0.5)"],
+			fillLinearGradientColorStops: [0, "rgba(0,20,40,0.85)", 1, "rgba(40,0,40,0.85)"],
 		});
 		this.group.add(overlay);
-		overlay.moveToTop();
 
 		// Title text
 		const title = new Konva.Text({
 			x: STAGE_WIDTH / 2,
-			y: 175,
+			y: 40,
 			text: "The Mechanism",
-			fontSize: 48,
+			fontSize: 42,
 			fontFamily: "HomeScreenFont",
-			fill: "white",
+			fill: "#00d2d3",
 			stroke: "purple",
-			strokeWidth: 1,
+			strokeWidth: 2,
 			align: "center",
 		});
-		// Center the text using offsetX
 		title.offsetX(title.width() / 2);
 		this.group.add(title);
 
-		const startButtonGroup = new Konva.Group();
-		const startButton = new Konva.Rect({
-			x: STAGE_WIDTH / 2 - 100,
-			y: 300,
-			width: 200,
-			height: 60,
-			fill: "black",
-			cornerRadius: 10,
-			stroke: "purple",
-			strokeWidth: 3,
-		});
-		const startText = new Konva.Text({
+		// Subtitle
+		const subtitle = new Konva.Text({
 			x: STAGE_WIDTH / 2,
-			y: 315,
-			text: "START",
-			fontSize: 24,
+			y: 95,
+			text: "Quadratic Equation Matching",
+			fontSize: 20,
 			fontFamily: "HomeScreenFont",
-			fill: "purple",
+			fill: "white",
 			align: "center",
 		});
-		startText.offsetX(startText.width() / 2);
+		subtitle.offsetX(subtitle.width() / 2);
+		this.group.add(subtitle);
+
+		// Instructions panel background
+		const instructionBox = new Konva.Rect({
+			x: STAGE_WIDTH / 2 - 300,
+			y: 135,
+			width: 600,
+			height: 320,
+			fill: "rgba(0, 0, 0, 0.7)",
+			cornerRadius: 15,
+			stroke: "#00d2d3",
+			strokeWidth: 2,
+		});
+		this.group.add(instructionBox);
+
+		// Instructions title
+		const instructionsTitle = new Konva.Text({
+			x: STAGE_WIDTH / 2,
+			y: 155,
+			text: "HOW TO PLAY",
+			fontSize: 24,
+			fontFamily: "HomeScreenFont",
+			fontStyle: "bold",
+			fill: "#00d2d3",
+			align: "center",
+		});
+		instructionsTitle.offsetX(instructionsTitle.width() / 2);
+		this.group.add(instructionsTitle);
+
+		// Instructions content
+		const instructions = [
+			"• Use WASD keys to move your character around the map",
+			"• Click on rotating obstacles to open puzzle challenges",
+			"• Each puzzle shows quadratic equations on the LEFT",
+			"• Match each equation to its correct roots on the RIGHT",
+			"• Click a left point, then a right point to draw a line",
+			"• Click points again to change your connections",
+			"• Submit when all equations are matched correctly",
+			"• Solve all 3 puzzles before time runs out!"
+		];
+
+		instructions.forEach((text, index) => {
+			const line = new Konva.Text({
+				x: STAGE_WIDTH / 2 - 280,
+				y: 195 + index * 30,
+				text: text,
+				fontSize: 16,
+				fontFamily: "HomeScreenFont",
+				fill: "white",
+				lineHeight: 1.4,
+			});
+			this.group.add(line);
+		});
+
+		// Tip box
+		const tipBox = new Konva.Rect({
+			x: STAGE_WIDTH / 2 - 300,
+			y: 470,
+			width: 600,
+			height: 60,
+			fill: "rgba(255, 200, 0, 0.15)",
+			cornerRadius: 10,
+			stroke: "#ffd700",
+			strokeWidth: 2,
+		});
+		this.group.add(tipBox);
+
+		const tipIcon = new Konva.Text({
+			x: STAGE_WIDTH / 2 - 280,
+			y: 485,
+			text: "💡",
+			fontSize: 28,
+		});
+		this.group.add(tipIcon);
+
+		const tipText = new Konva.Text({
+			x: STAGE_WIDTH / 2 - 240,
+			y: 485,
+			text: "TIP: Wrong answers let you retry immediately.\nWork quickly to maximize your score!",
+			fontSize: 15,
+			fontFamily: "HomeScreenFont",
+			fill: "#ffd700",
+			lineHeight: 1.4,
+		});
+		this.group.add(tipText);
+
+		// Start button group
+		const startButtonGroup = new Konva.Group({
+			x: STAGE_WIDTH / 2,
+			y: STAGE_HEIGHT - 55,
+		});
+
+		// Rectangle
+		const startButton = new Konva.Rect({
+			x: 0,
+			y: 0,
+			width: 200,
+			height: 40,
+			fill: "#4cd137",
+			cornerRadius: 12,
+			shadowBlur: 10,
+			shadowColor: "rgba(0, 0, 255, 0.5)",
+		});
+
+		// Center the rect by offset
+		startButton.offsetX(startButton.width() / 2);
+
+		// Button text
+		const startText = new Konva.Text({
+			x: 0,
+			y: startButton.height() / 2,
+			text: "START",
+			fontSize: 20,
+			fontFamily: "HomeScreenFont",
+			fontStyle: "bold",
+			fill: "white",
+		});
+
+		// Center the text horizontally
+		startText.offsetX(startText.width() / 2 + 5);
+
+		// Center the text vertically
+		startText.offsetY(startText.height() / 2);
+
+		// Add to group
 		startButtonGroup.add(startButton);
 		startButtonGroup.add(startText);
-		startButtonGroup.on("click", onStartClick);
+
+		startButtonGroup.on("click tap", onStartClick);
+		
+		// Hover effect
+		startButtonGroup.on("mouseenter", () => {
+			startButton.fill("#5de147");
+			startButton.shadowBlur(15);
+			document.body.style.cursor = "pointer";
+			this.group.getLayer()?.draw();
+		});
+		startButtonGroup.on("mouseleave", () => {
+			startButton.fill("#4cd137");
+			startButton.shadowBlur(10);
+			document.body.style.cursor = "default";
+			this.group.getLayer()?.draw();
+		});
+		
 		this.group.add(startButtonGroup);
 	}
 

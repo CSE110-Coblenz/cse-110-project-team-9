@@ -25,10 +25,10 @@ export class MainGameScreenController extends ScreenController {
             this.screenSwitcher.layerOnScreen({ type: "settings" });
         });
 
-        audio.registerSound("mainboard_bgm", "/mainboard/audio/mainboardBGM.mp3");
-        audio.registerSound("click_sfx", "/homescreen/audio/click.mp3");
-        audio.registerSound("dice_sfx", "/mainboard/audio/dice_roll.mp3");
-        audio.registerSound("piece_move_sfx", "/mainboard/audio/piece_move.mp3");
+        audio.registerSound("mainboard_bgm", `${import.meta.env.BASE_URL}mainboard/audio/mainboardBGM.mp3`);
+        audio.registerSound("click_sfx", `${import.meta.env.BASE_URL}homescreen/audio/click.mp3`);
+        audio.registerSound("dice_sfx", `${import.meta.env.BASE_URL}mainboard/audio/dice_roll.mp3`);
+        audio.registerSound("piece_move_sfx", `${import.meta.env.BASE_URL}mainboard/audio/piece_move.mp3`);
 
         const tiles = this.view.getTiles();
 
@@ -49,7 +49,6 @@ export class MainGameScreenController extends ScreenController {
 
         const roll = this.diceRoll();
         this.audio.play("dice_sfx", false);
-        console.log(`Player rolled a ${roll}.`);
         this.view.displayRollResult(roll);
 
         // Play the sound effect immediately, before any async operations.
@@ -65,7 +64,6 @@ export class MainGameScreenController extends ScreenController {
 
         const newPosition = (currentPosition + roll) % this.BOARD_LENGTH;
         this.gameModel.setPlayerPosition(newPosition); // newPosition is 0-indexed
-        console.log(`Player moved to position ${newPosition + 1}`);
         this.triggerNodeEvent(newPosition + 1); // getNodeType is 1-indexed
 
         this.view.enableRollButton();
@@ -86,11 +84,12 @@ export class MainGameScreenController extends ScreenController {
 
             case NodeType.MINIGAME:
                 this.view.displayNodeEvent("You landed on a Minigame tile!");
-                
+                // this.screenSwitcher.switchToScreen({ type: "wizardminigame" });
+                this.triggerRandomMinigame();
                 // Wait for the message to display, then trigger minigame
-                setTimeout(() => {
-                    this.triggerRandomMinigame();
-                }, 1000);
+                // setTimeout(() => {
+                //     this.triggerRandomMinigame();
+                // }, 1000);
                 break;
 
             case NodeType.START:
@@ -107,15 +106,13 @@ export class MainGameScreenController extends ScreenController {
      */
     private triggerRandomMinigame(): void {
         const minigameChoice = Math.floor(Math.random() * 2) + 1; // 1 or 2
-        
-        console.log(`Launching minigame ${minigameChoice}`);
-        
+                
         if (minigameChoice === 1) {
             // Launch Among Us minigame
             this.screenSwitcher.switchToScreen({ type: "amongUsMenu" });
         } else {
-            // Launch Wizard minigame (not implemented yet)
-            this.screenSwitcher.switchToScreen({ type: "amongUsMenu" });
+            // Launch Wizard minigame
+            this.screenSwitcher.switchToScreen({ type: "wizardminigame" });
         }
     }
 

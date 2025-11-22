@@ -106,4 +106,3 @@ describe("StartingScreenController", () => {
         expect(view).toBe(viewInstance);
     });
 });
-

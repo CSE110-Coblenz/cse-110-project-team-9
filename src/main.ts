@@ -4,6 +4,8 @@ import { StartingScreenController } from "./screens/StartingScreen/StartingScree
 import { HomeScreenController } from "./screens/HomeScreen/HomeScreenController";
 import { SettingsScreenController } from "./screens/SettingsScreen/SettingsScreenController";
 import { MainGameScreenController } from "./screens/MainGameScreen/MainGameScreenController";
+import { WizardGameScreenController } from "./screens/WizardGameScreen/WizardGameScreenController";
+import { GuideScreenController } from "./screens/WizardGameScreen/GuideScreen/GuideScreenController";
 import { AmongUsMenuScreenController } from "./screens/AmongUsGameScreen/MenuScreen/MenuScreenController";
 import { AmongUsGameScreenController } from "./screens/AmongUsGameScreen/GameScreen/GameScreenController";
 import { AmongUsResultsScreenController } from "./screens/AmongUsGameScreen/ResultsScreen/ResultsScreenController";
@@ -24,6 +26,10 @@ class App implements ScreenSwitcher {
 	private settingsController: SettingsScreenController;
 	private mainGameController: MainGameScreenController;
 
+	// Wizard minigame screens
+	private WizardGameController: WizardGameScreenController;
+	private WizardGuideController: GuideScreenController;
+
 	// Among Us minigame screens
 	private amongUsMenuController: AmongUsMenuScreenController;
 	private amongUsGameController: AmongUsGameScreenController;
@@ -41,15 +47,19 @@ class App implements ScreenSwitcher {
 
 		this.layer = new Konva.Layer();
 		this.stage.add(this.layer);
-
+		
 		// Initialize AudioController
 		this.audio = new AudioController();
 
-		// Initialize main game screens
+		// Initialize all screen controllers
 		this.startingController = new StartingScreenController(this);
 		this.homeController = new HomeScreenController(this, this.audio);
 		this.settingsController = new SettingsScreenController(this, this.audio);
 		this.mainGameController = new MainGameScreenController(this, this.audio);
+
+		// initalize Wizard minigame screens
+		this.WizardGameController = new WizardGameScreenController(this, this.audio);
+		this.WizardGuideController = new GuideScreenController(this, this.audio, this.WizardGameController);
 
 		// Initialize Among Us minigame screens
 		this.amongUsMenuController = new AmongUsMenuScreenController(this);
@@ -60,6 +70,8 @@ class App implements ScreenSwitcher {
 		this.layer.add(this.startingController.getView().getGroup());
 		this.layer.add(this.homeController.getView().getGroup());
 		this.layer.add(this.settingsController.getView().getGroup());
+		this.layer.add(this.WizardGameController.getView().getGroup());
+		this.layer.add(this.WizardGuideController.getView().getGroup());
 		this.layer.add(this.mainGameController.getView().getGroup());
 		this.layer.add(this.amongUsMenuController.getView().getGroup());
 		this.layer.add(this.amongUsGameController.getView().getGroup());
@@ -67,9 +79,8 @@ class App implements ScreenSwitcher {
 
 		this.layer.draw();
 
-		this._lastScreen = { type: "starting" };
-
 		// Start with starting screen visible
+		this._lastScreen = {type: "starting"};
 		this.switchToScreen({ type: "starting" });
 	}
 
@@ -77,11 +88,16 @@ class App implements ScreenSwitcher {
 	 * Switch to a different screen
 	 */
 	switchToScreen(screen: Screen): void {
+
+		this._lastScreen = screen;
+
 		// Hide all main game screens
 		this.startingController.hide();
 		this.homeController.hide();
 		this.settingsController.hide();
 		this.mainGameController.hide();
+		this.WizardGameController.hide();
+
 
 		// Hide all minigame screens
 		this.amongUsMenuController.hide();
@@ -103,9 +119,14 @@ class App implements ScreenSwitcher {
 			case "mainGame":
 				this.mainGameController.show();
 				break;
-
+				
 			case "settings":
 				this.settingsController.show();
+				break;
+			
+			// Wizard minigame screens
+			case "wizardminigame":
+				this.WizardGameController.startGame();
 				break;
 
 			// Among Us minigame screens
@@ -128,12 +149,13 @@ class App implements ScreenSwitcher {
 			case "settings":
 				this.settingsController.show();
 				break;
+			case "wizardguide":
+				this.WizardGuideController.show();
+				break;
 		}
 	}
 
-	get lastScreen() {
-		return this._lastScreen;
-	}
+	get lastScreen() { return this._lastScreen; }
 }
 
 // Initialize the application

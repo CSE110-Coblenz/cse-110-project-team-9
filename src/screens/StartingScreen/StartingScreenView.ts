@@ -13,7 +13,7 @@ export class StartingScreenView implements View {
 		 * StartingScreen Background Video 
 		 */
 		const video = document.createElement("video");
-		video.src = "/startingscreen/video/Startingscreen.mp4";
+		video.src = `${import.meta.env.BASE_URL}startingscreen/video/Startingscreen.mp4`;
 		video.load();
 		video.style.display = "none";
 		video.muted = true;

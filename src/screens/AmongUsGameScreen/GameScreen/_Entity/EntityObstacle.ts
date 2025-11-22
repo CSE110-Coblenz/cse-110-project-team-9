@@ -62,7 +62,7 @@ export class Obstacle {
             }
             this.group.getLayer()?.draw();
         };
-        img.src = "AmongUsMiniGame/Objects/Rotating_blades.png";
+        img.src = `${import.meta.env.BASE_URL}AmongUsMiniGame/Objects/Rotating_blades.png`;
     }
 
     markSolved(): void {

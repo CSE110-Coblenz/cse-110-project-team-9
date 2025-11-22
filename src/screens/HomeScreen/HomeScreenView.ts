@@ -16,9 +16,8 @@ export class HomeScreenView implements View {
 		/** 
 		 * Homescreen Background Video 
 		 */
-
 		const video = document.createElement("video");
-		video.src = "/homescreen/video/homescreen_video.mp4";
+		video.src = `${import.meta.env.BASE_URL}homescreen/video/homescreen_video.mp4`;
 		video.load(); //
 		video.style.display = "none";
 		video.muted = true;
@@ -168,7 +167,6 @@ export class HomeScreenView implements View {
 		this.group.add(buttonGroup);
 		return buttonGroup;
 	}
-
 
 	/**
 	 * Getters
