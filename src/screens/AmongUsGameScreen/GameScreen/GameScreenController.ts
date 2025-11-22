@@ -172,11 +172,20 @@ export class AmongUsGameScreenController extends ScreenController {
 
 			this.view.markObstacleSolved(puzzle);
 			this.model.incrementScore();
-			this.view.updateScore(this.model.getScore());
+
+			this.view.setObstaclesInteractive(false);
+			setTimeout(() => {
+				this.view.setObstaclesInteractive(true);
+			}, 1500);
 		} else {
 			// this.wrongSound.play();
 			// this.wrongSound.currentTime = 0;
 			this.audio.play("wrong_answer");
+
+			this.view.setObstaclesInteractive(false);
+			setTimeout(() => {
+				this.view.setObstaclesInteractive(true);
+			}, 1500);	
 
 			// Re-open the same puzzle after feedback (1.5s delay matches feedback timeout)
 			setTimeout(() => {

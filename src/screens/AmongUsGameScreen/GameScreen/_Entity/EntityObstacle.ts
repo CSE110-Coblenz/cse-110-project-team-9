@@ -94,4 +94,10 @@ export class Obstacle {
     destroy(): void {
         this.sprite?.destroy();
     }
+
+    setInteractive(interactive: boolean): void {
+        if (this.sprite) {
+            this.sprite.listening(interactive);
+        }
+    }
 }

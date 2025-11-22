@@ -90,6 +90,20 @@ export class AmongUsGameScreenView implements View {
 	}
 
 	/**
+	 * Reset the puzzle view (clear any open puzzles/feedback)
+	 */
+	resetPuzzleView(): void {
+		this.puzzleView.reset();
+	}
+
+	/**
+	 * Enable or disable obstacle interactivity
+	 */
+	setObstaclesInteractive(interactive: boolean): void {
+		this.obstacles.forEach(ob => ob.setInteractive(interactive));
+	}
+
+	/**
 	 * Mark the obstacle as solved
 	 */
 	markObstacleSolved(puzzle: PuzzleModel): void {
@@ -169,13 +183,6 @@ export class AmongUsGameScreenView implements View {
 	 */
 	getGroup(): Konva.Group {
 		return this.group;
-	}
-
-	/**
-	 * Reset the puzzle view (clear any open puzzles/feedback)
-	 */
-	resetPuzzleView(): void {
-		this.puzzleView.reset();
 	}
 
 	/**
