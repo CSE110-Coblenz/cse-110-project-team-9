@@ -43,7 +43,7 @@ export class AmongUsGameScreenView implements View {
 			y: 20,
 			text: "Score: 0",
 			fontSize: 32,
-			fontFamily: "Serif",
+			fontFamily: "HomeScreenFont",
 			fill: "white",
 		});
 		this.group.add(this.scoreText);
@@ -53,7 +53,7 @@ export class AmongUsGameScreenView implements View {
 			y: 20,
 			text: "Time: 60",
 			fontSize: 32,
-			fontFamily: "Serif",
+			fontFamily: "HomeScreenFont",
 			fill: "red",
 		});
 		this.group.add(this.timerText);

@@ -46,7 +46,7 @@ class App implements ScreenSwitcher {
 		this.audio = new AudioController();
 
 		// Initialize main game screens
-		this.startingController = new StartingScreenController(this, this.audio);
+		this.startingController = new StartingScreenController(this);
 		this.homeController = new HomeScreenController(this, this.audio);
 		this.settingsController = new SettingsScreenController(this, this.audio);
 		this.mainGameController = new MainGameScreenController(this, this.audio);

@@ -44,7 +44,7 @@ export class AmongUsMenuScreenView implements View {
 			y: 175,
 			text: "The Mechanism",
 			fontSize: 48,
-			fontFamily: "Serif",
+			fontFamily: "HomeScreenFont",
 			fill: "white",
 			stroke: "purple",
 			strokeWidth: 1,
@@ -70,7 +70,7 @@ export class AmongUsMenuScreenView implements View {
 			y: 315,
 			text: "START",
 			fontSize: 24,
-			fontFamily: "Serif",
+			fontFamily: "HomeScreenFont",
 			fill: "purple",
 			align: "center",
 		});

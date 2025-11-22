@@ -3,16 +3,16 @@
  */
 
 import { describe, it, beforeEach, expect, vi, beforeAll } from "vitest";
-import { SettingsScreenController } from "../screens/SettingsScreen/SettingsScreenController";
-import { AudioController } from "../audios/AudioController";
-import type { ScreenSwitcher, Screen } from "../types";
+import { SettingsScreenController } from "../../screens/SettingsScreen/SettingsScreenController";
+import { AudioController } from "../../audios/AudioController";
+import type { ScreenSwitcher, Screen } from "../../types";
 
 let viewInstance: any;
 
 /**
  * Mock the SettingsScreenView class
  */
-vi.mock("../screens/SettingsScreen/SettingsScreenView", () => {
+vi.mock("../../screens/SettingsScreen/SettingsScreenView", () => {
     return {
         SettingsScreenView: class {
             constructor() {
@@ -30,7 +30,7 @@ vi.mock("../screens/SettingsScreen/SettingsScreenView", () => {
 /**
  * Mock the AudioController class
  */
-vi.mock("../audios/AudioController");
+vi.mock("../../audios/AudioController");
 
 describe("SettingsScreenController", () => {
     let mockScreenSwitcher: ScreenSwitcher;

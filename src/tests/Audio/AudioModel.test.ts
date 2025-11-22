@@ -3,7 +3,7 @@
  */
 
 import { describe, it, beforeEach, expect, vi, beforeAll } from "vitest";
-import { AudioModel } from "../audios/AudioModel";
+import { AudioModel } from "../../audios/AudioModel";
 
 describe("AudioModel", () => {
     let mockAudioElement: any;
