@@ -20,19 +20,13 @@ export class WizardGameScreenController extends ScreenController {
     private collisionManager: CollisionManager;
     private input: InputHandler;
 
-    private showBoundingBoxes = false;
-
     private lastUpdateTime = 0;
     private animationFrameId: number | null = null;
 
     private keydownHandler = (e: KeyboardEvent) => {
-        if (e.key === 'b') {
-            this.showBoundingBoxes = !this.showBoundingBoxes;
-            this.collisionManager.toggleDebugMode(this.showBoundingBoxes);
-        } 
         if (e.key === 'Escape'){
             this.pauseGame();
-            this.screenSwitcher.layerOnScreen({ type: "wizardguide" })
+            this.screenSwitcher.layerOnScreen({ type: "wizardguide" });
         } 
     }
 
@@ -125,8 +119,6 @@ export class WizardGameScreenController extends ScreenController {
         this.enemyManager.reset();
         this.playerController.reset();
         this.lastUpdateTime = 0;
-        this.showBoundingBoxes = false;
-        this.collisionManager.toggleDebugMode(false);
         this.view.hide();
     }
 

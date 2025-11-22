@@ -59,7 +59,6 @@ export class GuideScreenView implements View {
         - empty stamina a Question will appear
         - WASD to move
         - F  R  E  hold to attack
-        - B toggle hitboxes
         - Esc to pause/comeback to guide
         Have fun! :)`;
 

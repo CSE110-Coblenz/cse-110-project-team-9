@@ -18,52 +18,19 @@ export interface Collidable {
 
 export class CollisionManager {
 	private collidables: Collidable[] = [];
-	private debugMode = false;
-	//map of all entities to toggle debug bounding box
-	private debugViewers: Map<Collidable, DebugBoundingBoxViewer> = new Map();
 
 	public register(c: Collidable) {
 		if (!this.collidables.includes(c)) {
 			this.collidables.push(c);
 		}
-
-		if (this.debugMode && c.shape && !this.debugViewers.has(c)) {
-			const viewer = new DebugBoundingBoxViewer(c.shape);
-			this.debugViewers.set(c, viewer);
-			viewer.toggleVisibility(true);
-		}
 	}
 
 	public unregister(c: Collidable) {
 		this.collidables = this.collidables.filter(x => x !== c);
-		//delete debug bounding box viewer
-		const viewer = this.debugViewers.get(c);
-		if (viewer) {
-			viewer.destroy();
-			this.debugViewers.delete(c);
-		}
 	}
 
 	public unregisterAll() {
-		for (const viewer of this.debugViewers.values()) {
-			viewer.destroy();
-		}
-		this.debugViewers.clear();
 		this.collidables = [];
-	}
-
-	public toggleDebugMode(show: boolean) {
-		this.debugMode = show;
-
-		//create debug bounding boxes view for all enetities
-		for (const c of this.collidables) {
-			if (c.shape && !this.debugViewers.has(c)) {
-				const viewer = new DebugBoundingBoxViewer(c.shape);
-				this.debugViewers.set(c, viewer);
-			}
-		}
-
-		this.debugViewers.forEach(viewer => viewer.toggleVisibility(show));
 	}
 
 	public update() {
@@ -79,11 +46,6 @@ export class CollisionManager {
 			}
 
 			const aBox = a.bodyBox;
-
-			//check if debug mode is on and update
-			if (this.debugMode && aBox) {
-				this.debugViewers.get(a)?.updateBox(aBox);
-			}
 
 			for (let j = i + 1; j < this.collidables.length; j++) {
 				const b = this.collidables[j];
@@ -180,38 +142,5 @@ export class CollisionManager {
 		} else {
 			return { x: 0, y: dy < 0 ? -py : py };
 		}
-	}
-}
-
-export class DebugBoundingBoxViewer {
-	private rect: Konva.Rect;
-
-	constructor(group: Konva.Group) {
-		this.rect = new Konva.Rect({
-			x: 0,
-			y: 0,
-			width: 0,
-			height: 0,
-			stroke: 'yellow',
-			strokeWidth: 1,
-			visible: false,
-		});
-		group.add(this.rect);
-	}
-
-	public toggleVisibility(show: boolean) {
-		this.rect.visible(show);
-	}
-
-	public updateBox(box: box) {
-		this.rect.x(box.x);
-		this.rect.y(box.y);
-		this.rect.width(box.width);
-		this.rect.height(box.height);
-		this.rect.visible(true);
-	}
-
-	public destroy() {
-		this.rect.destroy();
 	}
 }
