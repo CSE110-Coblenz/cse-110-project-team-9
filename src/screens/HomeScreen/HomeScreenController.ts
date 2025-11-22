@@ -5,13 +5,10 @@ import { AudioController } from "../../audios/AudioController";
 export class HomeScreenController extends ScreenController {
 	private view: HomeScreenView;
 	private screenSwitcher: ScreenSwitcher;
-
 	private audio: AudioController;
 
 	constructor(screenSwitcher: ScreenSwitcher, audio: AudioController) {
-		
 		super();
-
 		this.screenSwitcher = screenSwitcher;
         this.view = new HomeScreenView();
 		this.audio = audio;
@@ -23,10 +20,9 @@ export class HomeScreenController extends ScreenController {
 		/**
 		 * Button Event Listeners
 		 */
-		
 		this.view.getSettingsButton().on("click", () => {
 			this.audio.play("click_sfx");
-			this.screenSwitcher.layerOnScreen({ type: "settings"});
+			this.screenSwitcher.layerOnScreen({ type: "settings" });
 		});
 
 		this.view.getStartButton().on("click", () => {
@@ -41,7 +37,7 @@ export class HomeScreenController extends ScreenController {
 	}
 
 	getView(): HomeScreenView {
-		this.audio.play("home_bgm", true); // true for loop (BGM)
+		this.audio.play("home_bgm", true);
 		return this.view;
 	}
 }

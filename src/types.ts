@@ -14,9 +14,11 @@ export type Screen =
 	| { type: "home" }
 	| { type: "mainGame" }
 	| { type: "settings" }
+	| { type: "wizardminigame"}
+	| { type: "wizardguide" }
 	| { type: "amongUsMenu" }
 	| { type: "amongUsGame" }
-	| { type: "amongUsResult"; score: number };
+	| { type: "amongUsResult", score: number };
 
 export abstract class ScreenController {
 	abstract getView(): View;
