@@ -20,20 +20,12 @@ export class EnemyController implements Collidable {
         this.view.destructor();
     }
 
-    /**
-     * check collision
-     * @param other
-     */
-    public onCollision?(_other: Collidable): void{ }
+    public onCollision(_other: Collidable): void { }
 
-    public onAttackCollision?(_attacker: Collidable): void {
+    public onAttackCollision(_attacker: Collidable): void {
         this._model.damage(PLAYER_DAMAGE);
     }
 
-    /**
-     * after 
-     * @param deltaTime different in time from last animation event
-     */
     update(deltaTime: number, playerX: number, playerY: number) {
         let dx = playerX - this._model.x;
         let dy = playerY - this._model.y;
@@ -62,11 +54,7 @@ export class EnemyController implements Collidable {
         this.view.render(this._model);
     }
 
-    /**
-     * Getter methods for various utility
-     */
-    get shape() { return this.view.group;}
-    get boundingBox() { return this.view.bodyBoxes; }
+    get shape() { return this.view.group; }
     get bodyBox() { return this.view.bodyBoxes; }
     get attackBox() { return this.view.attackBoxes; }
     get dead() { return this._model.dead; }

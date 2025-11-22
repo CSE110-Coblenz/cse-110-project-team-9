@@ -76,9 +76,7 @@ export class WizardGameScreenController extends ScreenController {
 
     startGame() {
         this.view.show();
-        //global keys for game
         this.windowBind();
-        //input keys for player
         this.input.bind();
         this.collisionManager.register(this.playerController);
         this.disableImageSmoothing();
@@ -87,13 +85,11 @@ export class WizardGameScreenController extends ScreenController {
         this.lastUpdateTime = performance.now();
         this.updateLoop();
 
-        //start game paused
         this.pauseGame();
-            this.screenSwitcher.layerOnScreen({ type: "wizardguide" })
+        this.screenSwitcher.layerOnScreen({ type: "wizardguide" });
     }
 
     private disableImageSmoothing(): void {
-        //weird fix to make sure the pixels are not smoothed over
         const layer = this.view.getGroup().getLayer();
         if (layer) {
             const ctx = layer.getContext() as unknown as CanvasRenderingContext2D;
@@ -102,27 +98,19 @@ export class WizardGameScreenController extends ScreenController {
     }
 
     private updateLoop = () => {
-        //computer difference in time since last frame
         const now = performance.now();
         const delta = (now - this.lastUpdateTime) / 1000;
-
-        //grabe current time for next delta calc
         this.lastUpdateTime = now;
 
-        //update entities with delta from last frame
-        this.playerController.update(delta)
-
+        this.playerController.update(delta);
         this.enemyManager.update(
             delta,
             this.playerController.model.x,
             this.playerController.model.y
         );
+        this.collisionManager.update();
 
-        //update collison manager
-        this.collisionManager.update()
-
-        //repeat update loop keep response time smooth calls back at monitor refresh rate
-        this.animationFrameId = requestAnimationFrame (this.updateLoop);
+        this.animationFrameId = requestAnimationFrame(this.updateLoop);
     };
 
     stopGame() {
@@ -130,25 +118,15 @@ export class WizardGameScreenController extends ScreenController {
             cancelAnimationFrame(this.animationFrameId);
             this.animationFrameId = null;
         }
-        // unbind input handling
         this.windowUnbind();
         this.input.unbind();
-
-        //remove all colldiable left
         this.collisionManager.unregisterAll();
-
         this.audio.stopAll();
-        //clear and reset enemies
         this.enemyManager.reset();
-        //resett plaeyer
         this.playerController.reset();
-
-        //reset game state parameters
         this.lastUpdateTime = 0;
         this.showBoundingBoxes = false;
         this.collisionManager.toggleDebugMode(false);
-
-        //hide the view
         this.view.hide();
     }
 
@@ -157,7 +135,6 @@ export class WizardGameScreenController extends ScreenController {
     }
 
     pauseGame() {
-        //stop update loop
         if (this.animationFrameId) {
             cancelAnimationFrame(this.animationFrameId);
             this.animationFrameId = null;
@@ -167,8 +144,6 @@ export class WizardGameScreenController extends ScreenController {
 
     resumeGame() {
         this.input.bind();
-
-        // restart loop
         this.lastUpdateTime = performance.now();
         this.updateLoop();
     }

@@ -68,13 +68,11 @@ export class PlayerViewer {
         if (_model.direction === "left") {
             this.bodySprite.scaleX(-this._scale);
             this.bodySprite.offsetX(SPRITE_WIDTH);
-
             this.attackSprite.scaleX(-this._scale);
             this.attackSprite.offsetX(SPRITE_WIDTH);
         } else {
             this.bodySprite.scaleX(this._scale);
             this.bodySprite.offsetX(0);
-
             this.attackSprite.scaleX(this._scale);
             this.attackSprite.offsetX(0);
         }
@@ -82,7 +80,6 @@ export class PlayerViewer {
         //updates sprite based on the x and y positions of current model
         this.bodySprite.x(_model.x);
         this.bodySprite.y(_model.y);
-
         this.attackSprite.x(_model.x);
         this.attackSprite.y(_model.y);
 
@@ -121,9 +118,6 @@ export class PlayerViewer {
         }
     }
 
-    /**
-     * getters for model;
-     */
     get group() { return this._group; }
     get bodyBoxes() { return this._model.bodyBox(this.bodySprite.frameIndex(), this._scale); }
     get attackBoxes() { return this._model.attackBox(this.attackSprite.frameIndex(), this._scale); }

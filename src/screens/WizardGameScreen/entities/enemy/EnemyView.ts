@@ -7,14 +7,6 @@ export class EnemyViewer {
     private attackSprite: Konva.Sprite;
     private previousDirection: "left" | "right" | null = null;
 
-    /**
-    * Building sprite image for the enemy class
-     * with built in animatons
-     * @param _group konva sprite group
-     * @param entity knight/wizard type of imgatlas and animations
-     * @param _model current enemy model
-     * @param _scale scaling of sprite
-     */
     constructor(
         private _group: Konva.Group,
         private entity: { image: string; animations: Record<string, number[]> },
@@ -54,11 +46,6 @@ export class EnemyViewer {
         });
     }
 
-    /**
-     * Renders parameters for controller movement x and y pos
-     * @param _model player parmeters speed,x,y
-     * @returns Nonexistent entity
-     */
     public render(_model: EnemyModel): void {
 
         //flips direction of animation a or d
@@ -81,13 +68,11 @@ export class EnemyViewer {
         if (_model.direction === "left") {
             this.bodySprite.scaleX(-this._scale);
             this.bodySprite.offsetX(SPRITE_WIDTH);
-
             this.attackSprite.scaleX(-this._scale);
             this.attackSprite.offsetX(SPRITE_WIDTH);
         } else {
             this.bodySprite.scaleX(this._scale);
             this.bodySprite.offsetX(0);
-
             this.attackSprite.scaleX(this._scale);
             this.attackSprite.offsetX(0);
         }
@@ -95,7 +80,6 @@ export class EnemyViewer {
         //updates sprite based on the x and y positions of current model
         this.bodySprite.x(_model.x);
         this.bodySprite.y(_model.y);
-
         this.attackSprite.x(_model.x);
         this.attackSprite.y(_model.y);
 
@@ -134,12 +118,10 @@ export class EnemyViewer {
         }
     }
 
-    /**
-     * getters utilities
-     */
     get group() { return this._group; }
     get bodyBoxes() { return this._model.bodyBox(this.bodySprite.frameIndex(), this._scale); }
-    get attackBoxes() { return this._model.attackBox(this.attackSprite.frameIndex(), this._scale); }}
+    get attackBoxes() { return this._model.attackBox(this.attackSprite.frameIndex(), this._scale); }
+}
 
 
 

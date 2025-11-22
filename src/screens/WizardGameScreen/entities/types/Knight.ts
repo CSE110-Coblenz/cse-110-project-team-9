@@ -1,10 +1,8 @@
 import { computeAllAnimationBoundingBoxes } from "./CreateBoundingBox";
 
-//image atlas export
 export const knightSrc = "/wizardminigame/sprites/soldier/Soldier.png";
 export const knightAttackSrc = "/wizardminigame/sprites/soldier/Soldier-Attack_Effect.png";
 
-//animation types
 export type KnightAnimation = "idle" | "walk" | "attackslash" | "attackdown" | "attackbow" | "damage" | "death";
 export type KnightAttackAnimation = "attackslash" | "attackdown" | "attackbow";
 
@@ -108,19 +106,16 @@ export const KNIGHT_AUDIO = {
     death_SFX: "/wizardminigame/audio/x",
 };
 
-//bounding box for collision frames
-export const KNIGHT_BOUNDING_BOXES: Record<KnightAnimation, { x: number; y: number; width: number; height: number }[] > = {} as any;
-export const KNIGHT_ATTACK_BOUNDING_BOXES: Record<KnightAttackAnimation, { x: number; y: number; width: number; height: number }[] > = {} as any;
-
-//pre-computed bounding boxes
+export const KNIGHT_BOUNDING_BOXES: Record<KnightAnimation, { x: number; y: number; width: number; height: number }[]> = {} as any;
+export const KNIGHT_ATTACK_BOUNDING_BOXES: Record<KnightAttackAnimation, { x: number; y: number; width: number; height: number }[]> = {} as any;
 const knightImg = new Image();
 const knightAttackImg = new Image();
 knightImg.src = knightSrc;
 knightAttackImg.src = knightAttackSrc;
 knightImg.onload = () => {
+    //computer all bounding boxes for all attack and body animations
     const knightBoxes = computeAllAnimationBoundingBoxes(knightImg, KNIGHT_ANIMATIONS);
     const knightAttackBoxes = computeAllAnimationBoundingBoxes(knightAttackImg, KNIGHT_ATTACK_ANIMATIONS);
-
     Object.assign(KNIGHT_ATTACK_BOUNDING_BOXES, knightAttackBoxes);
     Object.assign(KNIGHT_BOUNDING_BOXES, knightBoxes);
 };  

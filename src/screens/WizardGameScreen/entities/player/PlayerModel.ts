@@ -56,12 +56,10 @@ export class PlayerModel {
     }
 
     damage(amount: number) {
-        //take damage floors to 0
         this._health = Math.max(0, this._health - amount);
     }
 
-    staminaDrain(amount: number){
-        //take stamina floors to 0
+    staminaDrain(amount: number) {
         this._stamina = Math.max(0, this._stamina - amount);
     }
 
@@ -100,9 +98,6 @@ export class PlayerModel {
         };
     }
 
-    /**
-     * setters and getter methods to keep values private
-     */
     get x() { return this._x; }
     get y() { return this._y; }
     get speed() { return this._speed; }

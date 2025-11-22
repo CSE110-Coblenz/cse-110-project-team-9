@@ -1,12 +1,5 @@
 /**
- * Computer a tight Bounding box for a single frame inside an image
- * this is done throught putting the frame into an offscreen canvas
- * then looking at the pixel data for non transparent pixels
- * and returning the tightest bounding box around them
- * @param image wizard/knight images
- * @param frame the frame inside the imageatlas
- * @param alphaThreshold opaque threshold
- * @param padding //extra pixels around bounding box (probly not use)
+ * Computes a tight bounding box for a single frame by analyzing pixel data
  */
 export function computeTightBoundingBoxForFrame(
     image: HTMLImageElement,
@@ -16,17 +9,14 @@ export function computeTightBoundingBoxForFrame(
 ): { x: number; y: number; width: number; height: number } {
     //create offscreen canvas to draw frame
     const canvas = document.createElement("canvas");
-    //size of frame
     canvas.width = frame.width;
     canvas.height = frame.height;
     const ctx = canvas.getContext("2d");
     
     //return nothing if no default bounding box since get context returns null
     if (!ctx) return { x: 0, y: 0, width: 0, height: 0 };
-    //clear working offscreen canvas from previous
+    
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    //draw animation frame
     ctx.drawImage(image, frame.x, frame.y, frame.width, frame.height, 0, 0, frame.width, frame.height);
     const imgData = ctx.getImageData(0, 0, frame.width, frame.height);
     

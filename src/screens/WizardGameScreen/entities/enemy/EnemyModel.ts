@@ -8,7 +8,7 @@ export class EnemyModel {
     private _x: number;
     private _y: number;
     private _speed: number;
-    private _health: number; //out of 100
+    private _health: number;
     private _bodyCurrentAnimation: string;
     private _attackCurrentAnimation: string | null;
     //audio key to audio file mapping
@@ -42,7 +42,6 @@ export class EnemyModel {
     }
 
     damage(amount: number) {
-        //take damage floors to 0
         this._health = Math.max(0, this._health - amount);
     }
 

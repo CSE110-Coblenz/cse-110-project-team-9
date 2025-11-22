@@ -84,8 +84,8 @@ export class MainGameScreenController extends ScreenController {
 
             case NodeType.MINIGAME:
                 this.view.displayNodeEvent("You landed on a Minigame tile!");
-                this.screenSwitcher.switchToScreen({ type: "wizardminigame" });
-                // this.triggerRandomMinigame();
+                // this.screenSwitcher.switchToScreen({ type: "wizardminigame" });
+                this.triggerRandomMinigame();
                 // Wait for the message to display, then trigger minigame
                 // setTimeout(() => {
                 //     this.triggerRandomMinigame();

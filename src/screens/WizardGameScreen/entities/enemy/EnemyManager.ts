@@ -17,9 +17,9 @@ export class EnemyManager {
         private mapWidth: number,
         private mapHeight: number
     ) {
-        this.enemies = []
+        this.enemies = [];
         this.spawnTimer = 0;
-        this.spawnInterval = 1.2; //seconds
+        this.spawnInterval = 1.2;
     }
 
     update(delta: number, playerX: number, playerY: number) {
@@ -45,8 +45,7 @@ export class EnemyManager {
         const types: EnemyType[] = ["orc"];
         const type = types[Math.floor(Math.random() * types.length)];
 
-        const enemy = EnemyFactory.create(x, y, ENEMY_SCALE ,type, this.group, this.audio);
-
+        const enemy = EnemyFactory.create(x, y, ENEMY_SCALE, type, this.group, this.audio);
         this.enemies.push(enemy);
         this.collision.register(enemy);
     }

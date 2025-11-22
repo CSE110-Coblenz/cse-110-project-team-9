@@ -26,19 +26,16 @@ export class PlayerController implements Collidable {
         this.exit();
     }
     
-    public onCollision?(_other: Collidable): void {
-        this.damage(ENEMY_DAMAGE);
+    public onCollision(_other: Collidable): void {
+        this._model.damage(ENEMY_DAMAGE);
     }
 
-    public onAttackCollision?(_attacker: Collidable): void {
+    public onAttackCollision(_attacker: Collidable): void {
+        // no attack collision for player
     }
 
     public reset() {
         this._model.reset();
-    }
-
-    public damage(amount: number) {
-        this._model.damage(amount);
     }
 
     update(deltaTime: number) {
@@ -69,8 +66,6 @@ export class PlayerController implements Collidable {
         this._model.y += dy * this._model.speed * deltaTime;
         
         this._model.attackCurrentAnimation = null;
-
-        //actions and animation only one at a time
         if (dx !== 0 || dy !== 0) {
             this._model.bodyCurrentAnimation = "walk";
             this.audio.play("walk_SFX", true);
@@ -106,12 +101,8 @@ export class PlayerController implements Collidable {
         this.view.render(this._model);
     }
 
-    /**
-     * Getter methods for various utility
-     */
     get model() { return this._model; }
     get shape() { return this.view.group; }
-    get boundingBox() { return this.view.bodyBoxes; }
     get bodyBox() { return this.view.bodyBoxes; }
     get attackBox() { return this.view.attackBoxes; }
     get dead(): boolean { return this.model.dead; }

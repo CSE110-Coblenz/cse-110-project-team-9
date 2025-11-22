@@ -34,9 +34,6 @@ export class GuideScreenController extends ScreenController {
         this.view.hide();
     }
 
-    /**
-     * Get the view
-     */
     getView(): GuideScreenView {
         return this.view;
     }

@@ -8,7 +8,7 @@ import { ENEMY_SPEED } from '../../config';
 //Types of assets
 import { orcSrc, orcAttackSrc, ORC_ANIMATIONS, ORC_ATTACK_ANIMATIONS, ORC_BOUNDING_BOXES, ORC_ATTACK_BOUNDING_BOXES, ORC_AUDIO} from "../types/Orc";
 
-export type EnemyType = "orc";  //addable enemies here
+export type EnemyType = "orc";
 
 export class EnemyFactory {
     static create(

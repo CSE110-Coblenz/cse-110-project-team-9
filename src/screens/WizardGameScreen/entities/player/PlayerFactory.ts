@@ -6,11 +6,9 @@ import { PlayerHUD } from './PlayerHUD';
 import { InputHandler } from '../../InputHandler';
 import { AudioController } from '../../../../audios/AudioController';
 import { PLAYER_SPEED } from '../../config';
-
-//Types of assets
 import { knightSrc, knightAttackSrc, KNIGHT_ANIMATIONS, KNIGHT_ATTACK_ANIMATIONS, KNIGHT_BOUNDING_BOXES, KNIGHT_ATTACK_BOUNDING_BOXES, KNIGHT_AUDIO} from "../types/Knight";
 
-export type PlayerType = "knight";  //addable classes here
+export type PlayerType = "knight";
 
 export class PlayerFactory {
     static create(

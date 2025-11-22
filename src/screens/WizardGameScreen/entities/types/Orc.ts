@@ -1,13 +1,11 @@
 import { computeAllAnimationBoundingBoxes } from "./CreateBoundingBox";
-import { knightAttackSrc } from "./Knight";
 
-//image atlas export
 export const orcSrc = "/wizardminigame/sprites/orc/Orc.png";
-export const orcAttackSrc = "/wizardminigame/sprites/orc/Orc-Attack_Effect.png"
+export const orcAttackSrc = "/wizardminigame/sprites/orc/Orc-Attack_Effect.png";
 
-//animation types
 export type OrcAnimation = "idle" | "walk" | "attacklight" | "attackheavy" | "damage" | "death";
 export type OrcAttackAnimation = "attacklight" | "attackheavy";
+
 //[x, y, width, height] per frame
 export const ORC_ANIMATIONS: Record<OrcAnimation, number[]> = {
     idle: [
@@ -87,20 +85,16 @@ export const ORC_AUDIO = {
     death: "/wizardminigame/audio/x",
 };
 
-//bounding box for collision frames
-export const ORC_BOUNDING_BOXES: Record<OrcAnimation, { x: number; y: number; width: number; height: number }[] > = {} as any;
-export const ORC_ATTACK_BOUNDING_BOXES: Record<OrcAttackAnimation, { x: number; y: number; width: number; height: number }[] > = {} as any;
-
-
-//pre-computed bounding boxes
+export const ORC_BOUNDING_BOXES: Record<OrcAnimation, { x: number; y: number; width: number; height: number }[]> = {} as any;
+export const ORC_ATTACK_BOUNDING_BOXES: Record<OrcAttackAnimation, { x: number; y: number; width: number; height: number }[]> = {} as any;
 const orcImg = new Image();
 const orcAttackImg = new Image();
 orcImg.src = orcSrc;
-orcAttackImg.src = knightAttackSrc;
+orcAttackImg.src = orcAttackSrc;
 orcImg.onload = () => {
+    //computer all bounding boxes for all attack and body animations
     const orcBoxes = computeAllAnimationBoundingBoxes(orcImg, ORC_ANIMATIONS);
-    const orcAttackBoxes = computeAllAnimationBoundingBoxes(orcAttackImg, ORC_ATTACK_ANIMATIONS)
-
+    const orcAttackBoxes = computeAllAnimationBoundingBoxes(orcAttackImg, ORC_ATTACK_ANIMATIONS);
     Object.assign(ORC_ATTACK_BOUNDING_BOXES, orcAttackBoxes);
     Object.assign(ORC_BOUNDING_BOXES, orcBoxes);
 };
