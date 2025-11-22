@@ -8,7 +8,7 @@ import { PlayerFactory } from "./entities/player/PlayerFactory";
 import { AudioController } from "../../audios/AudioController";
 import { InputHandler } from "./InputHandler";
 import { EnemyManager } from "./entities/enemy/EnemyManager";
-import { PLAYER_START_X, PLAYER_START_Y, PlAYER_SCALE } from "./config";
+import { PLAYER_START_X, PLAYER_START_Y, PLAYER_SCALE } from "./config";
 
 export class WizardGameScreenController extends ScreenController {
     private model: WizardGameScreenModel;
@@ -36,12 +36,12 @@ export class WizardGameScreenController extends ScreenController {
         this.view = new WizardGameScreenView();
         this.input = new InputHandler();
 
-        this.audio.registerSound("wizard_bgm","/wizardminigame/audio/mp3/Pixel 5.mp3");
+        this.audio.registerSound("wizard_bgm",`${import.meta.env.BASE_URL}/wizardminigame/audio/mp3/Pixel 5.mp3`);
         
         this.playerController = PlayerFactory.create(
             PLAYER_START_X,
             PLAYER_START_Y,
-            PlAYER_SCALE,
+            PLAYER_SCALE,
             "knight", 
             this.view.getGroup(),
             this.audio, 
@@ -83,6 +83,7 @@ export class WizardGameScreenController extends ScreenController {
         this.screenSwitcher.layerOnScreen({ type: "wizardguide" });
     }
 
+    //weird fix to disable smoothing on pixel art
     private disableImageSmoothing(): void {
         const layer = this.view.getGroup().getLayer();
         if (layer) {

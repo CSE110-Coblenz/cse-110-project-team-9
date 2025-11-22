@@ -1,15 +1,17 @@
 export class InputHandler {
     private keys: Record<string, boolean>;
     private listenersBound: boolean;
-    private allowedKeys: string[];
+    private allowed: Set<string>; 
 
     constructor(){
         this.keys = {};
         this.listenersBound = false;
-        this.allowedKeys = [
+        const allowedKeys = [
             "ArrowUp","ArrowDown","ArrowLeft","ArrowRight",
             "w","a","s","d","f","e","r",
         ];
+
+        this.allowed = new Set(allowedKeys.map(k => k.toLowerCase()));
     }
 
     public bind() {
@@ -30,16 +32,14 @@ export class InputHandler {
 
     private onKeyDown = (e: KeyboardEvent) => {
         const key = e.key.toLowerCase(); 
-        const allowedKeysLower = this.allowedKeys.map(k => k.toLowerCase());
-        if (allowedKeysLower.includes(key)) {
+        if (this.allowed.has(key)) {
             this.keys[e.key] = true;
         }
     };  
 
     private onKeyUp = (e: KeyboardEvent) => {
         const key = e.key.toLowerCase(); 
-        const allowedKeysLower = this.allowedKeys.map(k => k.toLowerCase());
-        if (allowedKeysLower.includes(key)) {
+        if (this.allowed.has(key)) {
             this.keys[e.key] = false;
         }
     };

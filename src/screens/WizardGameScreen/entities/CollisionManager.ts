@@ -47,6 +47,7 @@ export class CollisionManager {
 
 			const aBox = a.bodyBox;
 
+			//check for collisions between all collidables
 			for (let j = i + 1; j < this.collidables.length; j++) {
 				const b = this.collidables[j];
 
@@ -68,6 +69,7 @@ export class CollisionManager {
 	}
 	
 	private aabbIntersect(a: box, b: box): boolean {
+		//check if overlap
 		return !(
 			b.x > a.x + a.width ||
 			b.x + b.width < a.x || 

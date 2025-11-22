@@ -1,7 +1,7 @@
 import { computeAllAnimationBoundingBoxes } from "./CreateBoundingBox";
 
-export const knightSrc = "/wizardminigame/sprites/soldier/Soldier.png";
-export const knightAttackSrc = "/wizardminigame/sprites/soldier/Soldier-Attack_Effect.png";
+export const knightSrc = `${import.meta.env.BASE_URL}wizardminigame/sprites/soldier/Soldier.png`;
+export const knightAttackSrc = `${import.meta.env.BASE_URL}wizardminigame/sprites/soldier/Soldier-Attack_Effect.png`;
 
 export type KnightAnimation = "idle" | "walk" | "attackslash" | "attackdown" | "attackbow" | "damage" | "death";
 export type KnightAttackAnimation = "attackslash" | "attackdown" | "attackbow";
@@ -97,11 +97,13 @@ export const KNIGHT_ATTACK_ANIMATIONS: Record<KnightAttackAnimation, number[]> =
 
 export type KnightAudioMap = typeof KNIGHT_AUDIO;
 
+
+
 export const KNIGHT_AUDIO = {
-    walk_SFX: "/wizardminigame/audio/footsteps.mp3",
-    attackbow_SFX: "/wizardminigame/audio/bowrelease.mp3",
-    attackslash_SFX: "/wizardminigame/audio/slash.mp3",
-    attackdown_SFX: "/wizardminigame/audio/slash.mp3",
+    walk_SFX: `${import.meta.env.BASE_URL}wizardminigame/audio/footsteps.mp3`,
+    attackbow_SFX: `${import.meta.env.BASE_URL}wizardminigame/audio/bowrelease.mp3`,
+    attackslash_SFX: `${import.meta.env.BASE_URL}wizardminigame/audio/slash.mp3`,
+    attackdown_SFX: `${import.meta.env.BASE_URL}wizardminigame/audio/slash.mp3`,
 };
 
 export const KNIGHT_BOUNDING_BOXES: Record<KnightAnimation, { x: number; y: number; width: number; height: number }[]> = {} as any;

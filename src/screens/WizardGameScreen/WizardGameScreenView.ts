@@ -7,7 +7,7 @@ export class WizardGameScreenView implements View {
 
     constructor() {
         this.group = new Konva.Group({ visible: false });
-        const backgroundSrc = "/wizardminigame/Grass_Sample.png";
+        const backgroundSrc = `${import.meta.env.BASE_URL}wizardminigame/images/Grass_Sample.png`;
 
         const imageObj = new Image();
         imageObj.src = backgroundSrc;
@@ -29,7 +29,7 @@ export class WizardGameScreenView implements View {
 
     public hide(): void {
         this.group.visible(false);
-    }   
+        }   
 
     public getGroup(): Konva.Group {
         return this.group;
