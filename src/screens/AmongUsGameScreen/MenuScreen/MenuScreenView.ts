@@ -72,7 +72,7 @@ export class AmongUsMenuScreenView implements View {
 			y: 135,
 			width: 600,
 			height: 320,
-			fill: "rgba(255, 255, 255, 0.7)",
+			fill: "rgba(255, 255, 255, 1)",
 			cornerRadius: 15,
 			stroke: "black",
 			strokeWidth: 1,
@@ -130,7 +130,7 @@ export class AmongUsMenuScreenView implements View {
 			y: 0,
 			width: 200,
 			height: 40,
-			fill: "#4cd137",
+			fill: "white",
 			cornerRadius: 12,
 			shadowBlur: 10,
 			shadowColor: "rgba(0, 0, 255, 0.5)",
@@ -147,7 +147,7 @@ export class AmongUsMenuScreenView implements View {
 			fontSize: 20,
 			fontFamily: "HomeScreenFont",
 			fontStyle: "bold",
-			fill: "white",
+			fill: "black",
 		});
 
 		// Center the text horizontally

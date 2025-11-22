@@ -57,7 +57,7 @@ export class AmongUsResultsScreenView implements View {
 		const playAgainRect = new Konva.Rect({
 			x: 0,
 			y: 0,
-			width: 200,
+			width: 240,
 			height: 60,
 			fill: "#4cd137",
 			cornerRadius: 10,
@@ -66,7 +66,7 @@ export class AmongUsResultsScreenView implements View {
 		const playAgainText = new Konva.Text({
 			x: 0,
 			y: 15,
-			width: 200,
+			width: 240,
 			text: "Play Again",
 			fontSize: 24,
 			fontFamily: "HomeScreenFont",
@@ -82,7 +82,7 @@ export class AmongUsResultsScreenView implements View {
 		const returnRect = new Konva.Rect({
 			x: 0,
 			y: 0,
-			width: 200,
+			width: 240,
 			height: 60,
 			fill: "#7f8fa6",
 			cornerRadius: 10,
@@ -91,7 +91,7 @@ export class AmongUsResultsScreenView implements View {
 		const returnText = new Konva.Text({
 			x: 0,
 			y: 15,
-			width: 200,
+			width: 240,
 			text: "Return to Game",
 			fontSize: 24,
 			fontFamily: "HomeScreenFont",
