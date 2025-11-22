@@ -43,50 +43,17 @@ export class CollisionManager {
 				continue;
 			}
 
-			const aBox = a.bodyBox;
-
 			//check for collisions between all collidables
 			for (let j = i + 1; j < this.collidables.length; j++) {
 				const b = this.collidables[j];
 
-				//pass if dead
 				if (b.dead) continue;
 
-				const bBox = b.bodyBox;
+				if (!this.isPlayerEnemyPair(a.type, b.type)) continue;
 
-				//
-				if (!this.isPlayerEnemyPair(a.type,b.type)) continue;
-
-				if (this.aabbIntersect(aBox, bBox)) {
-					this.resolveOverlap(a, b, aBox, bBox);
-					a.onCollision(b);
-					b.onCollision(a);
-				}
-
-				this.handleAttackCollision(a, b, aBox, bBox);
+				this.bodyCollision(a, b);
+				this.attackCollision(a, b);
 			}
-		}
-	}
-	
-	private aabbIntersect(a: box, b: box): boolean {
-		//check if overlap
-		return !(
-			b.x > a.x + a.width ||
-			b.x + b.width < a.x || 
-			b.y > a.y + a.height || 
-			b.y + b.height < a.y
-		);
-	}
-
-	private handleAttackCollision(a: Collidable, b: Collidable, aBody: box, bBody: box) {
-		const aAttack = a.attackBox;
-		if (aAttack && this.isPlayerEnemyPair(a.type,b.type) && this.aabbIntersect(aAttack, bBody)) {
-			b.onAttackCollision(a);
-		}
-
-		const bAttack = b.attackBox;
-		if (bAttack && this.isPlayerEnemyPair(a.type,b.type) && this.aabbIntersect(bAttack, aBody)) {
-			a.onAttackCollision(b);
 		}
 	}
 
@@ -99,36 +66,71 @@ export class CollisionManager {
 			(aGroup === "enemy" && bGroup === "player")
 		);
 	}
-
-	private resolveOverlap(a: Collidable, b: Collidable, aBox: box, bBox: box) {
-		const separation = this.computeSeparationVector(aBox, bBox);
-		if (!separation) return;
-
-		const halfX = separation.x / 2;
-		const halfY = separation.y / 2;
-		
-		a.moveBy(halfX, halfY);
-		b.moveBy(-halfX, -halfY);
+	
+	//check if konva boxes overlap
+	private aabbIntersect(a: box, b: box): boolean {
+		return !(
+			b.x > a.x + a.width ||
+			b.x + b.width < a.x || 
+			b.y > a.y + a.height || 
+			b.y + b.height < a.y
+		);
 	}
 
-	private computeSeparationVector(a: box, b: box): { x: number; y: number } | null {
+	//check for body on body collison
+	private bodyCollision(a: Collidable, b: Collidable) {
+		if (!this.aabbIntersect(a.bodyBox, b.bodyBox)) return;
+
+		this.resolveOverlap(a, b);
+		a.onCollision(b);
+		b.onCollision(a);
+	}
+
+	//check for attack on body collsion
+	private attackCollision(a: Collidable, b: Collidable) {
+		if (a.attackBox && this.aabbIntersect(a.attackBox, b.bodyBox)) {
+			b.onAttackCollision(a);
+		}
+
+		if (b.attackBox && this.aabbIntersect(b.attackBox, a.bodyBox)) {
+			a.onAttackCollision(b);
+		}
+	}
+
+	private resolveOverlap(a: Collidable, b: Collidable) {
+		const seperate = this.separationVector(a.bodyBox, b.bodyBox);
+		if (!seperate) return;
+
+		// push both halves
+		a.moveBy(seperate.x / 2, seperate.y / 2);
+		b.moveBy(-seperate.x / 2, -seperate.y / 2);
+	}
+
+	private separationVector(a: box, b: box): { x: number; y: number } | null {
+		//location and size of box middle
 		const axCenter = a.x + a.width / 2;
 		const ayCenter = a.y + a.height / 2;
 		const bxCenter = b.x + b.width / 2;
 		const byCenter = b.y + b.height / 2;
-
+		
+		//0 is bordering negatives are overlaps
 		const dx = axCenter - bxCenter;
 		const px = (a.width + b.width) / 2 - Math.abs(dx);
-		if (px <= 0) return null;
 
 		const dy = ayCenter - byCenter;
 		const py = (a.height + b.height) / 2 - Math.abs(dy);
-		if (py <= 0) return null;
 
 		if (px < py) {
-			return { x: dx < 0 ? -px : px, y: 0 };
+			let pushX = px;
+			if (dx < 0) pushX = -px;
+
+			return { x: pushX, y: 0 };
 		} else {
-			return { x: 0, y: dy < 0 ? -py : py };
+			// Resolve vertically
+			let pushY = py;
+			if (dy < 0) pushY = -py;
+
+			return { x: 0, y: pushY };
 		}
 	}
 }
