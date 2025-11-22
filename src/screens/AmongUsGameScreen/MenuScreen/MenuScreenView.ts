@@ -45,9 +45,9 @@ export class AmongUsMenuScreenView implements View {
 			text: "The Mechanism",
 			fontSize: 42,
 			fontFamily: "HomeScreenFont",
-			fill: "#00d2d3",
-			stroke: "purple",
-			strokeWidth: 2,
+			fill: "#ffffff",
+			stroke: "black",
+			strokeWidth: 1,
 			align: "center",
 		});
 		title.offsetX(title.width() / 2);
@@ -72,10 +72,10 @@ export class AmongUsMenuScreenView implements View {
 			y: 135,
 			width: 600,
 			height: 320,
-			fill: "rgba(0, 0, 0, 0.7)",
+			fill: "rgba(255, 255, 255, 0.7)",
 			cornerRadius: 15,
-			stroke: "#00d2d3",
-			strokeWidth: 2,
+			stroke: "black",
+			strokeWidth: 1,
 		});
 		this.group.add(instructionBox);
 
@@ -87,7 +87,7 @@ export class AmongUsMenuScreenView implements View {
 			fontSize: 24,
 			fontFamily: "HomeScreenFont",
 			fontStyle: "bold",
-			fill: "#00d2d3",
+			fill: "black",
 			align: "center",
 		});
 		instructionsTitle.offsetX(instructionsTitle.width() / 2);
@@ -112,43 +112,11 @@ export class AmongUsMenuScreenView implements View {
 				text: text,
 				fontSize: 16,
 				fontFamily: "HomeScreenFont",
-				fill: "white",
+				fill: "black",
 				lineHeight: 1.4,
 			});
 			this.group.add(line);
 		});
-
-		// Tip box
-		const tipBox = new Konva.Rect({
-			x: STAGE_WIDTH / 2 - 300,
-			y: 470,
-			width: 600,
-			height: 60,
-			fill: "rgba(255, 200, 0, 0.15)",
-			cornerRadius: 10,
-			stroke: "#ffd700",
-			strokeWidth: 2,
-		});
-		this.group.add(tipBox);
-
-		const tipIcon = new Konva.Text({
-			x: STAGE_WIDTH / 2 - 280,
-			y: 485,
-			text: "💡",
-			fontSize: 28,
-		});
-		this.group.add(tipIcon);
-
-		const tipText = new Konva.Text({
-			x: STAGE_WIDTH / 2 - 240,
-			y: 485,
-			text: "TIP: Wrong answers let you retry immediately.\nWork quickly to maximize your score!",
-			fontSize: 15,
-			fontFamily: "HomeScreenFont",
-			fill: "#ffd700",
-			lineHeight: 1.4,
-		});
-		this.group.add(tipText);
 
 		// Start button group
 		const startButtonGroup = new Konva.Group({

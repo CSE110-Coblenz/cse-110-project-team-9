@@ -159,6 +159,27 @@ export class AmongUsGameScreenView implements View {
 	 */
 	updateTimer(timeRemaining: number): void {
 		this.timerText.text(`Time: ${timeRemaining}`);
+
+		// Visual warning when time is running low
+		if (timeRemaining <= 10) {
+			this.timerText.fill("red");
+			this.timerText.fontSize(36);
+			// Pulse effect
+			if (timeRemaining % 2 === 0) {
+				this.timerText.opacity(1);
+			} else {
+				this.timerText.opacity(0.7);
+			}
+		} else if (timeRemaining <= 20) {
+			this.timerText.fill("orange");
+			this.timerText.fontSize(32);
+			this.timerText.opacity(1);
+		} else {
+			this.timerText.fill("white");
+			this.timerText.fontSize(32);
+			this.timerText.opacity(1);
+		}
+
 		this.group.getLayer()?.draw();
 	}
 
