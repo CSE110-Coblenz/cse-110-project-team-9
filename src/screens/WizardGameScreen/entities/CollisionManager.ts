@@ -55,8 +55,7 @@ export class CollisionManager {
 				const bBox = b.bodyBox;
 
 				//
-				if (!((a.type === "player" && b.type === "enemy") ||
-					  (a.type === "enemy" && b.type === "player"))) continue;
+				if (!this.isPlayerEnemyPair(a.type,b.type)) continue;
 
 				if (this.aabbIntersect(aBox, bBox)) {
 					this.resolveOverlap(a, b, aBox, bBox);
