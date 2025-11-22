@@ -36,7 +36,7 @@ export class WizardGameScreenController extends ScreenController {
         this.view = new WizardGameScreenView();
         this.input = new InputHandler();
 
-        this.audio.registerSound("wizard_bgm",`${import.meta.env.BASE_URL}/wizardminigame/audio/mp3/Pixel 5.mp3`);
+        this.audio.registerSound("wizard_bgm",`${import.meta.env.BASE_URL}wizardminigame/audio/mp3/Pixel 5.mp3`);
         
         this.playerController = PlayerFactory.create(
             PLAYER_START_X,
