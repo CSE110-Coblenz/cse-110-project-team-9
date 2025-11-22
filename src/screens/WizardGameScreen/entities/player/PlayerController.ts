@@ -108,9 +108,6 @@ export class PlayerController implements Collidable {
     get dead(): boolean { return this.model.dead; }
     get type(): "enemy" | "player" { return "player"; }
 
-    set x(x: number) { this._model.x = x; }
-    set y(y: number) { this._model.y = y; }
-
     moveBy(dx: number, dy: number) {
         this._model.x += dx/2;
         this._model.y += dy/2;
