@@ -30,15 +30,16 @@ export class InputHandler {
 
     private onKeyDown = (e: KeyboardEvent) => {
         const key = e.key.toLowerCase(); 
-        if (this.allowedKeys.includes(key)) {
+        const allowedKeysLower = this.allowedKeys.map(k => k.toLowerCase());
+        if (allowedKeysLower.includes(key)) {
             this.keys[e.key] = true;
         }
-
     };  
 
     private onKeyUp = (e: KeyboardEvent) => {
         const key = e.key.toLowerCase(); 
-        if (this.allowedKeys.includes(key)) {
+        const allowedKeysLower = this.allowedKeys.map(k => k.toLowerCase());
+        if (allowedKeysLower.includes(key)) {
             this.keys[e.key] = false;
         }
     };

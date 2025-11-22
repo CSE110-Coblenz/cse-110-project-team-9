@@ -102,8 +102,6 @@ export const KNIGHT_AUDIO = {
     attackbow_SFX: "/wizardminigame/audio/bowrelease.mp3",
     attackslash_SFX: "/wizardminigame/audio/slash.mp3",
     attackdown_SFX: "/wizardminigame/audio/slash.mp3",
-    damage_SFX: "/wizardminigame/audio/x",
-    death_SFX: "/wizardminigame/audio/x",
 };
 
 export const KNIGHT_BOUNDING_BOXES: Record<KnightAnimation, { x: number; y: number; width: number; height: number }[]> = {} as any;

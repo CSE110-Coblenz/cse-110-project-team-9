@@ -78,11 +78,9 @@ export const ORC_ATTACK_ANIMATIONS: Record<OrcAttackAnimation, number[]> = {
 export type OrcAudioMap = typeof ORC_AUDIO;
 
 export const ORC_AUDIO = {
-    walk: "/wizardminigame/audio/footsteps.mp3",
-    attacklight: "/wizardminigame/audio/slash.mp3",
-    attackheavy: "/wizardminigame/audio/slash.mp3",
-    damage: "/wizardminigame/audio/x",
-    death: "/wizardminigame/audio/x",
+    walk_SFX: "/wizardminigame/audio/footsteps.mp3",
+    attacklight_SFX: "/wizardminigame/audio/slash.mp3",
+    attackheavy_SFX: "/wizardminigame/audio/slash.mp3",
 };
 
 export const ORC_BOUNDING_BOXES: Record<OrcAnimation, { x: number; y: number; width: number; height: number }[]> = {} as any;
