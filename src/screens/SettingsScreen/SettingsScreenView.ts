@@ -56,8 +56,8 @@ export class SettingsScreenView implements View {
         /**
          * Volume Slider (Background Music & Sound Effects)
          */
-		this.bgmslider = this.createVolumeSlider("BGM", 230, 250);
-		this.soundeffectslider = this.createVolumeSlider("SFX", 230, 320);
+		this.bgmslider = this.createVolumeSlider("Background Music", 220, 250);
+		this.soundeffectslider = this.createVolumeSlider("Sound Effects", 220, 320);
 
         /**
          *  Save Button
@@ -136,9 +136,9 @@ export class SettingsScreenView implements View {
 	
 		// Slider bar
 		const bar = new Konva.Rect({
-			x: 100,
+			x: 130,
 			y: 10,
-			width: 200,
+			width: 170,
 			height: 4,
 			fill: "grey",
 			cornerRadius: 2,

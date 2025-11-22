@@ -3,8 +3,6 @@ import Konva from "konva";
 export type box = { x: number; y: number; width: number; height: number };
 
 export interface Collidable {
-	x: number;
-	y: number; 
 	shape: Konva.Group;
 	bodyBox: box; //collision for body
 	attackBox: box | null; //collision for attack
@@ -51,11 +49,14 @@ export class CollisionManager {
 			for (let j = i + 1; j < this.collidables.length; j++) {
 				const b = this.collidables[j];
 
+				//pass if dead
 				if (b.dead) continue;
 
 				const bBox = b.bodyBox;
 
-				if (!this.shouldProcessBodyCollision(a, b)) continue;
+				//
+				if (!((a.type === "player" && b.type === "enemy") ||
+					  (a.type === "enemy" && b.type === "player"))) continue;
 
 				if (this.aabbIntersect(aBox, bBox)) {
 					this.resolveOverlap(a, b, aBox, bBox);
@@ -80,28 +81,14 @@ export class CollisionManager {
 
 	private handleAttackCollision(a: Collidable, b: Collidable, aBody: box, bBody: box) {
 		const aAttack = a.attackBox;
-		if (aAttack && this.shouldProcessAttack(a, b) && this.aabbIntersect(aAttack, bBody)) {
+		if (aAttack && this.isPlayerEnemyPair(a.type,b.type) && this.aabbIntersect(aAttack, bBody)) {
 			b.onAttackCollision(a);
 		}
 
 		const bAttack = b.attackBox;
-		if (bAttack && this.shouldProcessAttack(b, a) && this.aabbIntersect(bAttack, aBody)) {
+		if (bAttack && this.isPlayerEnemyPair(a.type,b.type) && this.aabbIntersect(bAttack, aBody)) {
 			a.onAttackCollision(b);
 		}
-	}
-
-	private shouldProcessAttack(attacker: Collidable, defender: Collidable): boolean {
-		if (!attacker.type || !defender.type) return true;
-		return this.isPlayerEnemyPair(attacker.type, defender.type);
-	}
-
-	private shouldProcessBodyCollision(a: Collidable, b: Collidable): boolean {
-		const aGroup = a.type;
-		const bGroup = b.type;
-
-		if (!aGroup || !bGroup) return true;
-
-		return this.isPlayerEnemyPair(aGroup, bGroup);
 	}
 
 	private isPlayerEnemyPair(
