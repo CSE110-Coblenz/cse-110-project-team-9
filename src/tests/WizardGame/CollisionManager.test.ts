@@ -25,8 +25,6 @@ function createMockCollidable(
     const mockBodyBox: box = { x, y, width, height };
     
     return {
-        x,
-        y,
         shape: mockGroup,
         bodyBox: mockBodyBox,
         attackBox: null,
