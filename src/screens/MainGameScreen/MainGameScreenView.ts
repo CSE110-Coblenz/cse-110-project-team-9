@@ -323,28 +323,46 @@ export class MainGameScreenView implements View {
         });
 
 
-        const wheelRadius = 150;
+        const shieldSize = 300;
+        const shieldRadius = shieldSize / 2;
+
+        // The inner radius for the colors to fit inside the shield's border
+        const colorRadius = shieldRadius * 0.85; 
+
+        Konva.Image.fromURL(`${import.meta.env.BASE_URL}mainboard/images/shield.png`, (shieldImage: Konva.Image) => {
+            shieldImage.setAttrs({
+                width: shieldSize,
+                height: shieldSize,
+                offsetX: shieldRadius,
+                offsetY: shieldRadius,
+            });
+            this.minigameWheel.add(shieldImage);
+            shieldImage.moveToBottom();
+            this.group.getLayer()?.batchDraw();
+        });
 
         // Red half
         const redHalf = new Konva.Arc({
             innerRadius: 0,
-            outerRadius: wheelRadius,
+            outerRadius: colorRadius,
             angle: 180,
             rotation: -90,
             fill: '#ff7675', // Red
+            opacity: 0.25,
         });
 
         // Blue half
         const blueHalf = new Konva.Arc({
             innerRadius: 0,
-            outerRadius: wheelRadius,
+            outerRadius: colorRadius,
             angle: 180,
             rotation: 90,
             fill: '#74b9ff', // Blue
+            opacity: 0.25,
         });
 
         const pointer = new Konva.Line({
-            points: [wheelRadius + 30, -15, wheelRadius + 5, 0, wheelRadius + 30, 15],
+            points: [shieldRadius + 30, -15, shieldRadius + 5, 0, shieldRadius + 30, 15],
             fill: '#333',
             closed: true,
         });
@@ -356,7 +374,7 @@ export class MainGameScreenView implements View {
             fontFamily: "homeScreenFont",
             fontStyle: "bold",
             fill: "white",
-            x: wheelRadius * 0.5,
+            x: shieldRadius * 0.5,
             y: 0,
             listening: false,
         });
@@ -370,9 +388,10 @@ export class MainGameScreenView implements View {
             fontFamily: "homeScreenFont",
             fontStyle: "bold",
             fill: "white",
-            x: -wheelRadius * 0.5,
+            x: -shieldRadius * 0.5,
             y: 0,
             listening: false,
+            rotation: 180,
         });
         wizardText.offsetX(wizardText.width() / 2);
         wizardText.offsetY(wizardText.height() / 2);

@@ -40,7 +40,7 @@ export class MainGameScreenController extends ScreenController {
 
     public diceRoll(): number {
         //return Math.floor(Math.random() * 6) + 1;
-        return 1;
+        return 4;
     }
 
     public async onPlayerRoll() {
