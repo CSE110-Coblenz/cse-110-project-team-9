@@ -90,62 +90,80 @@ export class MainGameScreenView implements View {
 
         // Dice Roll Button
         this.diceRollButton = new Konva.Group({
-            x: STAGE_WIDTH - 150,
-            y: STAGE_HEIGHT - 80,
+            x: STAGE_WIDTH - 220,
+            y: STAGE_HEIGHT - 110,
         });
 
-        const buttonRect = new Konva.Rect({
-            width: 120,
-            height: 50,
-            fill: "#ff7675",
-            cornerRadius: 10,
-            shadowBlur: 5,
-            name: 'buttonRect' // Give it a name to find it easily
+        // Add a background rect to define the clickable area of the group
+        const diceBg = new Konva.Rect({
+            width: 200,
+            height: 100,
         });
 
         const buttonText = new Konva.Text({
             text: "Roll Dice",
             fontSize: 18,
             fontFamily: "homeScreenFont",
-            fill: "white",
-            width: 120,
-            height: 50,
+            fill: "black",
+            width: 200,
+            height: 100,
             align: "center",
             verticalAlign: "middle",
             listening: false, // Make the text ignore mouse events
         });
 
-        this.diceRollButton.add(buttonRect, buttonText);
+        Konva.Image.fromURL(`${import.meta.env.BASE_URL}mainboard/images/OpenBanner.png`, (buttonImage: Konva.Image) => {
+            buttonImage.setAttrs({
+                width: 200,
+                height: 100,
+                name: 'buttonRect' // Keep the name for finding it later
+            });
+            this.diceRollButton.add(buttonImage);
+            buttonImage.moveToBottom();
+            this.group.getLayer()?.batchDraw();
+        });
+        this.diceRollButton.add(diceBg);
+        this.diceRollButton.add(buttonText);
         this.group.add(this.diceRollButton);
 
         // Settings Button
         this.settingsButton = new Konva.Group({
-            x: 30,
-            y: STAGE_HEIGHT - 80,
+            x: 20,
+            y: STAGE_HEIGHT - 110,
         });
 
-        const settingsButtonRect = new Konva.Rect({
-            width: 120,
-            height: 50,
-            fill: "#808080", // Grey color
-            cornerRadius: 10,
-            shadowBlur: 5,
-            name: 'settingsButtonRect'
+        // Add a background rect to define the clickable area of the group
+        const settingsBg = new Konva.Rect({
+            width: 200,
+            height: 100,
+            // fill: 'red', // uncomment for debugging hit area
+            // opacity: 0.5,
         });
 
         const settingsButtonText = new Konva.Text({
             text: "Settings",
             fontSize: 18,
             fontFamily: "homeScreenFont",
-            fill: "white",
-            width: 120,
-            height: 50,
+            fill: "black",
+            width: 200,
+            height: 100,
             align: "center",
             verticalAlign: "middle",
             listening: false,
         });
 
-        this.settingsButton.add(settingsButtonRect, settingsButtonText);
+        Konva.Image.fromURL(`${import.meta.env.BASE_URL}mainboard/images/OpenBanner.png`, (settingsButtonImage: Konva.Image) => {
+            settingsButtonImage.setAttrs({
+                width: 200,
+                height: 100,
+                name: 'settingsButtonRect'
+            });
+            this.settingsButton.add(settingsButtonImage);
+            settingsButtonImage.moveToBottom();
+            this.group.getLayer()?.batchDraw();
+        });
+        this.settingsButton.add(settingsBg);
+        this.settingsButton.add(settingsButtonText);
         this.group.add(this.settingsButton);
 
         // Dice Result Text
@@ -440,23 +458,16 @@ export class MainGameScreenView implements View {
     }
 
     onSettingsOpen(callback: () => void): void {
-        const settingsButtonRect = this.settingsButton.findOne('.settingsButtonRect');
-        if (settingsButtonRect) {
-            settingsButtonRect.on("click tap", () => {
-                callback();
-            });
-        }
+        // Attach listener to the group itself, which now has a background shape to capture events.
+        this.settingsButton.on("click tap", () => {
+            callback();
+        });
     }
 
     onPlayerRoll(callback: () => void): void {
-        // The event listener must be on a shape with a visible area (the rectangle),
-        // not the group itself, which is just an invisible container.
-        const buttonRect = this.diceRollButton.findOne('.buttonRect');
-        if (buttonRect) {
-            buttonRect.on("click tap", () => {
-				callback();
-            });
-        }
+        this.diceRollButton.on("click tap", () => {
+            callback();
+        });
     }
 
     displayRollResult(result: number): void {
@@ -478,7 +489,6 @@ export class MainGameScreenView implements View {
         const buttonRect = this.diceRollButton.findOne('.buttonRect') as Konva.Shape | undefined;
         if (buttonRect) {
             buttonRect.listening(false);
-            buttonRect.fill('#b2bec3'); // A disabled grey color
             this.group.getLayer()?.batchDraw();
         }
     }
@@ -487,7 +497,6 @@ export class MainGameScreenView implements View {
         const buttonRect = this.diceRollButton.findOne('.buttonRect') as Konva.Shape | undefined;
         if (buttonRect) {
             buttonRect.listening(true);
-            buttonRect.fill('#ff7675'); // Original color
             this.group.getLayer()?.batchDraw();
         }
     }
