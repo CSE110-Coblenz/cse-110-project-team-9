@@ -79,6 +79,7 @@ export class MainGameScreenController extends ScreenController {
             case NodeType.MEDIUM_QUESTION:
             case NodeType.HARD_QUESTION:
                 this.view.displayNodeEvent("You landed on a Question tile!");
+                this.screenSwitcher.switchToScreen({ type: "math" });
                 //const newQuestionScore = this.gameModel.getPlayerScore("default") + 5;
                 //this.gameModel.setPlayerScore("default", newQuestionScore);
                 //this.view.updateScoreDisplay(newQuestionScore);
