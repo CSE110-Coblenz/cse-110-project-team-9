@@ -79,7 +79,7 @@ export class MainGameScreenView implements View {
         }
 
         //piece image on top of second node
-        Konva.Image.fromURL('mainboard/images/pieceImagePH.png', (image) => {
+        Konva.Image.fromURL(`${import.meta.env.BASE_URL}mainboard/images/pieceImagePH.png`, (image) => {
             this.pieceImage = image;
             const secondTile = this.tiles[1]; // This is now the "Start" tile
 

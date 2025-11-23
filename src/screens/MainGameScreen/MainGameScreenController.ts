@@ -25,10 +25,10 @@ export class MainGameScreenController extends ScreenController {
             this.screenSwitcher.layerOnScreen({ type: "settings" });
         });
 
-        audio.registerSound("mainboard_bgm", "/mainboard/audio/mainboardBGM.mp3");
-        audio.registerSound("click_sfx", "/homescreen/audio/click.mp3");
-        audio.registerSound("dice_sfx", "/mainboard/audio/dice_roll.mp3");
-        audio.registerSound("piece_move_sfx", "/mainboard/audio/piece_move.mp3");
+        audio.registerSound("mainboard_bgm", `${import.meta.env.BASE_URL}mainboard/audio/mainboardBGM.mp3`);
+        audio.registerSound("click_sfx", `${import.meta.env.BASE_URL}homescreen/audio/click.mp3`);
+        audio.registerSound("dice_sfx", `${import.meta.env.BASE_URL}mainboard/audio/dice_roll.mp3`);
+        audio.registerSound("piece_move_sfx", `${import.meta.env.BASE_URL}mainboard/audio/piece_move.mp3`);
 
         const tiles = this.view.getTiles();
 
@@ -50,7 +50,6 @@ export class MainGameScreenController extends ScreenController {
 
         const roll = this.diceRoll();
         this.audio.play("dice_sfx", false);
-        console.log(`Player rolled a ${roll}.`);
         this.view.displayRollResult(roll);
 
         // Play the sound effect immediately, before any async operations.
@@ -66,8 +65,7 @@ export class MainGameScreenController extends ScreenController {
 
         const newPosition = (currentPosition + roll) % this.BOARD_LENGTH;
         this.gameModel.setPlayerPosition(newPosition); // newPosition is 0-indexed
-        console.log(`Player moved to position ${newPosition + 1}`);
-        await this.triggerNodeEvent(newPosition + 1); // getNodeType is 1-indexed
+        this.triggerNodeEvent(newPosition + 1); // getNodeType is 1-indexed
 
         this.view.enableRollButton();
     }
@@ -87,14 +85,14 @@ export class MainGameScreenController extends ScreenController {
 
             case NodeType.MINIGAME:
                 this.view.displayNodeEvent("You landed on a Minigame tile!");
-                // Using a Promise to create a delay
-                return new Promise(resolve => {
-                    setTimeout(async () => {
-                        const minigameChoice = await this.view.spinMinigameWheel();
-                        this.launchMinigame(minigameChoice);
-                        resolve();
-                    }, 2000); // Wait 2 seconds for the player to read the message
-                });
+                // this.screenSwitcher.switchToScreen({ type: "wizardminigame" });
+                this.triggerRandomMinigame();
+                // Wait for the message to display, then trigger minigame
+                // setTimeout(() => {
+                //     this.triggerRandomMinigame();
+                // }, 1000);
+                break;
+
             case NodeType.START:
                 // No action needed for the start tile
                 break;
@@ -107,15 +105,15 @@ export class MainGameScreenController extends ScreenController {
         /**
      * Randomly select and launch a minigame
      */
-    private launchMinigame(minigameChoice: number): void {
-        console.log(`Launching minigame ${minigameChoice}`);
-        
+    private triggerRandomMinigame(): void {
+        const minigameChoice = Math.floor(Math.random() * 2) + 1; // 1 or 2
+                
         if (minigameChoice === 1) {
             // Red side: Launch Among Us minigame
             //this.screenSwitcher.switchToScreen({ type: "amongUsMenu" });
         } else {
-            // Blue side: Launch Wizard minigame
-            //this.screenSwitcher.switchToScreen({ type: "wizard" });
+            // Launch Wizard minigame
+            this.screenSwitcher.switchToScreen({ type: "wizardminigame" });
         }
     }
 
