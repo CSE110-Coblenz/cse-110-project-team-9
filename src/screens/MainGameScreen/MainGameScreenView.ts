@@ -335,6 +335,7 @@ export class MainGameScreenView implements View {
         const amongUsText = new Konva.Text({
             text: "Among Us",
             fontSize: 24,
+            fontFamily: "homeScreenFont",
             fontStyle: "bold",
             fill: "white",
             x: wheelRadius * 0.5,
@@ -348,6 +349,7 @@ export class MainGameScreenView implements View {
         const wizardText = new Konva.Text({
             text: "Wizard",
             fontSize: 24,
+            fontFamily: "homeScreenFont",
             fontStyle: "bold",
             fill: "white",
             x: -wheelRadius * 0.5,
@@ -392,7 +394,6 @@ export class MainGameScreenView implements View {
                 onFinish: () => {
                     setTimeout(() => {
                         this.minigameSelectorGroup.visible(false);
-                        this.group.getLayer()?.batchDraw();
                         resolve(choice);
                     }, 1500); // Wait a bit before hiding
                 },

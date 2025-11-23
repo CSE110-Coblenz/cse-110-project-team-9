@@ -39,7 +39,7 @@ export class MainGameScreenController extends ScreenController {
     }
 
     public diceRoll(): number {
-        // return Math.floor(Math.random() * 6) + 1;
+        //return Math.floor(Math.random() * 6) + 1;
         return 1;
     }
 
@@ -102,14 +102,14 @@ export class MainGameScreenController extends ScreenController {
         /**
      * Randomly select and launch a minigame
      */
-    private triggerRandomMinigame(): void {
-        const minigameChoice = Math.floor(Math.random() * 2) + 1; // 1 or 2
-                
-        if (minigameChoice === 1) {
+    private async triggerRandomMinigame(): Promise<void> {
+        const choice = await this.view.spinMinigameWheel();
+
+        if (choice === 1) {
             // Red side: Launch Among Us minigame
-            //this.screenSwitcher.switchToScreen({ type: "amongUsMenu" });
+            this.screenSwitcher.switchToScreen({ type: "amongUsMenu" });
         } else {
-            // Launch Wizard minigame
+            // Blue side: Launch Wizard minigame
             this.screenSwitcher.switchToScreen({ type: "wizardminigame" });
         }
     }
