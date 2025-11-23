@@ -25,25 +25,18 @@ export class MainGameScreenView implements View {
         const boardLength = 40;
         this.group = new Konva.Group({ visible: false });
 
-        // Grass background
-        const grass = new Konva.Rect({
-            x: 0,
-            y: 0,
-            width: STAGE_WIDTH,
-            height: STAGE_HEIGHT,
-            fill: "#90EE90", // LightGreen
+        // Background image
+        Konva.Image.fromURL(`${import.meta.env.BASE_URL}mainboard/images/CobblestoneHighway.jpg`, (image: Konva.Image) => {
+            image.setAttrs({
+                x: 0,
+                y: 0,
+                width: STAGE_WIDTH,
+                height: STAGE_HEIGHT,
+            });
+            this.group.add(image);
+            image.moveToBottom();
+            this.group.getLayer()?.batchDraw();
         });
-        this.group.add(grass);
-
-        // Dirt path
-        const road = new Konva.Rect({
-            x: 0,
-            y: STAGE_HEIGHT / 2 - 70, // Centered vertically around the tiles
-            width: STAGE_WIDTH,
-            height: 140, // A bit wider than the tiles
-            fill: '#f5f5dc', // Beige
-        });
-        this.group.add(road);
         // const titleText = new Konva.Text({
         //     x: 0,
         //     y: 20,
@@ -79,15 +72,15 @@ export class MainGameScreenView implements View {
         }
 
         //piece image on top of second node
-        Konva.Image.fromURL(`${import.meta.env.BASE_URL}mainboard/images/pieceImagePH.png`, (image) => {
+        Konva.Image.fromURL(`${import.meta.env.BASE_URL}mainboard/images/WizardDuck.png`, (image) => {
             this.pieceImage = image;
             const secondTile = this.tiles[1]; // This is now the "Start" tile
 
             if (secondTile) {
                 this.pieceImage.x(secondTile.x());
                 this.pieceImage.y(secondTile.y() - 25); // Slightly above the tile center
-                this.pieceImage.width(75);
-                this.pieceImage.height(75);
+                this.pieceImage.width(100);
+                this.pieceImage.height(100)
                 this.pieceImage.offsetX(37.5); // Center the image
                 this.pieceImage.offsetY(37.5); // Center the image
                 this.group.add(this.pieceImage);

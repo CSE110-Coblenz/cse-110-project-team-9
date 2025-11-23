@@ -52,9 +52,6 @@ export class MainGameScreenController extends ScreenController {
         this.audio.play("dice_sfx", false);
         this.view.displayRollResult(roll);
 
-        // Play the sound effect immediately, before any async operations.
-        this.audio.play("dice_sfx", false);
-
         // Execute the rest of the turn logic asynchronously.
         this.executeTurn(roll);
     }
