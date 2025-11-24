@@ -4,21 +4,27 @@ import {
   QuadraticEquationsHelper,
   getCurrentDifficulty,
 } from "../../class/MathEquations/QuadraticEquationsHelper";
+import type { ScreenSwitcher } from "../../types";
+
+
 
 export class MathScreenController {
   private view: MathScreenView;
   private model: MathScreenModel;
   private helper: QuadraticEquationsHelper;
+  private screenSwitcher: ScreenSwitcher;
   private phase: "factored" | "solutions" = "factored";
 
   constructor(
     view: MathScreenView,
     model: MathScreenModel,
-    helper: QuadraticEquationsHelper
+    helper: QuadraticEquationsHelper,
+    screenSwitcher: ScreenSwitcher
   ) {
     this.view = view;
     this.model = model;
     this.helper = helper;
+    this.screenSwitcher = screenSwitcher;
 
     this.view.setOnCheck((answer) => this.handleCheck(answer));
   }
@@ -86,6 +92,7 @@ export class MathScreenController {
         this.view.clearAnswer();
       } else {
         this.view.showFeedback("🎉 You've completed all questions!", true);
+        this.screenSwitcher.switchToScreen({ type: "mainGame" });
       }
     } else {
       this.view.showFeedback(

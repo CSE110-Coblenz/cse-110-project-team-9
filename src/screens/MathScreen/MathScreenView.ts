@@ -24,7 +24,7 @@ export class MathScreenView {
     this.group = new Konva.Group({ visible: true });
 
     //Set's the background image as the stage size
-    Konva.Image.fromURL("/backgroundCastle.png", (img) => {
+    Konva.Image.fromURL(`${import.meta.env.BASE_URL}backgroundCastle.png`, (img) => {
       img.setAttrs({
         x: 0,
         y: 0,

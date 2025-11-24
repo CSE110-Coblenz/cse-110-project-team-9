@@ -11,7 +11,7 @@ export type DifficultyLevel = "easy" | "medium" | "hard";
 // Browser-safe: loads from public/mathDictionary.txt via fetch
 export async function readMathDictionary(): Promise<string[]> {
   try {
-    const response = await fetch("/mathDictionary.txt");
+    const response = await fetch(`${import.meta.env.BASE_URL}mathDictionary.txt`);
     if (!response.ok) {
       console.error(
         "Failed to load mathDictionary.txt:",

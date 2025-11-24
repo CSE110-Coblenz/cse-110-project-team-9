@@ -74,8 +74,10 @@ class App implements ScreenSwitcher {
 		this.mathScreenController = new MathScreenController(
 			this.mathScreenView,
 			this.mathScreenModel,
-			this.mathHelper
+			this.mathHelper,
+			this
 		);
+
 
 		// Initialize Wizard minigame screens
 		this.WizardGameController = new WizardGameScreenController(this, this.audio);
