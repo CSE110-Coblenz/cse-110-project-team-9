@@ -39,8 +39,8 @@ export class MainGameScreenController extends ScreenController {
     }
 
     public diceRoll(): number {
-        //return Math.floor(Math.random() * 6) + 1;
-        return 4;
+        return Math.floor(Math.random() * 6) + 1;
+        //return 4;
     }
 
     public async onPlayerRoll() {
@@ -82,7 +82,7 @@ export class MainGameScreenController extends ScreenController {
 
             case NodeType.MINIGAME:
                 this.view.displayNodeEvent("You landed on a Minigame tile!");
-                // this.screenSwitcher.switchToScreen({ type: "wizardminigame" });
+                //this.screenSwitcher.switchToScreen({ type: "wizardminigame" });
                 this.triggerRandomMinigame();
                 // Wait for the message to display, then trigger minigame
                 // setTimeout(() => {
@@ -107,10 +107,10 @@ export class MainGameScreenController extends ScreenController {
 
         if (choice === 1) {
             // Red side: Launch Among Us minigame
-            //this.screenSwitcher.switchToScreen({ type: "amongUsMenu" });
+            this.screenSwitcher.switchToScreen({ type: "amongUsMenu" });
         } else {
             // Blue side: Launch Wizard minigame
-            //this.screenSwitcher.switchToScreen({ type: "wizardminigame" });
+            this.screenSwitcher.switchToScreen({ type: "wizardminigame" });
         }
     }
 
