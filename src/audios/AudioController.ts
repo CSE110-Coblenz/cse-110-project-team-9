@@ -28,7 +28,6 @@ export class AudioController {
      * Register a new sound
      * @param key
      * @param path
-     * @param loop Whether the sound should loop
      * @param overwrite Whether to overwrite an existing sound with the same key
      */
     public registerSound(key: string, path: string, overwrite = false): void {
@@ -41,8 +40,9 @@ export class AudioController {
     }
 
     /**
-     * Play function for SOUND EFFECT
+     * Play function for audio
      * @param key : string
+     * @param loop : boolean
      */
     public play(key: string, loop: boolean = false): void {
         const sound = this.model.sounds[key];
@@ -69,15 +69,14 @@ export class AudioController {
      */
     public stop(key: string): void {
         const sound = this.model.sounds[key];
+        
         if (!sound) return;
 
-        if (document.visibilityState === "visible") {
-            try {
-                sound.pause();
-                sound.currentTime = 0;
-            } catch (err: any) {
-                console.error(`AudioController: error stopping "${key}"`, err);
-            }
+        try {
+            sound.pause();
+            sound.currentTime = 0;
+        } catch (err: any) {
+            console.error(`AudioController: error stopping "${key}"`, err);
         }
     }
 
