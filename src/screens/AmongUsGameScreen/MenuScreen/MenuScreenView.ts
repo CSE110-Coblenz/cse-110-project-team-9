@@ -12,7 +12,7 @@ export class AmongUsMenuScreenView implements View {
 		this.group = new Konva.Group({ visible: true });
 
 		//Background Image
-		Konva.Image.fromURL("AmongUsMiniGame/Background/terrace.png", (background) => {
+		Konva.Image.fromURL(`${import.meta.env.BASE_URL}AmongUsMiniGame/Background/terrace.png`, (background) => {
 			background.width(STAGE_WIDTH);
 			background.height(STAGE_HEIGHT);
 			background.x(0);

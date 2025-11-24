@@ -17,7 +17,7 @@ export class StartingScreenController extends ScreenController {
 		this.view.getGroup().on("click", () => {
 			this.screenSwitcher.switchToScreen({ type: "home" });
 		});
-	}
+	}	
 
 	getView(): StartingScreenView {
 		return this.view;

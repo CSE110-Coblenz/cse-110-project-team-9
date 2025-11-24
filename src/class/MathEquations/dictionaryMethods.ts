@@ -133,17 +133,74 @@ export function pointPerQuestion(entry: mathDictEntry): string {
 }
 
 /*
+Method name: getDifficultyFromEntry
+Description: This method retrieves the difficulty level from a math dictionary entry.
+Parameters: mathDictEntry - an object representing a math dictionary entry
+*/
+export type DifficultyLevel = "easy" | "medium" | "hard";
+
+export function getDifficultyFromEntry(entry: mathDictEntry): DifficultyLevel {
+    const points = pointPerQuestion(entry);
+
+    if (points == null) {
+        throw new Error("Difficulty: Invalid dictionary entry provided.");
+    }
+
+    switch (points) {
+        case "1":
+            return "easy";
+        case "2":
+            return "medium";
+        case "3":
+            return "hard";
+        default:
+            return "easy"; 
+    }
+}
+
+/*
 Method Name: genrateRandomEntry
 Description: This method generates a random math dictionary entry from a specified dictionary file.
 returns: An entry from the dictionary file 
 */
-export function generateRandomEntry(entries: mathDictEntry[]): { index: number; entry: mathDictEntry } | null {
+/*export function generateRandomEntry(entries: mathDictEntry[]): { index: number; entry: mathDictEntry } | null {
     if (entries.length === 0) {
         return null; // No entries available
     }
     const randomIndex = Math.floor(Math.random() * entries.length);
     const randomEntry = { index: randomIndex, entry: entries[randomIndex] };
     return randomEntry;
+}*/
+/**
+ * Method Name: generateRandomEntryByDifficulty
+ * Description: This method generates a random math dictionary entry based on the specified difficulty level.
+ * Parameters: entries - an array of math dictionary entries, difficulty - the desired difficulty level
+ */
+export function generateRandomEntryByDifficulty(
+  entries: mathDictEntry[],
+  difficulty: DifficultyLevel
+): { index: number; entry: mathDictEntry } | null {
+  
+  if (entries.length === 0) {
+    return null;
+  }
+
+  const matchingEntries = entries.filter((entry) => {
+    const level = getDifficultyFromEntry(entry);
+    return level === difficulty;
+  });
+
+  if (matchingEntries.length === 0) {
+    return null;
+  }
+
+  const randomIndex = Math.floor(Math.random() * matchingEntries.length);
+  const chosenEntry = matchingEntries[randomIndex];
+
+  return {
+    index: randomIndex,
+    entry: chosenEntry,
+  };
 }
 
 /*
