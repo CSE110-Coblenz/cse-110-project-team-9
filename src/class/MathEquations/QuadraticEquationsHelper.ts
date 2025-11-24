@@ -1,20 +1,25 @@
 import {
   readMathDictionary,
-  generateRandomEntry,
+  generateRandomEntryByDifficulty,
   getEquationFromEntry,
   getFactoredFromEntry,
   getSolutionsFromEntry,
   pointPerQuestion,
   entryParseLine,
   type mathDictEntry,
+  getDifficultyFromEntry,
+  type DifficultyLevel,
 } from "./dictionaryMethods";
+
 
 export type QuadraticQuestion = {
   equation: string;
   factored: string;
   solutions: string[];
   points: number;
+  difficulty: DifficultyLevel;
 };
+
 
 //converts the string to lowercase and removes spaces for comparison
 function normalizeFactored(str: string): string {
@@ -67,32 +72,38 @@ export class QuadraticEquationsHelper {
     this.loadedDictionary = true;
   }
 
-  getNextQuestion(): QuadraticQuestion | null {
-    if (!this.loadedDictionary || this.entries.length === 0) {
-      return null;
-    }
-
-    const random = generateRandomEntry(this.entries);
-    if (!random) return null;
-
-    const entry = random.entry;
-
-    const equation = getEquationFromEntry(entry);
-    const factored = getFactoredFromEntry(entry);
-    const solutions = getSolutionsFromEntry(entry).map((s) => s.trim());
-    const pointsStr = pointPerQuestion(entry);
-    const points = Number(pointsStr) || 1;
-
-    const question: QuadraticQuestion = {
-      equation,
-      factored,
-      solutions,
-      points,
-    };
-
-    this.currentQuestion = question;
-    return question;
+  getNextQuestion(difficulty: DifficultyLevel): QuadraticQuestion | null {
+  if (!this.loadedDictionary || this.entries.length === 0) {
+    return null;
   }
+
+  // pick only from entries with that difficulty
+  const entryInfo = generateRandomEntryByDifficulty(this.entries, difficulty);
+  if (!entryInfo) {
+    return null;
+  }
+
+  const entry = entryInfo.entry;
+
+  const equation = getEquationFromEntry(entry);
+  const factored = getFactoredFromEntry(entry);
+  const solutions = getSolutionsFromEntry(entry).map((s) => s.trim());
+  const pointsStr = pointPerQuestion(entry);
+  const points = Number(pointsStr) || 1;
+  const level = getDifficultyFromEntry(entry);
+
+  const question: QuadraticQuestion = {
+    equation,
+    factored,
+    solutions,
+    points,
+    difficulty: level,
+  };
+
+  this.currentQuestion = question;
+  return question;
+}
+
 
   ///Iterate through this method to check bug fixes
   checkFactored(userInput: string): boolean {
