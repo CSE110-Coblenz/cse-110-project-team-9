@@ -177,9 +177,10 @@ export class MainGameScreenView implements View {
             listening: false,
         });
 
+
         Konva.Image.fromURL(`${import.meta.env.BASE_URL}mainboard/images/OpenBanner.png`, (settingsButtonImage: Konva.Image) => {
             settingsButtonImage.width(200);
-            settingsButtonImage.height(200);
+            settingsButtonImage.height(100);
             settingsButtonImage.name('settingsButtonRect');
             this.settingsButton.add(settingsButtonImage);
             settingsButtonImage.moveToBottom();
@@ -195,7 +196,7 @@ export class MainGameScreenView implements View {
             y: 50,
             fontSize: 24,
             fontFamily: "homeScreenFont",
-            fill: "#333",
+            fill: "#ffffff",
             visible: false,
         });
         this.group.add(this.diceResultText);
@@ -207,7 +208,7 @@ export class MainGameScreenView implements View {
             width: STAGE_WIDTH,
             fontSize: 24,
             fontFamily: "homeScreenFont",
-            fill: "#d63031", // A distinct color
+            fill: "#ffffff", // A distinct color
             align: 'center',
             visible: false,
         });
