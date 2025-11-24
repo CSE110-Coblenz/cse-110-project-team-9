@@ -148,6 +148,7 @@ export class WizardGameScreenController extends ScreenController {
     }
 
     mathQuestion() {
+        //just call the math function make it like a settings
         this.pauseGame();
         this.screenSwitcher.switchToScreen({ type:"mainGame" });
     }
