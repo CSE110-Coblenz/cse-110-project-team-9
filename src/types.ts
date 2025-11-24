@@ -6,9 +6,19 @@ export interface View {
 	hide(): void;
 }
 
+/**
+ * Screen types for navigation
+ */
 export type Screen =
+	| { type: "starting" }
 	| { type: "home" }
+	| { type: "mainGame" }
 	| { type: "settings" }
+	| { type: "wizardminigame"}
+	| { type: "wizardguide" }
+	| { type: "amongUsMenu" }
+	| { type: "amongUsGame" }
+	| { type: "amongUsResult", score: number };
 
 export abstract class ScreenController {
 	abstract getView(): View;
@@ -24,4 +34,6 @@ export abstract class ScreenController {
 
 export interface ScreenSwitcher {
 	switchToScreen(screen: Screen): void;
+	layerOnScreen(screen: Screen): void;
+	readonly lastScreen: Screen;
 }

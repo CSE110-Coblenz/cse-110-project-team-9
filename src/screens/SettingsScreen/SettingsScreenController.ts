@@ -1,31 +1,39 @@
 import { SettingsScreenView } from "./SettingsScreenView";
-import { SettingsScreenModel } from "./SettingsScreenModel";
 import { ScreenController, ScreenSwitcher } from "../../types";
+import { AudioController } from "../../audios/AudioController";
 
 export class SettingsScreenController extends ScreenController {
 	private view: SettingsScreenView;
-	private model: SettingsScreenModel;
 	private screenSwitcher: ScreenSwitcher;
+	private audio: AudioController;
 
-	constructor(screenSwitcher: ScreenSwitcher) {
+	constructor(screenSwitcher: ScreenSwitcher, audio: AudioController) {
 		super();
 		this.screenSwitcher = screenSwitcher;
-		this.model = new SettingsScreenModel();
 		this.view = new SettingsScreenView();
+		this.audio = audio;
 
-		this.view.getCloseButton().on("click", () => {
-			this.screenSwitcher.switchToScreen({ type: "home" });
+		/**
+		 * Button Event Listeners
+		 */
+		this.view.getSaveButton().on("click", () => {
+			this.audio.play("click_sfx");
+			this.hide()
 		});
 
-		const settings_bgmslider = this.view.getBgmSlider();
-		const settings_soundeffectslider = this.view.getSoundEffectSlider();
+		this.view.setVolumeChangeHandler((ratio, type) => {
+			if (type === "bgm") this.audio.setBgmVolume(ratio);
+			else if (type === "sfx") this.audio.setSfxVolume(ratio);
+		});
+	}
 
+	hide(): void {
+		this.view.hide();    
 	}
 
     /**
      * Get the view
      */
-
 	getView(): SettingsScreenView {
 		return this.view;
 	}

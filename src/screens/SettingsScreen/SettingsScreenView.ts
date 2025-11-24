@@ -6,9 +6,9 @@ export class SettingsScreenView implements View {
 	private group: Konva.Group;
 
 	private saveButton: Konva.Group;
-	private closeButton: Konva.Image;
 	private bgmslider: Konva.Group;
 	private soundeffectslider: Konva.Group;
+	private onVolumeChange: ((ratio: number, type: "bgm" | "sfx") => void) | null = null;
 
 	constructor() {
 		this.group = new Konva.Group({ visible: false });
@@ -56,14 +56,12 @@ export class SettingsScreenView implements View {
         /**
          * Volume Slider (Background Music & Sound Effects)
          */
-
-		this.bgmslider = this.createVolumeSlider("Background", 230, 250);
-		this.soundeffectslider = this.createVolumeSlider("Sound Effect", 230, 320);
+		this.bgmslider = this.createVolumeSlider("Background Music", 220, 250);
+		this.soundeffectslider = this.createVolumeSlider("Sound Effects", 220, 320);
 
         /**
          *  Save Button
          */
-
         this.saveButton = this.createTextButton(
 			"Save",
 			370,
@@ -72,43 +70,11 @@ export class SettingsScreenView implements View {
 			"HomeScreenFont",
 			"black"
 		);
-
-		/**
-         *  Close Button (X)
-         */
-
-        const closeButtonImg = new Image();
-        closeButtonImg.src = "homescreen/images/closebutton.svg";
-
-        this.closeButton = new Konva.Image({
-            x: 560,
-            y: 160,
-            width: 30,
-            height: 30,
-            listening: true,
-            image: undefined,
-        });
-
-        closeButtonImg.onload = () => {
-            this.closeButton.image(closeButtonImg);
-            
-            this.closeButton.on('mouseover', function (e) {
-                e.target.getStage()!.container().style.cursor = 'pointer';
-            });
-            
-            this.closeButton.on('mouseout', function (e) {
-                e.target.getStage()!.container().style.cursor = 'default';
-            });
-
-            this.group.add(this.closeButton);
-            this.closeButton.moveToTop();
-        };
 	}
 
 	/**
 	 * Helper Funtion — Creating text button (transparent background)
 	 */
-
 	private createTextButton(
 		text: string,
 		x: number,
@@ -141,7 +107,6 @@ export class SettingsScreenView implements View {
 		/**
 		 * Button Animation
 		 */
-
 		buttonGroup.on("mouseover", () => {
 			buttonText.fill("#ffd700");
 			document.body.style.cursor = "pointer";
@@ -158,7 +123,6 @@ export class SettingsScreenView implements View {
 	/**
 	 * Helper Funtion — Creating Volume Slider
 	 */
-
 	private createVolumeSlider(label: string, x: number, y: number) {
 		const volumeSliderGroup = new Konva.Group({ x, y });
 	
@@ -172,9 +136,9 @@ export class SettingsScreenView implements View {
 	
 		// Slider bar
 		const bar = new Konva.Rect({
-			x: 100,
+			x: 130,
 			y: 10,
-			width: 200,
+			width: 170,
 			height: 4,
 			fill: "grey",
 			cornerRadius: 2,
@@ -225,27 +189,35 @@ export class SettingsScreenView implements View {
 		this.group.add(volumeSliderGroup);
 	
 		knob.on("dragmove", () => {
-			const knobAbs = knob.getAbsolutePosition();
-			const groupAbs = volumeSliderGroup.getAbsolutePosition();
-			const localX = knobAbs.x - groupAbs.x;
-	
-			let ratio = (localX - bar.x()) / bar.width();
-			ratio = Math.max(0, Math.min(1, ratio));
+
+			const pointerPosition = volumeSliderGroup.getRelativePointerPosition();
+			if (!pointerPosition) return;
+
+			const localX = pointerPosition.x;
+			const barWidth = bar.width();
 			
-			fill.width(bar.width() * ratio);
+			let ratio = (localX - bar.x()) / barWidth;
+			ratio = Math.max(0, Math.min(1, ratio));
+		
+			fill.width(barWidth * ratio);
 			percent.text(Math.round(ratio * 100) + "%");
+		
+			if (this.onVolumeChange) {
+				this.onVolumeChange(ratio, label === "Background Music" ? "bgm" : "sfx");
+			}
 		});
+		
 		return volumeSliderGroup;
+	}
+
+	// Callback Setter
+	public setVolumeChangeHandler(handler: (ratio: number, type: "bgm" | "sfx") => void): void {
+		this.onVolumeChange = handler;
 	}
 	
     /*
     * Getters
     */
-
-	getCloseButton(): Konva.Image {
-		return this.closeButton;
-	}
-
 	getSaveButton(): Konva.Group {
 		return this.saveButton;
 	}
@@ -265,7 +237,6 @@ export class SettingsScreenView implements View {
 	/**
 	 * Show / Hide
 	 */
-
 	show(): void {
 		this.group.visible(true);
 		this.group.moveToTop();
