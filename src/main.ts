@@ -68,7 +68,7 @@ class App implements ScreenSwitcher {
 		this.mainGameController = new MainGameScreenController(this, this.audio);
 
 		// Math screen pieces
-		this.mathScreenModel = new MathScreenModel([]); 
+		this.mathScreenModel = new MathScreenModel();
 		this.mathHelper = new QuadraticEquationsHelper();
 		this.mathScreenView = new MathScreenView();
 		this.mathScreenController = new MathScreenController(

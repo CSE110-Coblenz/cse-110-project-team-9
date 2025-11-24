@@ -1,6 +1,9 @@
 import { MathScreenModel } from "./MathScreenModel";
 import { MathScreenView } from "./MathScreenView";
-import { QuadraticEquationsHelper, getCurrentDifficulty } from "../../class/MathEquations/QuadraticEquationsHelper"; // ✨ combined import
+import {
+  QuadraticEquationsHelper,
+  getCurrentDifficulty,
+} from "../../class/MathEquations/QuadraticEquationsHelper";
 
 export class MathScreenController {
   private view: MathScreenView;
@@ -8,7 +11,11 @@ export class MathScreenController {
   private helper: QuadraticEquationsHelper;
   private phase: "factored" | "solutions" = "factored";
 
-  constructor(view: MathScreenView, model: MathScreenModel, helper: QuadraticEquationsHelper) {
+  constructor(
+    view: MathScreenView,
+    model: MathScreenModel,
+    helper: QuadraticEquationsHelper
+  ) {
     this.view = view;
     this.model = model;
     this.helper = helper;
@@ -20,10 +27,10 @@ export class MathScreenController {
     await this.helper.ensureLoaded();
 
     const difficulty = getCurrentDifficulty();
-
     const next = this.helper.getNextQuestion(difficulty);
+
     if (next) {
-      this.model.loadNextQuestion();
+      this.model.loadNextQuestion(next);
       this.view.showEquation(`Factor this: ${next.equation}`);
       this.view.showEnterFactored();
       this.phase = "factored";
@@ -49,7 +56,10 @@ export class MathScreenController {
       this.phase = "solutions";
       this.view.clearAnswer();
     } else {
-      this.view.showFeedback("❌ Try again. Make sure parentheses and signs match.", false);
+      this.view.showFeedback(
+        "❌ Try again. Make sure parentheses and signs match.",
+        false
+      );
     }
   }
 
@@ -65,12 +75,11 @@ export class MathScreenController {
       const score = this.model.getScore();
       this.view.showFeedback(`✅ Correct! Score: ${score}`, true);
 
-      // ✨ NEW: always use the current difficulty when getting the next question
       const difficulty = getCurrentDifficulty();
       const next = this.helper.getNextQuestion(difficulty);
 
       if (next) {
-        this.model.loadNextQuestion();
+        this.model.loadNextQuestion(next);
         this.view.showEquation(`Factor this: ${next.equation}`);
         this.view.showEnterFactored();
         this.phase = "factored";
@@ -79,7 +88,10 @@ export class MathScreenController {
         this.view.showFeedback("🎉 You've completed all questions!", true);
       }
     } else {
-      this.view.showFeedback("❌ Incorrect solutions. Try again (e.g., 2, 5).", false);
+      this.view.showFeedback(
+        "❌ Incorrect solutions. Try again (e.g., 2, 5).",
+        false
+      );
     }
   }
 

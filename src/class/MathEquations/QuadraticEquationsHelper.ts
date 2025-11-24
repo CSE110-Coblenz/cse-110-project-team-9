@@ -1,6 +1,5 @@
 import {
   readMathDictionary,
-  generateRandomEntryByDifficulty,
   getEquationFromEntry,
   getFactoredFromEntry,
   getSolutionsFromEntry,
@@ -9,16 +8,17 @@ import {
   type mathDictEntry,
   getDifficultyFromEntry,
   type DifficultyLevel,
+  generateRandomEntryByDifficulty,
 } from "./dictionaryMethods";
 
-// ✨ NEW: store the last chosen difficulty inside this helper file
+// stores the last chosen difficulty (board sets this)
 export let currentDifficulty: DifficultyLevel = "easy";
 
-export function setCurrentDifficulty(d: DifficultyLevel): void { 
+export function setCurrentDifficulty(d: DifficultyLevel): void {
   currentDifficulty = d;
 }
 
-export function getCurrentDifficulty(): DifficultyLevel {         
+export function getCurrentDifficulty(): DifficultyLevel {
   return currentDifficulty;
 }
 
@@ -35,36 +35,23 @@ function normalizeFactored(str: string): string {
   return str.toLowerCase().replace(/\s+/g, "");
 }
 
-//removes and spaces in the string for comparison
+//removes spaces for comparison
 function normalizeSolution(str: string): string {
   return str.trim();
 }
 
 export class QuadraticEquationsHelper {
-  private entries: mathDictEntry[] = []; //empty until loaded
+  private entries: mathDictEntry[] = []; // empty until loaded
   private currentQuestion: QuadraticQuestion | null = null;
-  private loadedDictionary = false; //will be set to true once the file is loaded 
-  
+  private loadedDictionary = false;
 
   /*
-  Method Name: ensureLoaded
-  Description: This method ensures that the math dictionary file is loaded and parsed into entries.
-  If the file is already loaded, it does nothing. Otherwise, it reads the file, parses each line into a mathDictEntry object,
-  and stores them in the entries array.
-  Returns: void
-  */
+   * Loads and parses the mathDictionary.txt file once.
+   */
   async ensureLoaded(): Promise<void> {
     if (this.loadedDictionary) return;
 
-    let lines: string[] = [];
-
-    try {
-      // Try to load from dictionaryMethods (browser via fetch)
-      lines = await readMathDictionary();
-    } catch (err) {
-      console.warn("readMathDictionary error:", err);
-    }
-
+    const lines = await readMathDictionary();
     const parsed: mathDictEntry[] = [];
 
     for (const line of lines) {
@@ -84,7 +71,6 @@ export class QuadraticEquationsHelper {
       return null;
     }
 
-    // pick only from entries with that difficulty
     const entryInfo = generateRandomEntryByDifficulty(this.entries, difficulty);
     if (!entryInfo) {
       return null;
@@ -111,41 +97,34 @@ export class QuadraticEquationsHelper {
     return question;
   }
 
-  ///Iterate through this method to check bug fixes
+  // Accepts factored form even if factors are flipped, ex: (x-1)(x-2) vs (x-2)(x-1)
   checkFactored(userInput: string): boolean {
     if (!this.currentQuestion) return false;
 
     const correct = normalizeFactored(this.currentQuestion.factored);
     const given = normalizeFactored(userInput);
 
-    // First, quick exact check (if they match exactly, we're done)
+    // Quick equality check first
     if (correct === given) return true;
 
     // Extract each "(...)" group from both strings
     const correctParts = correct.match(/\(.*?\)/g) || [];
     const givenParts = given.match(/\(.*?\)/g) || [];
 
-    // If we couldn't parse them, or counts differ, it's wrong
     if (correctParts.length === 0 || correctParts.length !== givenParts.length) {
       return false;
     }
 
-    // Sort both arrays so order doesn't matter
+    // Sort each list, then compare so order doesn't matter
     correctParts.sort();
     givenParts.sort();
 
-    // Join and compare
     return correctParts.join("") === givenParts.join("");
   }
 
   /*
-  Method name: checkSolutions
-  Description: This method checks if the user's input solutions match the correct solutions for the current question.
-  It normalizes both the user's input and the correct solutions by trimming spaces and splitting by commas or spaces.
-  It then compares the sets of solutions to determine if they match, regardless of order.
-  Parameters: userInput - a string containing the user's input solutions, separated by commas or spaces
-  Returns: boolean - true if the user's solutions match the correct solutions, false otherwise
-  */
+   * Checks if the user's numeric solutions match the correct ones (order-independent).
+   */
   checkSolutions(userInput: string): boolean {
     if (!this.currentQuestion) return false;
 
@@ -153,13 +132,13 @@ export class QuadraticEquationsHelper {
 
     const separators = /[,\s]+/;
     const rawParts = userInput.split(separators);
-    const trimmedParts = rawParts.map(part => part.trim());
-    const userParts = trimmedParts.filter(part => part !== "");
-    
+    const trimmedParts = rawParts.map((part) => part.trim());
+    const userParts = trimmedParts.filter((part) => part !== "");
+
     const EXPECTED_SOLUTIONS = 2;
     if (userParts.length !== EXPECTED_SOLUTIONS) return false;
 
-    const correctSet = new Set(correctList); //makes a set for correct solutions
+    const correctSet = new Set(correctList);
     for (const part of userParts) {
       if (!correctSet.has(normalizeSolution(part))) {
         return false;

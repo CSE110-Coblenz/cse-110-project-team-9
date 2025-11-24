@@ -1,17 +1,23 @@
-//Type Definitions 
-export interface mathDictEntry{
-    equation: string; //index 0
-    factored: string; //index 1
-    solutions: string[]; //index 2
-    points: string; //index 3
+// Type Definitions
+export interface mathDictEntry {
+  equation: string;   // index 0
+  factored: string;   // index 1
+  solutions: string[]; // index 2
+  points: string;     // index 3 ("1","2","3")
 }
 
-// Browser-safe version: loads from public/mathDictionary.txt using fetch
+export type DifficultyLevel = "easy" | "medium" | "hard";
+
+// Browser-safe: loads from public/mathDictionary.txt via fetch
 export async function readMathDictionary(): Promise<string[]> {
   try {
-    const response = await fetch("/mathDictionary.txt"); // file located in public/
+    const response = await fetch("/mathDictionary.txt");
     if (!response.ok) {
-      console.error("Failed to load mathDictionary.txt:", response.status, response.statusText);
+      console.error(
+        "Failed to load mathDictionary.txt:",
+        response.status,
+        response.statusText
+      );
       return [];
     }
 
@@ -21,7 +27,6 @@ export async function readMathDictionary(): Promise<string[]> {
       .map((line) => line.trim())
       .filter((line) => line.length > 0);
 
-    console.log("Loaded dictionary lines:", lines.length); // debug check
     return lines;
   } catch (err) {
     console.error("Error reading mathDictionary via fetch:", err);
@@ -29,212 +34,118 @@ export async function readMathDictionary(): Promise<string[]> {
   }
 }
 
-
-//Dictionary Functions
-
 /*
-Method Name: entryParseLine
-Description: This method parses a line from the dictionary file and seperates it into its components: equation, factored form, and solutions. 
-It looks for | as a delimiter to identify the different parts of the entry.
-Parameters: line - a string representing a single line from the dictionary file
-Returns: An array containing the equation, factored form, and solutions as strings
+Parses a line: "x² - 7x + 10 | (x - 2)(x - 5) | 2, 5 | 1"
+→ [equation, factored, solutionsArray, points]
 */
-export function entryParseLine(line: string): [string, string, string[], string] | [string] {
-    const dictionaryEntry = line.split("|").map(part => part.trim());
+export function entryParseLine(
+  line: string
+): [string, string, string[], string] | [string] {
+  const dictionaryEntry = line.split("|").map((part) => part.trim());
 
-    if (dictionaryEntry.length !== 4) {
-        return ["Error: Invalid dictionary entry format."];
-    }
+  if (dictionaryEntry.length !== 4) {
+    return ["Error: Invalid dictionary entry format."];
+  }
 
-    const [equation, factored, solutions, points] = dictionaryEntry;
-    const solutionsArray: string[] = solutions.split(",").map(sol => sol.trim());
+  const [equation, factored, solutions, points] = dictionaryEntry;
+  const solutionsArray: string[] = solutions
+    .split(",")
+    .map((sol) => sol.trim());
 
-    return [equation, factored, solutionsArray, points];
+  return [equation, factored, solutionsArray, points];
 }
 
-//To add more methods, follow the structure above.
-
-//Formatting Methods
-
-/*
-Method Name: getEquationFromEntry
-Description: This method retrieves the equation from a math dictionary entry.
-Parameters: mathDictEntry - an object representing a math dictionary entry
-Returns: The equation string from the dictionary entry.
-*/
+// Formatting methods
 export function getEquationFromEntry(entry: mathDictEntry): string {
-    if(entry == null || entry.equation == null) {
-        throw new Error("Equation: Invalid dictionary entry provided.");
-    }
-
-    if (typeof entry.equation !== "string") {
-        throw new Error("Equation must be a string.");
-    }
-
-    const equation = entry.equation;
-    return equation;
-
+  if (!entry || entry.equation == null) {
+    throw new Error("Equation: Invalid dictionary entry provided.");
+  }
+  if (typeof entry.equation !== "string") {
+    throw new Error("Equation must be a string.");
+  }
+  return entry.equation;
 }
 
-/*
-Method Name:getFactoredFromEntry
-Description: This method retrieves the factored form from a math dictionary entry.
-Parameters: mathDictEntry - an object representing a math dictionary entry
-Returns: The factored form string from the dictionary entry.
-*/
 export function getFactoredFromEntry(entry: mathDictEntry): string {
-    if(entry == null || entry.factored == null) {
-        throw new Error("Factor: Invalid dictionary entry provided.");
-    }
-
-    if (typeof entry.factored !== "string") {
-        throw new Error("Factored form must be a string.");
-    }
-
-    const factored = entry.factored;
-    return factored;
-
+  if (!entry || entry.factored == null) {
+    throw new Error("Factor: Invalid dictionary entry provided.");
+  }
+  if (typeof entry.factored !== "string") {
+    throw new Error("Factored form must be a string.");
+  }
+  return entry.factored;
 }
 
-/*
-Method Name: getSolutionsFromEntry
-Description: This method retrieves the solutions from a math dictionary entry.
-Parameters: mathDictEntry - an object representing a math dictionary entry
-Returns: An array of solution strings from the dictionary entry.
-*/
 export function getSolutionsFromEntry(entry: mathDictEntry): string[] {
-    if(entry == null || entry.solutions == null) {
-        throw new Error("Solutions: Invalid dictionary entry provided.");
-    }
-
-    if (!Array.isArray(entry.solutions)) {
-        throw new Error("Solutions must be an array.");
-    }
-
-    return entry.solutions;
+  if (!entry || entry.solutions == null) {
+    throw new Error("Solutions: Invalid dictionary entry provided.");
+  }
+  if (!Array.isArray(entry.solutions)) {
+    throw new Error("Solutions must be an array.");
+  }
+  return entry.solutions;
 }
 
 /*
-Method Name: pointPerQuestion
-Description: This method calculates the points per question based on the number value provided. 1 is easy, 2 is medium, and 3 is hard.
-Prameters: mathDictionationary - last index of each line in the dictornary file
-Returns: A number representing the points per question
+Points per question: "1" easy, "2" medium, "3" hard
 */
 export function pointPerQuestion(entry: mathDictEntry): string {
-    if(entry == null || entry.points == null) {
-        throw new Error("Points: Invalid dictionary entry provided.");
-    }
-
-    if (typeof entry.points !== "string") {
-        throw new Error("Points must be a string.");
-    }
-
-    return entry.points;
+  if (!entry || entry.points == null) {
+    throw new Error("Points: Invalid dictionary entry provided.");
+  }
+  if (typeof entry.points !== "string") {
+    throw new Error("Points must be a string.");
+  }
+  return entry.points;
 }
 
 /*
-Method name: getDifficultyFromEntry
-Description: This method retrieves the difficulty level from a math dictionary entry.
-Parameters: mathDictEntry - an object representing a math dictionary entry
+Get difficulty label from entry.points
 */
-export type DifficultyLevel = "easy" | "medium" | "hard";
-
 export function getDifficultyFromEntry(entry: mathDictEntry): DifficultyLevel {
-    const points = pointPerQuestion(entry);
-
-    if (points == null) {
-        throw new Error("Difficulty: Invalid dictionary entry provided.");
-    }
-
-    switch (points) {
-        case "1":
-            return "easy";
-        case "2":
-            return "medium";
-        case "3":
-            return "hard";
-        default:
-            return "easy"; 
-    }
+  const points = pointPerQuestion(entry);
+  switch (points) {
+    case "1":
+      return "easy";
+    case "2":
+      return "medium";
+    case "3":
+      return "hard";
+    default:
+      // fallback, shouldn't really happen if dictionary is clean
+      return "easy";
+  }
 }
 
 /*
-Method Name: genrateRandomEntry
-Description: This method generates a random math dictionary entry from a specified dictionary file.
-returns: An entry from the dictionary file 
+Generate random entry filtered by difficulty
 */
-/*export function generateRandomEntry(entries: mathDictEntry[]): { index: number; entry: mathDictEntry } | null {
-    if (entries.length === 0) {
-        return null; // No entries available
-    }
-    const randomIndex = Math.floor(Math.random() * entries.length);
-    const randomEntry = { index: randomIndex, entry: entries[randomIndex] };
-    return randomEntry;
-}*/
-/**
- * Method Name: generateRandomEntryByDifficulty
- * Description: This method generates a random math dictionary entry based on the specified difficulty level.
- * Parameters: entries - an array of math dictionary entries, difficulty - the desired difficulty level
- */
 export function generateRandomEntryByDifficulty(
   entries: mathDictEntry[],
   difficulty: DifficultyLevel
 ): { index: number; entry: mathDictEntry } | null {
-  
   if (entries.length === 0) {
     return null;
   }
 
-  const matchingEntries = entries.filter((entry) => {
-    const level = getDifficultyFromEntry(entry);
-    return level === difficulty;
-  });
+  const filtered = entries.filter(
+    (entry) => getDifficultyFromEntry(entry) === difficulty
+  );
 
-  if (matchingEntries.length === 0) {
+  if (filtered.length === 0) {
     return null;
   }
 
-  const randomIndex = Math.floor(Math.random() * matchingEntries.length);
-  const chosenEntry = matchingEntries[randomIndex];
-
-  return {
-    index: randomIndex,
-    entry: chosenEntry,
-  };
+  const randomIndex = Math.floor(Math.random() * filtered.length);
+  const entry = filtered[randomIndex];
+  return { index: randomIndex, entry };
 }
 
-/*
-Method Name: getQuestionInformation
-Description: This method calls the other formatting methods to retrieve all necessary information from a math dictionary entry.
-This method will return the equation, factored form, solutions, and points per question.
-Parameters: const randomEntry - an object representing a random math dictionary entry
-Returns: An object containing the equation, factored form, solutions, and points per question.
-*/
-export function getQuestionInformation(randomEntry: { index: number; entry: mathDictEntry }): { equation: string; factored: string; solutions: string[]; points: string } {
-    const equation = getEquationFromEntry(randomEntry.entry);
-    const factored = getFactoredFromEntry(randomEntry.entry);
-    const solutions = getSolutionsFromEntry(randomEntry.entry);
-    const points = pointPerQuestion(randomEntry.entry);
-
-    return {
-        equation,
-        factored,
-        solutions,
-        points
-    };
-}
-/*
-Method Name: showFeedback
-Method name: This method takes in the user's answer and displays feedback indicating whether the answer is correct or incorrect.
-This compares the user's answer to the correct answer and provides appropriate feedback.
-Parameters: the user's answer as a string and a boolean indicating correctness
-Returns: a feedback message to be displayed to the user
-*/
-
-export function showFeedback(message: string, isCorrect: boolean) {
-    if(isCorrect) {
-        return `✅ ${message}`;
-    } else {
-        return `❌ ${message}`;
-    }
+// Optional feedback helper; you already had this
+export function showFeedback(message: string, isCorrect: boolean): string {
+  if (isCorrect) {
+    return `✅ ${message}`;
+  } else {
+    return `❌ ${message}`;
+  }
 }
