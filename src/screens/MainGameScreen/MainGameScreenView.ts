@@ -138,11 +138,11 @@ export class MainGameScreenView implements View {
         });
 
         Konva.Image.fromURL(`${import.meta.env.BASE_URL}mainboard/images/OpenBanner.png`, (buttonImage: Konva.Image) => {
-            buttonImage.setAttrs({
-                width: 200,
-                height: 100,
-                name: 'buttonRect' // Keep the name for finding it later
-            });
+
+            buttonImage.width(200);
+            buttonImage.height(100);
+            buttonImage.name('buttonRect');
+            
             this.diceRollButton.add(buttonImage);
             buttonImage.moveToBottom();
             this.group.getLayer()?.batchDraw();
@@ -178,11 +178,9 @@ export class MainGameScreenView implements View {
         });
 
         Konva.Image.fromURL(`${import.meta.env.BASE_URL}mainboard/images/OpenBanner.png`, (settingsButtonImage: Konva.Image) => {
-            settingsButtonImage.setAttrs({
-                width: 200,
-                height: 100,
-                name: 'settingsButtonRect'
-            });
+            settingsButtonImage.width(200);
+            settingsButtonImage.height(200);
+            settingsButtonImage.name('settingsButtonRect');
             this.settingsButton.add(settingsButtonImage);
             settingsButtonImage.moveToBottom();
             this.group.getLayer()?.batchDraw();
@@ -258,8 +256,7 @@ export class MainGameScreenView implements View {
                         // If a bg image completely leaves the screen to the left,
                         // move it to the right of the other one.
                         if (bg.x() <= -this.scaledBgWidth) {
-                            const otherBg = bg === this.bg1 ? this.bg2 : this.bg1;
-                            bg.x(otherBg.x() + this.scaledBgWidth);
+                            bg.x(bg.x() + this.scaledBgWidth * 2);
                         }
                     }
                 }).play();
@@ -374,12 +371,10 @@ export class MainGameScreenView implements View {
         const colorRadius = shieldRadius * 0.85; 
 
         Konva.Image.fromURL(`${import.meta.env.BASE_URL}mainboard/images/shield.png`, (shieldImage: Konva.Image) => {
-            shieldImage.setAttrs({
-                width: shieldSize,
-                height: shieldSize,
-                offsetX: shieldRadius,
-                offsetY: shieldRadius,
-            });
+            shieldImage.width(shieldSize);
+            shieldImage.height(shieldSize);
+            shieldImage.offsetX(shieldRadius);
+            shieldImage.offsetY(shieldRadius);
             this.minigameWheel.add(shieldImage);
             shieldImage.moveToBottom();
             this.group.getLayer()?.batchDraw();
