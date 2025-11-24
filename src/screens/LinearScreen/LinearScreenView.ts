@@ -102,7 +102,7 @@ export class LinearScreenView implements View{
 	  let text_height = 30;
 	  const slope_answer = new Konva.Rect({
 		x: 4*STAGE_WIDTH/12-80,
-		y: 3*STAGE_WIDTH/6-100,
+		y: 3*STAGE_HEIGHT/6,
 		width: text_width,
 		height: text_height,
 		fill: 'gray',
@@ -112,7 +112,7 @@ export class LinearScreenView implements View{
 
 	  const int_answer = new Konva.Rect({
 		x: 8*STAGE_WIDTH/12-60,
-		y: 3*STAGE_WIDTH/6-100,
+		y: 3*STAGE_HEIGHT/6,
 		width: text_width,
 		height: text_height,
 		fill: 'gray',
@@ -121,8 +121,8 @@ export class LinearScreenView implements View{
 	  this.int_answer = int_answer;
 
 	  const txt = new Konva.Text({
-		x: 4*STAGE_WIDTH/12-70,
-		y: 3*STAGE_WIDTH/6-5,
+		x: 4*STAGE_WIDTH/12-75,
+		y: 3*STAGE_HEIGHT/6+5,
 		text: "",
 		fontSize: 20,
 		fontFamily: "Arial",
@@ -134,8 +134,8 @@ export class LinearScreenView implements View{
 
 
 	  const int_txt = new Konva.Text({
-		x: 8*STAGE_WIDTH/12-50,
-		y: 3*STAGE_WIDTH/6-5,
+		x: 8*STAGE_WIDTH/12-55,
+		y: 3*STAGE_HEIGHT/6+5,
 		text: "",
 		fontSize: 20,
 		fontFamily: "Arial",
@@ -154,7 +154,7 @@ export class LinearScreenView implements View{
 
 	  const switch_button = new Konva.Rect({
 		x: 4*STAGE_WIDTH/12-80,
-		y: 3*STAGE_WIDTH/6,
+		y: 3*STAGE_HEIGHT/6+100,
 		width: text_width,
 		height: text_height,
 		fill: 'blue',
@@ -166,7 +166,7 @@ export class LinearScreenView implements View{
 
 	  const switch_text = new Konva.Text({
 		x: 4*STAGE_WIDTH/12-70,
-		y: 3*STAGE_WIDTH/6-25,
+		y: 3*STAGE_HEIGHT/6+75,
 		text: "Switch:",
 		fontSize: 20,
 		fontFamily: "Arial",
@@ -178,7 +178,7 @@ export class LinearScreenView implements View{
 
 	  const submit = new Konva.Rect({
 		x: 8*STAGE_WIDTH/12-60,
-		y: 3*STAGE_WIDTH/6,
+		y: 3*STAGE_HEIGHT/6+100,
 		width: text_width,
 		height: text_height,
 		fill: 'blue',
@@ -189,7 +189,7 @@ export class LinearScreenView implements View{
 
 	  const submit_text = new Konva.Text({
 		x: 8*STAGE_WIDTH/12-50,
-		y: 3*STAGE_WIDTH/6-25,
+		y: 3*STAGE_HEIGHT/6+75,
 		text: "Submit:",
 		fontSize: 20,
 		fontFamily: "Arial",
@@ -207,6 +207,39 @@ export class LinearScreenView implements View{
 
 	  window.addEventListener("keydown", (e)=>this.type(e));
 	  
+
+//---------------------Checking Answer----------------------
+	    const feedback = new Konva.Text({
+		x: STAGE_WIDTH/4-50,
+		y: 3*STAGE_HEIGHT/4+70,
+		text: "",
+		fontSize: 50,
+		fontFamily: "Arial",
+		fill: "black",
+		align: "center"
+		});
+
+		group.add(feedback);
+
+
+	    submit.on("click", () => {
+		let slope_entered = Number(this.slope);
+		if (isNaN(slope_entered)){
+			feedback.text("Incorrect! m="+((m as unknown) as string)+" and b="+((b as unknown) as string));
+		}
+
+		if (m ===  slope_entered){
+			feedback.text("Correct! Keep it up!");
+		}else{
+			feedback.text("Incorrect! m="+((m as unknown) as string)+" and b="+((b as unknown) as string));
+		}
+
+		feedback.moveToTop();
+	  });
+
+
+	//-----------------------------------------------------------
+
 
 
 
@@ -234,6 +267,8 @@ export class LinearScreenView implements View{
 		}else{
 			this.intercept = this.current;
 		}
+
+		this.currentText.moveToTop();
 	}
 
 	switch_box(){
@@ -248,7 +283,7 @@ export class LinearScreenView implements View{
 			this.current = this.slope;
 			this.currentText = this.slopeText;
 			this.slope_answer.stroke("red");
-			this.int_answer.stroke("black")
+			this.int_answer.stroke("black");
 		}
 	}
 
@@ -262,12 +297,3 @@ export class LinearScreenView implements View{
 	}
 
 }
-
-
-
-
-
-
-
-
-
