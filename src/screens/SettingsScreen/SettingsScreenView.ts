@@ -203,7 +203,7 @@ export class SettingsScreenView implements View {
 			percent.text(Math.round(ratio * 100) + "%");
 		
 			if (this.onVolumeChange) {
-				this.onVolumeChange(ratio, label === "BGM" ? "bgm" : "sfx");
+				this.onVolumeChange(ratio, label === "Background Music" ? "bgm" : "sfx");
 			}
 		});
 		

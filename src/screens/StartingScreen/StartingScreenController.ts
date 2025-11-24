@@ -12,7 +12,7 @@ export class StartingScreenController extends ScreenController {
 		this.view = new StartingScreenView();
 
 		/**
-		 * Click anywhere to go to HomeScreen and start BGM
+		 * Click anywhere to go to HomeScreen
 		 */
 		this.view.getGroup().on("click", () => {
 			this.screenSwitcher.switchToScreen({ type: "home" });
