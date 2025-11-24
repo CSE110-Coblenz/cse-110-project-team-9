@@ -16,6 +16,8 @@ export class StartingScreenView implements View {
 		video.src = `${import.meta.env.BASE_URL}startingscreen/video/Startingscreen.mp4`;
 		video.load();
 		video.style.display = "none";
+		video.muted = true;
+
 
 		const videoBackground = new Konva.Image({
 			image: video,
