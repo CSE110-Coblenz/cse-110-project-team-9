@@ -17,6 +17,9 @@ export class MainGameScreenView implements View {
     private minigameSelectorGroup!: Konva.Group;
     private minigameWheel!: Konva.Group;
     private audio: AudioController;
+    private bg1!: Konva.Image;
+    private bg2!: Konva.Image;
+    private scaledBgWidth!: number;
     private boardHeadIndex = 39; // Start with the 40th tile (index 39) as the leftmost
 
     constructor(model: MainGameScreenModel, audio: AudioController) {
@@ -26,16 +29,38 @@ export class MainGameScreenView implements View {
         this.group = new Konva.Group({ visible: false });
 
         // Background image
-        Konva.Image.fromURL(`${import.meta.env.BASE_URL}mainboard/images/CobblestoneHighway.jpg`, (image: Konva.Image) => {
-            image.setAttrs({
+        Konva.Image.fromURL(`${import.meta.env.BASE_URL}mainboard/images/forestRoad.png`, (imageNode: Konva.Image) => {
+            const imageObj = imageNode.image(); // Call the method to get the HTMLImageElement
+            // Type guard to ensure we have an HTMLImageElement with width and height
+            if (!(imageObj instanceof HTMLImageElement)) {
+                console.error("Background image is not an HTMLImageElement", imageObj);
+                return;
+            }
+
+            const bgWidth = imageObj.width;
+            const bgHeight = imageObj.height;
+
+            this.scaledBgWidth = STAGE_WIDTH;
+
+            this.bg1 = new Konva.Image({
+                image: imageObj,
                 x: 0,
                 y: 0,
                 width: STAGE_WIDTH,
                 height: STAGE_HEIGHT,
             });
-            this.group.add(image);
-            image.moveToBottom();
-            this.group.getLayer()?.batchDraw();
+            this.group.add(this.bg1);
+            this.bg1.moveToBottom();
+
+            this.bg2 = new Konva.Image({
+                image: imageObj,
+                x: STAGE_WIDTH,
+                y: 0,
+                width: STAGE_WIDTH,
+                height: STAGE_HEIGHT,
+            });
+            this.group.add(this.bg2);
+            this.bg2.moveToBottom();
         });
         // const titleText = new Konva.Text({
         //     x: 0,
@@ -222,6 +247,25 @@ export class MainGameScreenView implements View {
             const allTiles = this.group.find('.tile');
             const allLabels = this.group.find('.tile-label');
             
+            // Animate background
+            [this.bg1, this.bg2].forEach(bg => {
+                new Konva.Tween({
+                    node: bg,
+                    x: bg.x() - distance,
+                    duration: 0.65,
+                    easing: Konva.Easings.EaseInOut,
+                    onFinish: () => {
+                        // If a bg image completely leaves the screen to the left,
+                        // move it to the right of the other one.
+                        if (bg.x() <= -this.scaledBgWidth) {
+                            const otherBg = bg === this.bg1 ? this.bg2 : this.bg1;
+                            bg.x(otherBg.x() + this.scaledBgWidth);
+                        }
+                    }
+                }).play();
+            });
+
+
             allTiles.forEach(tile => {
                 new Konva.Tween({ node: tile, x: tile.x() - distance, duration: 0.65, easing: Konva.Easings.EaseInOut }).play();
             });
@@ -505,19 +549,15 @@ export class MainGameScreenView implements View {
         }, 3000); // Hide the text after 3 seconds
     }
     disableRollButton(): void {
-        const buttonRect = this.diceRollButton.findOne('.buttonRect') as Konva.Shape | undefined;
-        if (buttonRect) {
-            buttonRect.listening(false);
-            this.group.getLayer()?.batchDraw();
-        }
+        this.diceRollButton.listening(false);
+        this.diceRollButton.opacity(0.5);
+        this.group.getLayer()?.batchDraw();
     }
 
     enableRollButton(): void {
-        const buttonRect = this.diceRollButton.findOne('.buttonRect') as Konva.Shape | undefined;
-        if (buttonRect) {
-            buttonRect.listening(true);
-            this.group.getLayer()?.batchDraw();
-        }
+        this.diceRollButton.listening(true);
+        this.diceRollButton.opacity(1);
+        this.group.getLayer()?.batchDraw();
     }
 
     displayNodeEvent(message: string): void {

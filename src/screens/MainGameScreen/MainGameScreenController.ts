@@ -107,10 +107,10 @@ export class MainGameScreenController extends ScreenController {
 
         if (choice === 1) {
             // Red side: Launch Among Us minigame
-            this.screenSwitcher.switchToScreen({ type: "amongUsMenu" });
+            //this.screenSwitcher.switchToScreen({ type: "amongUsMenu" });
         } else {
             // Blue side: Launch Wizard minigame
-            this.screenSwitcher.switchToScreen({ type: "wizardminigame" });
+            //this.screenSwitcher.switchToScreen({ type: "wizardminigame" });
         }
     }
 
