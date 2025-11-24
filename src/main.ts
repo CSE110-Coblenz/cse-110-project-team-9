@@ -13,9 +13,9 @@ import { MathScreenController } from "./screens/MathScreen/MathScreenController"
 import { STAGE_WIDTH, STAGE_HEIGHT } from "./constants";
 import { AudioController } from "./audios/AudioController";
 
-import { MathScreenView } from "./screens/MathScreen/MathScreenView"; 
-import { MathScreenModel } from "./screens/MathScreen/MathScreenModel"; 
-import { QuadraticEquationsHelper } from "./class/MathEquations/QuadraticEquationsHelper"; 
+import { MathScreenView } from "./screens/MathScreen/MathScreenView";
+import { MathScreenModel } from "./screens/MathScreen/MathScreenModel";
+import { QuadraticEquationsHelper } from "./class/MathEquations/QuadraticEquationsHelper";
 
 /**
  * Main Application - Coordinates all screens including minigames
@@ -32,9 +32,9 @@ class App implements ScreenSwitcher {
 	private mainGameController: MainGameScreenController;
 	private mathScreenController: MathScreenController;
 
-	private mathScreenView: MathScreenView; 
-	private mathScreenModel: MathScreenModel; 
-	private mathHelper: QuadraticEquationsHelper; 
+	private mathScreenView: MathScreenView;
+	private mathScreenModel: MathScreenModel;
+	private mathHelper: QuadraticEquationsHelper;
 
 	// Wizard minigame screens
 	private WizardGameController: WizardGameScreenController;
@@ -67,16 +67,17 @@ class App implements ScreenSwitcher {
 		this.settingsController = new SettingsScreenController(this, this.audio);
 		this.mainGameController = new MainGameScreenController(this, this.audio);
 
+		// Math screen pieces
 		this.mathScreenModel = new MathScreenModel([]); 
-		this.mathHelper = new QuadraticEquationsHelper(); 
-		this.mathScreenView = new MathScreenView(); 
-
+		this.mathHelper = new QuadraticEquationsHelper();
+		this.mathScreenView = new MathScreenView();
 		this.mathScreenController = new MathScreenController(
 			this.mathScreenView,
 			this.mathScreenModel,
 			this.mathHelper
-		); 
-		// initalize Wizard minigame screens
+		);
+
+		// Initialize Wizard minigame screens
 		this.WizardGameController = new WizardGameScreenController(this, this.audio);
 		this.WizardGuideController = new GuideScreenController(this, this.audio, this.WizardGameController);
 
@@ -92,9 +93,7 @@ class App implements ScreenSwitcher {
 		this.layer.add(this.WizardGameController.getView().getGroup());
 		this.layer.add(this.WizardGuideController.getView().getGroup());
 		this.layer.add(this.mainGameController.getView().getGroup());
-
-		this.layer.add(this.mathScreenController.getView().getGroup()); 
-
+		this.layer.add(this.mathScreenController.getView().getGroup());
 		this.layer.add(this.amongUsMenuController.getView().getGroup());
 		this.layer.add(this.amongUsGameController.getView().getGroup());
 		this.layer.add(this.amongUsResultsController.getView().getGroup());
@@ -102,7 +101,7 @@ class App implements ScreenSwitcher {
 		this.layer.draw();
 
 		// Start with starting screen visible
-		this._lastScreen = {type: "starting"};
+		this._lastScreen = { type: "starting" };
 		this.switchToScreen({ type: "starting" });
 	}
 
@@ -118,9 +117,8 @@ class App implements ScreenSwitcher {
 		this.homeController.hide();
 		this.settingsController.hide();
 		this.mainGameController.hide();
-		this.mathScreenController.hide(); 
+		this.mathScreenController.hide();
 		this.WizardGameController.hide();
-
 
 		// Hide all minigame screens
 		this.amongUsMenuController.hide();
@@ -154,6 +152,7 @@ class App implements ScreenSwitcher {
 
 			// Quadratic Math Screen
 			case "math":
+				this.mathScreenController.init(); 
 				this.mathScreenController.show();
 				break;
 
@@ -183,7 +182,9 @@ class App implements ScreenSwitcher {
 		}
 	}
 
-	get lastScreen() { return this._lastScreen; }
+	get lastScreen() { 
+		return this._lastScreen; 
+	}
 }
 
 // Initialize the application

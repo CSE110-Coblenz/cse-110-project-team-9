@@ -2,6 +2,8 @@ import { NodeType, MainGameScreenModel } from "../MainGameScreen/MainGameScreenM
 import { MainGameScreenView } from "../MainGameScreen/MainGameScreenView";
 import { ScreenController, ScreenSwitcher } from "../../types";
 import { AudioController } from "../../audios/AudioController";
+import type { DifficultyLevel } from "../../class/MathEquations/dictionaryMethods";
+import { setCurrentDifficulty } from "../../class/MathEquations/QuadraticEquationsHelper";
 
 export class MainGameScreenController extends ScreenController {
 
@@ -75,13 +77,26 @@ export class MainGameScreenController extends ScreenController {
         {
             case NodeType.EASY_QUESTION:
             case NodeType.MEDIUM_QUESTION:
-            case NodeType.HARD_QUESTION:
-                this.view.displayNodeEvent("You landed on a Question tile!");
+            case NodeType.HARD_QUESTION:{
+                let difficulty: DifficultyLevel;
+
+                if (nodeType === NodeType.EASY_QUESTION) {
+                    difficulty = "easy";   
+                } else if (nodeType === NodeType.MEDIUM_QUESTION) {
+                    difficulty = "medium"; 
+                } else {
+                    difficulty = "hard";   
+                }
+                setCurrentDifficulty(difficulty);
+                
+                this.view.displayNodeEvent(
+                    `You landed on a ${difficulty} question tile!`
+                );
+
                 this.screenSwitcher.switchToScreen({ type: "math" });
-                //const newQuestionScore = this.gameModel.getPlayerScore("default") + 5;
-                //this.gameModel.setPlayerScore("default", newQuestionScore);
-                //this.view.updateScoreDisplay(newQuestionScore);
-                break;
+
+            break;
+            }
 
             case NodeType.MINIGAME:
                 this.view.displayNodeEvent("You landed on a Minigame tile!");

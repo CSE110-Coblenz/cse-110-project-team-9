@@ -1,6 +1,6 @@
 import { MathScreenModel } from "./MathScreenModel";
 import { MathScreenView } from "./MathScreenView";
-import { QuadraticEquationsHelper } from "../../class/MathEquations/QuadraticEquationsHelper";
+import { QuadraticEquationsHelper, getCurrentDifficulty } from "../../class/MathEquations/QuadraticEquationsHelper"; // ✨ combined import
 
 export class MathScreenController {
   private view: MathScreenView;
@@ -19,7 +19,9 @@ export class MathScreenController {
   async init(): Promise<void> {
     await this.helper.ensureLoaded();
 
-    const next = this.helper.getNextQuestion();
+    const difficulty = getCurrentDifficulty();
+
+    const next = this.helper.getNextQuestion(difficulty);
     if (next) {
       this.model.loadNextQuestion();
       this.view.showEquation(`Factor this: ${next.equation}`);
@@ -50,35 +52,38 @@ export class MathScreenController {
       this.view.showFeedback("❌ Try again. Make sure parentheses and signs match.", false);
     }
   }
+
   private handleSolutions(userInput: string): void {
-  const isCorrect = this.helper.checkSolutions(userInput);
+    const isCorrect = this.helper.checkSolutions(userInput);
 
-  if (isCorrect) {
-    const question = this.model.getCurrentQuestion();
-    if (question) {
-      this.model.addPoints(question.points);
-    }
+    if (isCorrect) {
+      const question = this.model.getCurrentQuestion();
+      if (question) {
+        this.model.addPoints(question.points);
+      }
 
-    const score = this.model.getScore();
-    this.view.showFeedback(`✅ Correct! Score: ${score}`, true);
+      const score = this.model.getScore();
+      this.view.showFeedback(`✅ Correct! Score: ${score}`, true);
 
-    const next = this.helper.getNextQuestion();
-    if (next) {
-      this.model.loadNextQuestion();
-      this.view.showEquation(`Factor this: ${next.equation}`);
-      this.view.showEnterFactored();
-      this.phase = "factored";
-      this.view.clearAnswer();
+      // ✨ NEW: always use the current difficulty when getting the next question
+      const difficulty = getCurrentDifficulty();
+      const next = this.helper.getNextQuestion(difficulty);
+
+      if (next) {
+        this.model.loadNextQuestion();
+        this.view.showEquation(`Factor this: ${next.equation}`);
+        this.view.showEnterFactored();
+        this.phase = "factored";
+        this.view.clearAnswer();
+      } else {
+        this.view.showFeedback("🎉 You've completed all questions!", true);
+      }
     } else {
-      this.view.showFeedback("🎉 You've completed all questions!", true);
+      this.view.showFeedback("❌ Incorrect solutions. Try again (e.g., 2, 5).", false);
     }
-  } else {
-    this.view.showFeedback("❌ Incorrect solutions. Try again (e.g., 2, 5).", false);
   }
-}
 
-
-   show(): void {
+  show(): void {
     this.view.show();
   }
 

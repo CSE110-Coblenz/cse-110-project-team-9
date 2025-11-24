@@ -11,6 +11,16 @@ import {
   type DifficultyLevel,
 } from "./dictionaryMethods";
 
+// ✨ NEW: store the last chosen difficulty inside this helper file
+export let currentDifficulty: DifficultyLevel = "easy";
+
+export function setCurrentDifficulty(d: DifficultyLevel): void { 
+  currentDifficulty = d;
+}
+
+export function getCurrentDifficulty(): DifficultyLevel {         
+  return currentDifficulty;
+}
 
 export type QuadraticQuestion = {
   equation: string;
@@ -19,7 +29,6 @@ export type QuadraticQuestion = {
   points: number;
   difficulty: DifficultyLevel;
 };
-
 
 //converts the string to lowercase and removes spaces for comparison
 function normalizeFactored(str: string): string {
@@ -50,13 +59,11 @@ export class QuadraticEquationsHelper {
     let lines: string[] = [];
 
     try {
-      // 💡 Try to load from dictionaryMethods (in Node tests / non-browser)
+      // Try to load from dictionaryMethods (browser via fetch)
       lines = await readMathDictionary();
     } catch (err) {
-      // 💡 If that throws, we’ll fallback below
-      console.warn("readMathDictionary error, will use fallback questions:", err);
+      console.warn("readMathDictionary error:", err);
     }
-
 
     const parsed: mathDictEntry[] = [];
 
@@ -73,37 +80,36 @@ export class QuadraticEquationsHelper {
   }
 
   getNextQuestion(difficulty: DifficultyLevel): QuadraticQuestion | null {
-  if (!this.loadedDictionary || this.entries.length === 0) {
-    return null;
+    if (!this.loadedDictionary || this.entries.length === 0) {
+      return null;
+    }
+
+    // pick only from entries with that difficulty
+    const entryInfo = generateRandomEntryByDifficulty(this.entries, difficulty);
+    if (!entryInfo) {
+      return null;
+    }
+
+    const entry = entryInfo.entry;
+
+    const equation = getEquationFromEntry(entry);
+    const factored = getFactoredFromEntry(entry);
+    const solutions = getSolutionsFromEntry(entry).map((s) => s.trim());
+    const pointsStr = pointPerQuestion(entry);
+    const points = Number(pointsStr) || 1;
+    const level = getDifficultyFromEntry(entry);
+
+    const question: QuadraticQuestion = {
+      equation,
+      factored,
+      solutions,
+      points,
+      difficulty: level,
+    };
+
+    this.currentQuestion = question;
+    return question;
   }
-
-  // pick only from entries with that difficulty
-  const entryInfo = generateRandomEntryByDifficulty(this.entries, difficulty);
-  if (!entryInfo) {
-    return null;
-  }
-
-  const entry = entryInfo.entry;
-
-  const equation = getEquationFromEntry(entry);
-  const factored = getFactoredFromEntry(entry);
-  const solutions = getSolutionsFromEntry(entry).map((s) => s.trim());
-  const pointsStr = pointPerQuestion(entry);
-  const points = Number(pointsStr) || 1;
-  const level = getDifficultyFromEntry(entry);
-
-  const question: QuadraticQuestion = {
-    equation,
-    factored,
-    solutions,
-    points,
-    difficulty: level,
-  };
-
-  this.currentQuestion = question;
-  return question;
-}
-
 
   ///Iterate through this method to check bug fixes
   checkFactored(userInput: string): boolean {
@@ -112,23 +118,23 @@ export class QuadraticEquationsHelper {
     const correct = normalizeFactored(this.currentQuestion.factored);
     const given = normalizeFactored(userInput);
 
-    // 💡 First, quick exact check (if they match exactly, we're done)
+    // First, quick exact check (if they match exactly, we're done)
     if (correct === given) return true;
 
-    // 💡 Extract each "(...)" group from both strings
+    // Extract each "(...)" group from both strings
     const correctParts = correct.match(/\(.*?\)/g) || [];
     const givenParts = given.match(/\(.*?\)/g) || [];
 
-    // 💡 If we couldn't parse them, or counts differ, it's wrong
+    // If we couldn't parse them, or counts differ, it's wrong
     if (correctParts.length === 0 || correctParts.length !== givenParts.length) {
       return false;
     }
 
-    // 💡 Sort both arrays so order doesn't matter
+    // Sort both arrays so order doesn't matter
     correctParts.sort();
     givenParts.sort();
 
-    // 💡 Join and compare
+    // Join and compare
     return correctParts.join("") === givenParts.join("");
   }
 
