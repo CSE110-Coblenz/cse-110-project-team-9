@@ -6,8 +6,6 @@ import {
 } from "../../class/MathEquations/QuadraticEquationsHelper";
 import type { ScreenSwitcher } from "../../types";
 
-
-
 export class MathScreenController {
   private view: MathScreenView;
   private model: MathScreenModel;
@@ -81,19 +79,11 @@ export class MathScreenController {
       const score = this.model.getScore();
       this.view.showFeedback(`✅ Correct! Score: ${score}`, true);
 
-      const difficulty = getCurrentDifficulty();
-      const next = this.helper.getNextQuestion(difficulty);
-
-      if (next) {
-        this.model.loadNextQuestion(next);
-        this.view.showEquation(`Factor this: ${next.equation}`);
-        this.view.showEnterFactored();
-        this.phase = "factored";
-        this.view.clearAnswer();
-      } else {
-        this.view.showFeedback("🎉 You've completed all questions!", true);
+      // After finishing ONE full question (factored + solutions),
+      // go back to the main board screen.
+      setTimeout(() => {
         this.screenSwitcher.switchToScreen({ type: "mainGame" });
-      }
+      }, 800);
     } else {
       this.view.showFeedback(
         "❌ Incorrect solutions. Try again (e.g., 2, 5).",
