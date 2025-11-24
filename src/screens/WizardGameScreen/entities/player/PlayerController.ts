@@ -13,7 +13,9 @@ export class PlayerController implements Collidable {
         private view: PlayerViewer,
         private audio: AudioController,
         private input: InputHandler,
-        private exit: () => void
+        private exit: () => void,
+        private mathQuestion: () => void
+
     ) {
         for (const key in this._model.audio) {
             this.audio.registerSound(key, this._model.audio[key]);
@@ -41,6 +43,10 @@ export class PlayerController implements Collidable {
     update(deltaTime: number) {
         if (this._model.health == 0) {
             this.destroy();
+        }
+
+        if (this._model.stamina == 0){
+            this.mathQuestion();
         }
 
         let dx = 0, dy = 0;
