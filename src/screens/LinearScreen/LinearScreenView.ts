@@ -100,6 +100,33 @@ export class LinearScreenView implements View{
 	  //--------------------------Creating Answer Boxes----------------
 	  let text_width = 90;
 	  let text_height = 30;
+	  
+	  const m_equals_text = new Konva.Text({
+		x: 4*STAGE_WIDTH/12-85,
+		y: 3*STAGE_HEIGHT/6+5,
+		text: "m=",
+		fontSize: 20,
+		fontFamily: "Arial",
+		fill: "white",
+		align: "center"
+
+	  });
+	  group.add(m_equals_text);
+
+	  const b_equals_text = new Konva.Text({
+		x: 8*STAGE_WIDTH/12-70,
+		y: 3*STAGE_HEIGHT/6+5,
+		text: "b=",
+		fontSize: 20,
+		fontFamily: "Arial",
+		fill: "white",
+		align: "center"
+
+	  });
+	  group.add(b_equals_text);
+
+
+	 
 	  const slope_answer = new Konva.Rect({
 		x: 4*STAGE_WIDTH/12-80,
 		y: 3*STAGE_HEIGHT/6,
