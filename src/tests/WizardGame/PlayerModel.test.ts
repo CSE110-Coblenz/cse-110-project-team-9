@@ -11,7 +11,7 @@ import {
     DEFAULT_STAMINA, 
     PLAYER_SPEED,
     SPRITE_WIDTH 
-} from "../../screens/WizardGameScreen/config";
+} from "../../screens/WizardGameScreen/config.js";
 
 describe("PlayerModel", () => {
     let model: PlayerModel;
