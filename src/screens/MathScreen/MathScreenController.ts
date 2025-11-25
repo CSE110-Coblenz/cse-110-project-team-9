@@ -82,7 +82,8 @@ export class MathScreenController {
       // After finishing ONE full question (factored + solutions),
       // go back to the main board screen.
       setTimeout(() => {
-        this.screenSwitcher.switchToScreen({ type: "mainGame" });
+        this.hide();
+        
       }, 800);
     } else {
       this.view.showFeedback(

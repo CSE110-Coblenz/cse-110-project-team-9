@@ -74,27 +74,20 @@ export class MainGameScreenController extends ScreenController {
         switch (nodeType)
         {   
             case NodeType.EASY_QUESTION:
+                setCurrentDifficulty("easy" as DifficultyLevel);
+                this.view.displayNodeEvent("You landed on an Easy Question tile!");
+                this.screenSwitcher.layerOnScreen({ type: "math" });
+                break;
             case NodeType.MEDIUM_QUESTION:
-            case NodeType.HARD_QUESTION:{
-                let difficulty: DifficultyLevel;
-
-                if (nodeType === NodeType.EASY_QUESTION) {
-                    difficulty = "easy";   
-                } else if (nodeType === NodeType.MEDIUM_QUESTION) {
-                    difficulty = "medium"; 
-                } else {
-                    difficulty = "hard";   
-                }
-                setCurrentDifficulty(difficulty);
-                
-                this.view.displayNodeEvent(
-                    `You landed on a ${difficulty} question tile!`
-                );
-
-                this.screenSwitcher.switchToScreen({ type: "math" });
-
-            break;
-            }
+                setCurrentDifficulty("medium" as DifficultyLevel);
+                this.view.displayNodeEvent("You landed on a Medium Question tile!");
+                this.screenSwitcher.layerOnScreen({ type: "math" });
+                break;
+            case NodeType.HARD_QUESTION:
+                setCurrentDifficulty("hard" as DifficultyLevel);
+                this.view.displayNodeEvent("You landed on a Hard Question tile!");  
+                this.screenSwitcher.layerOnScreen({ type: "math" });
+                break;
 
             case NodeType.MINIGAME:
                 this.view.displayNodeEvent("You landed on a Minigame tile!");

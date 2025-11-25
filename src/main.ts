@@ -152,12 +152,6 @@ class App implements ScreenSwitcher {
 				this.WizardGameController.startGame();
 				break;
 
-			// Quadratic Math Screen
-			case "math":
-				this.mathScreenController.init(); 
-				this.mathScreenController.show();
-				break;
-
 			// Among Us minigame screens
 			case "amongUsMenu":
 				this.amongUsMenuController.show();
@@ -181,7 +175,13 @@ class App implements ScreenSwitcher {
 			case "wizardguide":
 				this.WizardGuideController.show();
 				break;
+			
+			case "math":
+				this.mathScreenController.init(); 
+				this.mathScreenController.show();
+				break;
 		}
+		
 	}
 
 	get lastScreen() { 
