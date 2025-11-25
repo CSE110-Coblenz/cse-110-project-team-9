@@ -11,6 +11,7 @@ import { AmongUsGameScreenController } from "./screens/AmongUsGameScreen/GameScr
 import { AmongUsResultsScreenController } from "./screens/AmongUsGameScreen/ResultsScreen/ResultsScreenController";
 import { STAGE_WIDTH, STAGE_HEIGHT } from "./constants";
 import { AudioController } from "./audios/AudioController";
+import {LinearScreenController} from "./screens/LinearScreen/LinearScreenController";
 
 import { MathScreenController } from "./screens/MathScreen/MathScreenController";
 import { MathScreenView } from "./screens/MathScreen/MathScreenView";
@@ -48,6 +49,9 @@ class App implements ScreenSwitcher {
 	private amongUsMenuController: AmongUsMenuScreenController;
 	private amongUsGameController: AmongUsGameScreenController;
 	private amongUsResultsController: AmongUsResultsScreenController;
+
+
+	private linearScreenController: LinearScreenController;
 
 	private audio: AudioController;
 
@@ -93,6 +97,8 @@ class App implements ScreenSwitcher {
 		this.amongUsGameController = new AmongUsGameScreenController(this, this.audio);
 		this.amongUsResultsController = new AmongUsResultsScreenController(this);
 
+		this.linearScreenController = new LinearScreenController(this);
+
 		// Add all screen groups to the layer
 		this.layer.add(this.startingController.getView().getGroup());
 		this.layer.add(this.homeController.getView().getGroup());
@@ -110,6 +116,8 @@ class App implements ScreenSwitcher {
 		ctx.imageSmoothingEnabled = false;
 		this.layer.add(this.WizardGuideController.getView().getGroup());
 
+		this.layer.add(this.linearScreenController.getView().getGroup());
+		//DO I need this draw
 		this.layer.draw();
 
 		// Start with starting screen visible
@@ -184,10 +192,14 @@ class App implements ScreenSwitcher {
 				this.mathScreenController.init(); 
 				this.mathScreenController.show();
 				break;
+			case "linear_screen":
+				this.linearScreenController.show();
+				break;
 		}
 	}
 
 	get lastScreen() { return this._lastScreen; }
 }
 
+// Initialize the application
 new App("container");

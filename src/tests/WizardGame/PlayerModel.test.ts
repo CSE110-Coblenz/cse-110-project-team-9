@@ -3,7 +3,7 @@
  */
 
 import { describe, it, beforeEach, expect } from "vitest";
-import { PlayerModel } from "../../screens/WizardGameScreen/entities/player/PlayerModel.js";
+import { PlayerModel } from "../../screens/WizardGameScreen/entities/player/PlayerModel";
 import { 
     PLAYER_START_X, 
     PLAYER_START_Y, 
@@ -11,7 +11,7 @@ import {
     DEFAULT_STAMINA, 
     PLAYER_SPEED,
     SPRITE_WIDTH 
-} from "../../screens/WizardGameScreen/config.js";
+} from "../../screens/WizardGameScreen/config";
 
 describe("PlayerModel", () => {
     let model: PlayerModel;
