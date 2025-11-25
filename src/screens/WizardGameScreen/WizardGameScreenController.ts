@@ -47,6 +47,7 @@ export class WizardGameScreenController extends ScreenController {
             this.audio, 
             this.input,
             () => this.exit(),
+            () => this.mathQuestion()
         );
 
         this.collisionManager = new CollisionManager();
@@ -143,6 +144,12 @@ export class WizardGameScreenController extends ScreenController {
 
     exit() {
         this.stopGame();
+        this.screenSwitcher.switchToScreen({ type:"mainGame" });
+    }
+
+    mathQuestion() {
+        //just call the math function make it like a settings
+        this.pauseGame();
         this.screenSwitcher.switchToScreen({ type:"mainGame" });
     }
 

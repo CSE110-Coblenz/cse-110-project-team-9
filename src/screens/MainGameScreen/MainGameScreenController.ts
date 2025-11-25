@@ -42,6 +42,7 @@ export class MainGameScreenController extends ScreenController {
 
     public diceRoll(): number {
         return Math.floor(Math.random() * 6) + 1;
+        //return 4;
     }
 
     public async onPlayerRoll() {
@@ -52,9 +53,6 @@ export class MainGameScreenController extends ScreenController {
         const roll = this.diceRoll();
         this.audio.play("dice_sfx", false);
         this.view.displayRollResult(roll);
-
-        // Play the sound effect immediately, before any async operations.
-        this.audio.play("dice_sfx", false);
 
         // Execute the rest of the turn logic asynchronously.
         this.executeTurn(roll);
@@ -74,7 +72,7 @@ export class MainGameScreenController extends ScreenController {
     public triggerNodeEvent(nodeIndex: number): void {
         const nodeType = this.gameModel.getNodeType(nodeIndex); 
         switch (nodeType)
-        {
+        {   
             case NodeType.EASY_QUESTION:
             case NodeType.MEDIUM_QUESTION:
             case NodeType.HARD_QUESTION:{
@@ -100,7 +98,7 @@ export class MainGameScreenController extends ScreenController {
 
             case NodeType.MINIGAME:
                 this.view.displayNodeEvent("You landed on a Minigame tile!");
-                // this.screenSwitcher.switchToScreen({ type: "wizardminigame" });
+                //this.screenSwitcher.switchToScreen({ type: "wizardminigame" });
                 this.triggerRandomMinigame();
                 // Wait for the message to display, then trigger minigame
                 // setTimeout(() => {
@@ -117,17 +115,17 @@ export class MainGameScreenController extends ScreenController {
         }
     }
 
-    /**
+        /**
      * Randomly select and launch a minigame
      */
-    private triggerRandomMinigame(): void {
-        const minigameChoice = Math.floor(Math.random() * 2) + 1; // 1 or 2
-                
-        if (minigameChoice === 1) {
-            // Launch Among Us minigame
+    private async triggerRandomMinigame(): Promise<void> {
+        const choice = await this.view.spinMinigameWheel();
+
+        if (choice === 1) {
+            // Red side: Launch Among Us minigame
             this.screenSwitcher.switchToScreen({ type: "amongUsMenu" });
         } else {
-            // Launch Wizard minigame
+            // Blue side: Launch Wizard minigame
             this.screenSwitcher.switchToScreen({ type: "wizardminigame" });
         }
     }
