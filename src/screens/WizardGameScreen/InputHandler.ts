@@ -1,7 +1,7 @@
 export class InputHandler {
     private keys: Record<string, boolean>;
     private listenersBound: boolean;
-    private allowed: Set<string>; 
+    private allowed: Set<string>;
 
     constructor(){
         this.keys = {};
@@ -33,19 +33,19 @@ export class InputHandler {
     private onKeyDown = (e: KeyboardEvent) => {
         const key = e.key.toLowerCase(); 
         if (this.allowed.has(key)) {
-            this.keys[e.key] = true;
+            this.keys[key] = true;
         }
     };  
 
     private onKeyUp = (e: KeyboardEvent) => {
         const key = e.key.toLowerCase(); 
         if (this.allowed.has(key)) {
-            this.keys[e.key] = false;
+            this.keys[key] = false;
         }
     };
 
     public isDown(key: string): boolean {
-        //bang operation to convert to boolean
-        return !!this.keys[key];
+        //bang operation to convert to true/false
+        return !!this.keys[key.toLowerCase()];
     }
 }

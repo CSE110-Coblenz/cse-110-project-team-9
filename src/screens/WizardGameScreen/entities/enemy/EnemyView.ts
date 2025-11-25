@@ -2,7 +2,7 @@ import Konva from "konva";
 import { EnemyModel } from "./EnemyModel";
 import { FRAME_RATE, SPRITE_WIDTH } from "../../config";
 
-export class EnemyViewer {
+export class EnemyView {
     private bodySprite: Konva.Sprite;
     private attackSprite: Konva.Sprite;
     private previousDirection: "left" | "right" | null = null;
@@ -122,6 +122,5 @@ export class EnemyViewer {
     get bodyBoxes() { return this._model.bodyBox(this.bodySprite.frameIndex(), this._scale); }
     get attackBoxes() { return this._model.attackBox(this.attackSprite.frameIndex(), this._scale); }
 }
-
 
 

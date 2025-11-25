@@ -1,5 +1,5 @@
 import { EnemyModel } from "./EnemyModel";
-import { EnemyViewer } from "./EnemyView";
+import { EnemyView } from "./EnemyView";
 import { Collidable } from "../CollisionManager";
 import { AudioController } from "../../../../audios/AudioController";
 import { PLAYER_DAMAGE } from "../../config";
@@ -8,7 +8,7 @@ export class EnemyController implements Collidable {
 
     constructor(
         private _model: EnemyModel, 
-        private view: EnemyViewer,
+        private view: EnemyView,
         private audio: AudioController
     ) {
         for (const key in this._model.audio){

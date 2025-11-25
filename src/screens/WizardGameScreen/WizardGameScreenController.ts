@@ -24,10 +24,10 @@ export class WizardGameScreenController extends ScreenController {
     private animationFrameId: number | null = null;
 
     private keydownHandler = (e: KeyboardEvent) => {
-        if (e.key === 'Escape'){
+        if (e.key === 'Escape') {
             this.pauseGame();
             this.screenSwitcher.layerOnScreen({ type: "wizardguide" });
-        } 
+        }
     }
 
     constructor(private screenSwitcher: ScreenSwitcher, private audio: AudioController) {
@@ -61,20 +61,11 @@ export class WizardGameScreenController extends ScreenController {
         );  
     }
 
-    windowBind() {
-        window.addEventListener('keydown', this.keydownHandler);
-    }
-
-    windowUnbind() {
-        window.removeEventListener('keydown', this.keydownHandler);
-    }
-
     startGame() {
         this.view.show();
-        this.windowBind();
+        window.addEventListener('keydown', this.keydownHandler);
         this.input.bind();
         this.collisionManager.register(this.playerController);
-        this.disableImageSmoothing();
 
         this.audio.play("wizard_bgm", true);
         this.lastUpdateTime = performance.now();
@@ -82,15 +73,6 @@ export class WizardGameScreenController extends ScreenController {
 
         this.pauseGame();
         this.screenSwitcher.layerOnScreen({ type: "wizardguide" });
-    }
-
-    //weird fix to disable smoothing on pixel art
-    private disableImageSmoothing(): void {
-        const layer = this.view.getGroup().getLayer();
-        if (layer) {
-            const ctx = layer.getContext() as unknown as CanvasRenderingContext2D;
-            ctx.imageSmoothingEnabled = false;
-        }
     }
 
     private updateLoop = () => {
@@ -114,7 +96,7 @@ export class WizardGameScreenController extends ScreenController {
             cancelAnimationFrame(this.animationFrameId);
             this.animationFrameId = null;
         }
-        this.windowUnbind();
+        window.removeEventListener('keydown', this.keydownHandler);
         this.input.unbind();
         this.collisionManager.unregisterAll();
         this.audio.stopAll();
@@ -133,11 +115,9 @@ export class WizardGameScreenController extends ScreenController {
             cancelAnimationFrame(this.animationFrameId);
             this.animationFrameId = null;
         }
-        this.input.unbind();
     }
 
     resumeGame() {
-        this.input.bind();
         this.lastUpdateTime = performance.now();
         this.updateLoop();
     }
@@ -148,9 +128,8 @@ export class WizardGameScreenController extends ScreenController {
     }
 
     mathQuestion() {
-        //just call the math function make it like a settings
         this.pauseGame();
-        this.screenSwitcher.switchToScreen({ type:"mainGame" });
+        this.screenSwitcher.layerOnScreen({ type:"math" });
     }
 
     getView(): WizardGameScreenView {

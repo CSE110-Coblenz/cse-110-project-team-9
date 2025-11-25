@@ -1,7 +1,7 @@
 import { computeAllAnimationBoundingBoxes } from "./CreateBoundingBox";
 
-export const orcSrc = `${import.meta.env.BASE_URL}/wizardminigame/sprites/orc/Orc.png`;
-export const orcAttackSrc = `${import.meta.env.BASE_URL}/wizardminigame/sprites/orc/Orc-Attack_Effect.png`;
+export const orcSrc = `${import.meta.env.BASE_URL}wizardminigame/sprites/orc/Orc.png`;
+export const orcAttackSrc = `${import.meta.env.BASE_URL}wizardminigame/sprites/orc/Orc-Attack_Effect.png`;
 
 export type OrcAnimation = "idle" | "walk" | "attacklight" | "attackheavy" | "damage" | "death";
 export type OrcAttackAnimation = "attacklight" | "attackheavy";

@@ -15,7 +15,6 @@ export class PlayerController implements Collidable {
         private input: InputHandler,
         private exit: () => void,
         private mathQuestion: () => void
-
     ) {
         for (const key in this._model.audio) {
             this.audio.registerSound(key, this._model.audio[key]);
