@@ -15,20 +15,18 @@ export class AmongUsGameScreenView implements View {
 	private timerText: Konva.Text;
 	private puzzleView: PuzzleView;
 	private onMatchingSubmit: (matches: Map<number, number>) => void;
-	private onObstacleClick?: (p: PuzzleModel | null) => void;
 	private player?: PlayerSprite;
 	private obstacles: Obstacle[] = [];
+	private interactionHint: Konva.Text | null = null;
 
 	constructor(
 		onMatchingSubmit: (matches: Map<number, number>) => void, 
-		onObstacleClick?: (p: PuzzleModel | null) => void
 	) {
 		this.group = new Konva.Group({ visible: false });
 		this.onMatchingSubmit = onMatchingSubmit;
-		this.onObstacleClick = onObstacleClick;
 
 		// Background
-		Konva.Image.fromURL(`${import.meta.env.BASE_URL}AmongUsMiniGame/Background/terrace.png`, (background) => {
+		Konva.Image.fromURL(`${import.meta.env.BASE_URL}AmongUsMiniGame/Background/background.webp`, (background) => {
 			background.width(STAGE_WIDTH);
 			background.height(STAGE_HEIGHT);
 			background.x(0);
@@ -61,22 +59,35 @@ export class AmongUsGameScreenView implements View {
 		// Updated: Pass matching submit callback
 		this.puzzleView = new PuzzleView(this.group, this.onMatchingSubmit);
 
-		this.player = new PlayerSprite(this.group, STAGE_WIDTH / 2, STAGE_HEIGHT / 2, { 
-			scale: 2, 
+		this.player = new PlayerSprite(this.group, 75, STAGE_HEIGHT / 1.25, { 
+			scale: 1, 
 			frameRate: 8, 
 			onReady: () => {
 				this.group.getLayer()?.draw();
 			}
 		});
+
+		// Create interaction hint text
+		this.interactionHint = new Konva.Text({
+			x: STAGE_WIDTH / 2,
+			y: 150,
+			text: "Press E to solve puzzle",
+			fontSize: 24,
+			fontFamily: "HomeScreenFont",
+			fill: "yellow",
+			align: "center",
+			visible: false,
+		});
+		// Center the text horizontally
+		this.interactionHint.offsetX(this.interactionHint.width() / 2);
+		this.group.add(this.interactionHint);
 	}
 
 	/**
 	 * Create an obstacle and add it to the view
 	 */
 	addObstacle(id: number, x: number, y: number, puzzle: PuzzleModel | null): Obstacle {
-		const ob = new Obstacle(id, x, y, puzzle, this.group, (p) => {
-			if (this.onObstacleClick) this.onObstacleClick(p);
-		});
+		const ob = new Obstacle(id, x, y, puzzle, this.group);
 		this.obstacles.push(ob);
 		if (this.player) {
 			this.player.moveToTop();
@@ -140,6 +151,47 @@ export class AmongUsGameScreenView implements View {
 	}
 
 	/**
+	 * Play attack animation on player
+	 */
+	playPlayerAttack(): void {
+		if (!this.player) return;
+		this.player.setAttacking();
+	}
+
+	/**
+	 * Play hurt animation on player
+	 */
+	playPlayerHurt(): void {
+		if (!this.player) return;
+		this.player.setHurt();
+	}
+
+	/**
+	 * Play access animation on player
+	 */
+	playPlayerAccess(): void {
+		if (!this.player) return;
+		this.player.setAccessing();
+	}
+
+	/**
+	 * Reset player to idle
+	 */
+	resetPlayerToIdle(): void {
+		if (!this.player) return;
+		this.player.resetToIdle();
+	}
+
+	/**
+	 * Play explode animation on obstacle
+	 */
+	playObstacleExplode(puzzle: PuzzleModel, onComplete?: () => void): void {
+		const ob = this.obstacles.find(o => o.puzzle === puzzle);
+		if (!ob) return;
+		ob.playExplodeAnimation(onComplete);
+	}
+
+	/**
 	 * Render the matching puzzle
 	 */
 	renderPuzzle(puzzle: { question: string; options: string[] }): void {
@@ -161,17 +213,21 @@ export class AmongUsGameScreenView implements View {
 		this.timerText.text(`Time: ${timeRemaining}`);
 
 		// Visual warning when time is running low
-		if (timeRemaining <= 10) {
+		if (timeRemaining <= 20) {
 			this.timerText.fill("red");
-			this.timerText.fontSize(36);
+			this.timerText.fontSize(32);
 			// Pulse effect
 			if (timeRemaining % 2 === 0) {
 				this.timerText.opacity(1);
 			} else {
 				this.timerText.opacity(0.7);
 			}
-		} else if (timeRemaining <= 20) {
+		} else if (timeRemaining <= 50) {
 			this.timerText.fill("orange");
+			this.timerText.fontSize(32);
+			this.timerText.opacity(1);
+		} else if (timeRemaining <= 75) {
+			this.timerText.fill("yellow");
 			this.timerText.fontSize(32);
 			this.timerText.opacity(1);
 		} else {
@@ -211,5 +267,39 @@ export class AmongUsGameScreenView implements View {
 	 */
 	hidePuzzle(feedback: string): void {
 		this.puzzleView.hide(feedback);
+	}
+
+	/**
+	 * Find the nearest unsolved obstacle within interaction distance
+	 */
+	getNearestNearbyObstacle(playerPos: { x: number; y: number }, threshold: number): PuzzleModel | null {
+		let nearest: { puzzle: PuzzleModel; distance: number } | null = null;
+
+		for (const ob of this.obstacles) {
+			if (ob.isSolved()) continue;
+			if (!ob.puzzle) continue;
+
+			const pos = ob.getPosition();
+			if (!pos) continue;
+
+			const distance = Math.hypot(playerPos.x - pos.x, playerPos.y - pos.y);
+			if (distance <= threshold) {
+				if (!nearest || distance < nearest.distance) {
+					nearest = { puzzle: ob.puzzle, distance };
+				}
+			}
+		}
+
+		return nearest ? nearest.puzzle : null;
+	}
+
+	/**
+	 * Show or hide the interaction hint
+	 */
+	setNearbyObstacleHint(show: boolean): void {
+		if (this.interactionHint) {
+			this.interactionHint.visible(show);
+			this.group.getLayer()?.batchDraw();
+		}
 	}
 }

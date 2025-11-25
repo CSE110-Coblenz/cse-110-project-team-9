@@ -12,7 +12,7 @@ export class AmongUsMenuScreenView implements View {
 		this.group = new Konva.Group({ visible: true });
 
 		// Background Image
-		Konva.Image.fromURL(`${import.meta.env.BASE_URL}AmongUsMiniGame/Background/terrace.png`, (background) => {
+		Konva.Image.fromURL(`${import.meta.env.BASE_URL}AmongUsMiniGame/Background/background.webp`, (background) => {
 			background.width(STAGE_WIDTH);
 			background.height(STAGE_HEIGHT);
 			background.x(0);
@@ -34,7 +34,7 @@ export class AmongUsMenuScreenView implements View {
 			fillLinearGradientEndPoint: { 
 				x: 0, y: STAGE_HEIGHT 
 			},
-			fillLinearGradientColorStops: [0, "rgba(0,20,40,0.85)", 1, "rgba(40,0,40,0.85)"],
+			fillLinearGradientColorStops: [0, "rgba(89, 89, 89, 0.85)", 1, "rgba(75, 75, 75, 0.85)"],
 		});
 		this.group.add(overlay);
 
@@ -71,7 +71,7 @@ export class AmongUsMenuScreenView implements View {
 			x: STAGE_WIDTH / 2 - 300,
 			y: 135,
 			width: 600,
-			height: 320,
+			height: 400,
 			fill: "rgba(255, 255, 255, 1)",
 			cornerRadius: 15,
 			stroke: "black",
@@ -95,14 +95,17 @@ export class AmongUsMenuScreenView implements View {
 
 		// Instructions content
 		const instructions = [
-			"• Use WASD keys to move your character around the map",
-			"• Click on rotating obstacles to open puzzle challenges",
+			"• Wizard, you’ve stepped onto volatile ground.",
+			"• The enchanted spell mines pulse with unstable magic.",
+			"• Move — Use your W / A / S / D keys to glide across the terrain.",
 			"• Each puzzle shows quadratic equations on the LEFT",
-			"• Match each equation to its correct roots on the RIGHT",
-			"• Click a left point, then a right point to draw a line",
-			"• Click points again to change your connections",
-			"• Submit when all equations are matched correctly",
-			"• Solve all 3 puzzles before time runs out!"
+			"• Interact — When standing close to a Spell Mine, press E to begin disarment.",
+			"• To neutralize a mine:",
+			"• Click a runic equation on the left panel.",
+			"• Then click its matching set of roots on the right panel",
+			"• If your pairing is correct, the sigil dims and the mine stabilizes.",
+			"• If incorrect, the energies will flare—losing precious time!",
+			"• Defuse all three Spell Mines before the countdown ends."
 		];
 
 		instructions.forEach((text, index) => {
