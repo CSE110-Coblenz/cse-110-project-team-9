@@ -1,5 +1,3 @@
-import {Player} from '../../class/MainGameScreenClasses/Player';
-
 export enum NodeType {
     START,
     EASY_QUESTION,
@@ -17,12 +15,12 @@ export class MainGameScreenModel {
     NodeType.EASY_QUESTION,    // 2
     NodeType.MEDIUM_QUESTION,  // 3
     NodeType.HARD_QUESTION,    // 4
-    NodeType.MINIGAME,    // 5
+    NodeType.MINIGAME,         // 5
     NodeType.MEDIUM_QUESTION,  // 6
     NodeType.MINIGAME,         // 7
     NodeType.HARD_QUESTION,    // 8
     NodeType.EASY_QUESTION,    // 9
-    NodeType.MINIGAME,  // 10
+    NodeType.MINIGAME,         // 10
     NodeType.HARD_QUESTION,    // 11
     NodeType.EASY_QUESTION,    // 12
     NodeType.MEDIUM_QUESTION,  // 13
@@ -44,7 +42,7 @@ export class MainGameScreenModel {
     NodeType.MEDIUM_QUESTION,  // 29
     NodeType.EASY_QUESTION,    // 30
     NodeType.MEDIUM_QUESTION,  // 31
-    NodeType.MINIGAME,    // 32
+    NodeType.MINIGAME,         // 32
     NodeType.MEDIUM_QUESTION,  // 33
     NodeType.EASY_QUESTION,    // 34
     NodeType.MINIGAME,         // 35
@@ -56,10 +54,6 @@ export class MainGameScreenModel {
     ]
 
     constructor(){
-        if (this.mainGameBoard.length !== 40)
-        {
-            throw new Error("Main game board must have exactly 40 nodes.");
-        }
         this.position = 0;
     }
 
@@ -70,7 +64,6 @@ export class MainGameScreenModel {
         return this.mainGameBoard[nodeIndex - 1];
     }
 
-
     public getPlayerPosition(): number {
         return this.position;
     }
@@ -78,14 +71,4 @@ export class MainGameScreenModel {
     public setPlayerPosition( position: number): void {
         this.position = position;
     }
-
-    // public getPlayerScore(playerID: string): number {
-    //     return this.getPlayer(playerID).score;
-    // }
-
-    // public setPlayerScore(playerID: string, score: number): void {
-    //     this.getPlayer(playerID).score = score;
-    // }
-
-
 }

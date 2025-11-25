@@ -12,6 +12,13 @@ import { AmongUsResultsScreenController } from "./screens/AmongUsGameScreen/Resu
 import { STAGE_WIDTH, STAGE_HEIGHT } from "./constants";
 import { AudioController } from "./audios/AudioController";
 
+import { MathScreenController } from "./screens/MathScreen/MathScreenController";
+import { MathScreenView } from "./screens/MathScreen/MathScreenView";
+import { MathScreenModel } from "./screens/MathScreen/MathScreenModel";
+import { QuadraticEquationsHelper } from "./class/MathEquations/QuadraticEquationsHelper";
+
+import { Player } from "./class/MainGameScreenClasses/Player";
+
 /**
  * Main Application - Coordinates all screens including minigames
  */
@@ -19,12 +26,19 @@ class App implements ScreenSwitcher {
 	private stage: Konva.Stage;
 	private layer: Konva.Layer;
 	private _lastScreen: Screen;
+	private player: Player;
 
 	// Main game screens
 	private startingController: StartingScreenController;
 	private homeController: HomeScreenController;
 	private settingsController: SettingsScreenController;
 	private mainGameController: MainGameScreenController;
+
+	// Math functions
+	private mathScreenController: MathScreenController;
+	private mathScreenView: MathScreenView;
+	private mathScreenModel: MathScreenModel;
+	private mathHelper: QuadraticEquationsHelper;
 
 	// Wizard minigame screens
 	private WizardGameController: WizardGameScreenController;
@@ -50,12 +64,25 @@ class App implements ScreenSwitcher {
 		
 		// Initialize AudioController
 		this.audio = new AudioController();
+		this.player = new Player();
 
 		// Initialize all screen controllers
 		this.startingController = new StartingScreenController(this);
 		this.homeController = new HomeScreenController(this, this.audio);
 		this.settingsController = new SettingsScreenController(this, this.audio);
-		this.mainGameController = new MainGameScreenController(this, this.audio);
+		this.mainGameController = new MainGameScreenController(this, this.audio, this.player);
+
+		// Math screen pieces
+		this.mathScreenModel = new MathScreenModel();
+		this.mathHelper = new QuadraticEquationsHelper();
+		this.mathScreenView = new MathScreenView();
+		this.mathScreenController = new MathScreenController(
+			this.mathScreenView,
+			this.mathScreenModel,
+			this.mathHelper,
+			this,
+			this.player
+		);
 
 		// initalize Wizard minigame screens
 		this.WizardGameController = new WizardGameScreenController(this, this.audio);
@@ -70,12 +97,18 @@ class App implements ScreenSwitcher {
 		this.layer.add(this.startingController.getView().getGroup());
 		this.layer.add(this.homeController.getView().getGroup());
 		this.layer.add(this.settingsController.getView().getGroup());
-		this.layer.add(this.WizardGameController.getView().getGroup());
-		this.layer.add(this.WizardGuideController.getView().getGroup());
+		this.layer.add(this.mathScreenController.getView().getGroup());
 		this.layer.add(this.mainGameController.getView().getGroup());
 		this.layer.add(this.amongUsMenuController.getView().getGroup());
 		this.layer.add(this.amongUsGameController.getView().getGroup());
 		this.layer.add(this.amongUsResultsController.getView().getGroup());
+
+		//Wizard game layers
+		this.layer.add(this.WizardGameController.getView().getGroup());
+		const ctx = this.layer.getContext();
+		//need as pixel art becomes blurry
+		ctx.imageSmoothingEnabled = false;
+		this.layer.add(this.WizardGuideController.getView().getGroup());
 
 		this.layer.draw();
 
@@ -98,7 +131,6 @@ class App implements ScreenSwitcher {
 		this.mainGameController.hide();
 		this.WizardGameController.hide();
 
-
 		// Hide all minigame screens
 		this.amongUsMenuController.hide();
 		this.amongUsGameController.hide();
@@ -118,10 +150,6 @@ class App implements ScreenSwitcher {
 
 			case "mainGame":
 				this.mainGameController.show();
-				break;
-				
-			case "settings":
-				this.settingsController.show();
 				break;
 			
 			// Wizard minigame screens
@@ -152,11 +180,14 @@ class App implements ScreenSwitcher {
 			case "wizardguide":
 				this.WizardGuideController.show();
 				break;
+			case "math":
+				this.mathScreenController.init(); 
+				this.mathScreenController.show();
+				break;
 		}
 	}
 
 	get lastScreen() { return this._lastScreen; }
 }
 
-// Initialize the application
 new App("container");

@@ -14,6 +14,7 @@ export type Screen =
 	| { type: "home" }
 	| { type: "mainGame" }
 	| { type: "settings" }
+	| { type: "math" }
 	| { type: "wizardminigame"}
 	| { type: "wizardguide" }
 	| { type: "amongUsMenu" }

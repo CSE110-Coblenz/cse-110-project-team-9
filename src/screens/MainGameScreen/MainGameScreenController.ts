@@ -3,21 +3,24 @@ import { MainGameScreenView } from "../MainGameScreen/MainGameScreenView";
 import { ScreenController, ScreenSwitcher } from "../../types";
 import { AudioController } from "../../audios/AudioController";
 
+import { Player } from "../../class/MainGameScreenClasses/Player";
+
 export class MainGameScreenController extends ScreenController {
 
-    private audio: AudioController;
     private view: MainGameScreenView;
     private screenSwitcher: ScreenSwitcher;
     private gameModel: MainGameScreenModel = new MainGameScreenModel();
 
     private readonly BOARD_LENGTH = 40;
 
-    constructor(screenSwitcher: ScreenSwitcher, audio: AudioController) {
+    constructor(screenSwitcher: ScreenSwitcher, private audio: AudioController, private player: Player) {
         super();
 
-        this.view = new MainGameScreenView(this.gameModel, audio);
+        this.view = new MainGameScreenView(this.gameModel, this.audio, this.player);
         this.screenSwitcher = screenSwitcher;
-        this.audio = audio;
+
+        // Subscribe to score changes - automatically update display when score changes
+        this.player.onScoreChange(() => this.view.updateScoreDisplay());
 
         this.view.onPlayerRoll(() => this.onPlayerRoll());
         this.view.onSettingsOpen(() => {
@@ -29,18 +32,10 @@ export class MainGameScreenController extends ScreenController {
         audio.registerSound("click_sfx", `${import.meta.env.BASE_URL}homescreen/audio/click.mp3`);
         audio.registerSound("dice_sfx", `${import.meta.env.BASE_URL}mainboard/audio/dice_roll.mp3`);
         audio.registerSound("piece_move_sfx", `${import.meta.env.BASE_URL}mainboard/audio/piece_move.mp3`);
-
-        const tiles = this.view.getTiles();
-
-        // tiles[0].on("click", () => this.screenSwitcher.switchToScreen({ type: "wizard" }));
-        // tiles[1].on("click", () => this.screenSwitcher.switchToScreen({ type: "amongus" }));
-        // tiles[2].on("click", () => this.screenSwitcher.switchToScreen({ type: "basicQuestion1" }));
-        // tiles[3].on("click", () => this.screenSwitcher.switchToScreen({ type: "basicQuestion2" }));
     }
 
     public diceRoll(): number {
         return Math.floor(Math.random() * 6) + 1;
-        //return 4;
     }
 
     public async onPlayerRoll() {
@@ -74,42 +69,27 @@ export class MainGameScreenController extends ScreenController {
             case NodeType.EASY_QUESTION:
             case NodeType.MEDIUM_QUESTION:
             case NodeType.HARD_QUESTION:
-                this.view.displayNodeEvent("You landed on a Question tile!");
-                //const newQuestionScore = this.gameModel.getPlayerScore("default") + 5;
-                //this.gameModel.setPlayerScore("default", newQuestionScore);
-                //this.view.updateScoreDisplay(newQuestionScore);
+                this.screenSwitcher.layerOnScreen({ type: "math" });
+                this.view.updateScoreDisplay();
                 break;
 
             case NodeType.MINIGAME:
-                this.view.displayNodeEvent("You landed on a Minigame tile!");
-                //this.screenSwitcher.switchToScreen({ type: "wizardminigame" });
                 this.triggerRandomMinigame();
-                // Wait for the message to display, then trigger minigame
-                // setTimeout(() => {
-                //     this.triggerRandomMinigame();
-                // }, 1000);
                 break;
 
             case NodeType.START:
-                // No action needed for the start tile
+                this.screenSwitcher.switchToScreen({ type: "home" });
+                //TODO: fix restart miss
                 break;
-
-            default:
-                console.warn(`Unknown node type encountered at index ${nodeIndex}.`);
         }
     }
 
-        /**
-     * Randomly select and launch a minigame
-     */
     private async triggerRandomMinigame(): Promise<void> {
         const choice = await this.view.spinMinigameWheel();
 
         if (choice === 1) {
-            // Red side: Launch Among Us minigame
             this.screenSwitcher.switchToScreen({ type: "amongUsMenu" });
         } else {
-            // Blue side: Launch Wizard minigame
             this.screenSwitcher.switchToScreen({ type: "wizardminigame" });
         }
     }
@@ -126,5 +106,9 @@ export class MainGameScreenController extends ScreenController {
     public hide(): void {
         this.audio.stopAll();
         this.view.hide();
+    }
+
+    public updateScoreDisplay(): void {
+        this.view.updateScoreDisplay();
     }
 }
