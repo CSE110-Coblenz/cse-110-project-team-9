@@ -3,7 +3,7 @@
  */
 
 import { describe, it, beforeEach, expect } from "vitest";
-import { PlayerModel } from "../../screens/WizardGameScreen/entities/player/PlayerModel";
+import { PlayerModel } from "../../screens/WizardGameScreen/entities/player/PlayerModel.js";
 import { 
     PLAYER_START_X, 
     PLAYER_START_Y, 
