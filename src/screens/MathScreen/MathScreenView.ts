@@ -22,19 +22,8 @@ export class MathScreenView {
 
   constructor() {
     this.group = new Konva.Group({ visible: true });
-
+    //😀FIX ISSUE HERE!!! 
     //Set's the background image as the stage size
-    Konva.Image.fromURL(`${import.meta.env.BASE_URL}backgroundCastle.png`, (img) => {
-      img.setAttrs({
-        x: 0,
-        y: 0,
-        width: STAGE_WIDTH,
-        height: STAGE_HEIGHT,
-        listening: false,
-      });
-      this.group.add(img);
-      img.moveToBottom();
-    });
 
     /*
     * A background card for the question text
