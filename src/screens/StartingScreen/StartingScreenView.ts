@@ -18,6 +18,7 @@ export class StartingScreenView implements View {
 		video.style.display = "none";
 		video.muted = true;
 
+
 		const videoBackground = new Konva.Image({
 			image: video,
 			x: 0,

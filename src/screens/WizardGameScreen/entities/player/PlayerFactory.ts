@@ -19,7 +19,8 @@ export class PlayerFactory {
         group: Konva.Group, 
         audio: AudioController, 
         input: InputHandler,
-        exit: () => void
+        exit: () => void,
+        mathQuestion: () => void
     ): PlayerController {
         let model: PlayerModel;
         let viewer: PlayerViewer;
@@ -47,6 +48,6 @@ export class PlayerFactory {
         }
 
         const hud = new PlayerHUD(group, model);
-        return new PlayerController(model, hud, viewer, audio, input, exit);
+        return new PlayerController(model, hud, viewer, audio, input, exit, mathQuestion);
     }
 }
