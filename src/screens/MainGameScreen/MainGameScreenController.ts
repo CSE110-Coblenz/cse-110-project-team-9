@@ -110,7 +110,7 @@ export class MainGameScreenController extends ScreenController {
             this.screenSwitcher.switchToScreen({ type: "amongUsMenu" });
         } else {
             // Blue side: Launch Wizard minigame
-            this.screenSwitcher.switchToScreen({ type: "wizardminigame" });
+            this.screenSwitcher.switchToScreen({ type: "amongUsMenu" });
         }
     }
 

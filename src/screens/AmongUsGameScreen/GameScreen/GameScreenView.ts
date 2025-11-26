@@ -70,11 +70,11 @@ export class AmongUsGameScreenView implements View {
 		// Create interaction hint text
 		this.interactionHint = new Konva.Text({
 			x: STAGE_WIDTH / 2,
-			y: 150,
-			text: "Press E to solve puzzle",
+			y: STAGE_HEIGHT / 1.075,
+			text: "Press E to interact.",
 			fontSize: 24,
 			fontFamily: "HomeScreenFont",
-			fill: "yellow",
+			fill: "white",
 			align: "center",
 			visible: false,
 		});
