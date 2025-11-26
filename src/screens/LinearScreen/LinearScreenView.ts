@@ -14,7 +14,7 @@ export class LinearScreenView implements View{
 	private currentText: Konva.Text;
 	private slope_answer: Konva.Rect;
 	private int_answer: Konva.Rect;
-	private onSubmit?: () => void;
+	private onSubmit?: (isCorrect: boolean) => void;
 	private m: number;
 	private b: number;
 	private keyHandler = (e: KeyboardEvent) => this.type(e);
@@ -245,21 +245,18 @@ export class LinearScreenView implements View{
 	    submit.on("click", () => {
 			let slope_entered = Number(this.slope);
 			let intercept_entered = Number(this.intercept);
-
-			if (isNaN(slope_entered) || isNaN(intercept_entered)){
-				feedback.text("Incorrect! m="+((this.m as unknown) as string)+" and b="+((this.b as unknown) as string));
-				feedback.moveToTop();
-			} else if (this.m === slope_entered && this.b === intercept_entered){
+			const isCorrect = !isNaN(slope_entered) && !isNaN(intercept_entered) && this.m === slope_entered && this.b === intercept_entered;
+			
+			if (isCorrect){
 				feedback.text("Correct! Keep it up!");
-				feedback.moveToTop();
 			} else {
 				feedback.text("Incorrect! m="+((this.m as unknown) as string)+" and b="+((this.b as unknown) as string));
-				feedback.moveToTop();
 			}
+			feedback.moveToTop();
 
-			if (this.onSubmit) {
+			if (this.onSubmit && isCorrect) {
 				setTimeout(() => {
-					this.onSubmit!();
+					this.onSubmit?.(true);
 				}, 400);
 			}
 		});
@@ -378,7 +375,7 @@ export class LinearScreenView implements View{
 		window.removeEventListener('keydown', this.keyHandler);
 	}
 
-	setOnSubmit(callback: () => void): void {
+	setOnSubmit(callback: (isCorrect: boolean) => void): void {
 		this.onSubmit = callback;
 	}
 }
