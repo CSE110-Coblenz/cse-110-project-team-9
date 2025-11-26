@@ -40,7 +40,7 @@ export class PlayerHUD {
         const staminaPercent = Math.max(0, this.model.stamina / DEFAULT_STAMINA);
 
         //offset y so it does not
-        const offsetY = 60;
+        const offsetY = 15 * PLAYER_SCALE;
 
         // move above player
         this.healthBar.x(this.model.x + SPRITE_WIDTH / 2 * PLAYER_SCALE - this.barWidth / 2);
