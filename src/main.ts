@@ -61,6 +61,7 @@ class App implements ScreenSwitcher {
 		this.settingsController = new SettingsScreenController(this, this.audio);
 		this.mainGameController = new MainGameScreenController(this, this.audio);
 
+
 		// initalize Wizard minigame screens
 		this.WizardGameController = new WizardGameScreenController(this, this.audio);
 		this.WizardGuideController = new GuideScreenController(this, this.audio, this.WizardGameController);
@@ -70,21 +71,26 @@ class App implements ScreenSwitcher {
 		this.amongUsGameController = new AmongUsGameScreenController(this, this.audio);
 		this.amongUsResultsController = new AmongUsResultsScreenController(this);
 
-		this.linearScreenController = new LinearScreenController(this);
+		//lienar screen controller
+		this.linearScreenController = new LinearScreenController(this, this.WizardGameController);
 
 		// Add all screen groups to the layer
 		this.layer.add(this.startingController.getView().getGroup());
 		this.layer.add(this.homeController.getView().getGroup());
 		this.layer.add(this.settingsController.getView().getGroup());
-		this.layer.add(this.WizardGameController.getView().getGroup());
-		this.layer.add(this.WizardGuideController.getView().getGroup());
 		this.layer.add(this.mainGameController.getView().getGroup());
 		this.layer.add(this.amongUsMenuController.getView().getGroup());
 		this.layer.add(this.amongUsGameController.getView().getGroup());
 		this.layer.add(this.amongUsResultsController.getView().getGroup());
 
+		//Wizard game layers
+		this.layer.add(this.WizardGameController.getView().getGroup());
+		const ctx = this.layer.getContext();
+		//need as pixel art becomes blurry
+		ctx.imageSmoothingEnabled = false;
+		this.layer.add(this.WizardGuideController.getView().getGroup());
+
 		this.layer.add(this.linearScreenController.getView().getGroup());
-		this.layer.draw();
 
 		// Start with starting screen visible
 		this._lastScreen = {type: "starting"};
@@ -104,7 +110,6 @@ class App implements ScreenSwitcher {
 		this.settingsController.hide();
 		this.mainGameController.hide();
 		this.WizardGameController.hide();
-                this.linearScreenController.hide();
 
 		// Hide all minigame screens
 		this.amongUsMenuController.hide();
@@ -126,10 +131,6 @@ class App implements ScreenSwitcher {
 			case "mainGame":
 				this.mainGameController.show();
 				break;
-				
-			case "settings":
-				this.settingsController.show();
-				break;
 			
 			// Wizard minigame screens
 			case "wizardminigame":
@@ -148,9 +149,6 @@ class App implements ScreenSwitcher {
 			case "amongUsResult":
 				this.amongUsResultsController.showResults(screen.score);
 				break;
-			case "linear_screen":
-				this.linearScreenController.show();
-				break;
 		}
 	}
 
@@ -161,6 +159,9 @@ class App implements ScreenSwitcher {
 				break;
 			case "wizardguide":
 				this.WizardGuideController.show();
+				break;
+			case "linear_screen":
+				this.linearScreenController.show();
 				break;
 		}
 	}

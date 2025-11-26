@@ -49,7 +49,5 @@ export class PlayerHUD {
 
         this.healthBar.moveToTop();
         this.staminaBar.moveToTop();
-
-        this.group.getLayer()?.batchDraw();
     }
 }

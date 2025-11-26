@@ -29,7 +29,7 @@ export class WizardGameScreenView implements View {
 
     public hide(): void {
         this.group.visible(false);
-        }   
+    }   
 
     public getGroup(): Konva.Group {
         return this.group;
