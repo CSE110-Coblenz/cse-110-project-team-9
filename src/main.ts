@@ -11,6 +11,7 @@ import { AmongUsGameScreenController } from "./screens/AmongUsGameScreen/GameScr
 import { AmongUsResultsScreenController } from "./screens/AmongUsGameScreen/ResultsScreen/ResultsScreenController";
 import { STAGE_WIDTH, STAGE_HEIGHT } from "./constants";
 import { AudioController } from "./audios/AudioController";
+import {LinearScreenController} from "./screens/LinearScreen/LinearScreenController";
 
 /**
  * Main Application - Coordinates all screens including minigames
@@ -34,6 +35,9 @@ class App implements ScreenSwitcher {
 	private amongUsMenuController: AmongUsMenuScreenController;
 	private amongUsGameController: AmongUsGameScreenController;
 	private amongUsResultsController: AmongUsResultsScreenController;
+
+
+	private linearScreenController: LinearScreenController;
 
 	private audio: AudioController;
 
@@ -66,6 +70,8 @@ class App implements ScreenSwitcher {
 		this.amongUsGameController = new AmongUsGameScreenController(this, this.audio);
 		this.amongUsResultsController = new AmongUsResultsScreenController(this);
 
+		this.linearScreenController = new LinearScreenController(this);
+
 		// Add all screen groups to the layer
 		this.layer.add(this.startingController.getView().getGroup());
 		this.layer.add(this.homeController.getView().getGroup());
@@ -77,6 +83,7 @@ class App implements ScreenSwitcher {
 		this.layer.add(this.amongUsGameController.getView().getGroup());
 		this.layer.add(this.amongUsResultsController.getView().getGroup());
 
+		this.layer.add(this.linearScreenController.getView().getGroup());
 		this.layer.draw();
 
 		// Start with starting screen visible
@@ -97,7 +104,7 @@ class App implements ScreenSwitcher {
 		this.settingsController.hide();
 		this.mainGameController.hide();
 		this.WizardGameController.hide();
-
+                this.linearScreenController.hide();
 
 		// Hide all minigame screens
 		this.amongUsMenuController.hide();
@@ -140,6 +147,9 @@ class App implements ScreenSwitcher {
 
 			case "amongUsResult":
 				this.amongUsResultsController.showResults(screen.score);
+				break;
+			case "linear_screen":
+				this.linearScreenController.show();
 				break;
 		}
 	}
