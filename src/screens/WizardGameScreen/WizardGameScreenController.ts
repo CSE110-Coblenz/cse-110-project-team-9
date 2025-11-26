@@ -23,11 +23,13 @@ export class WizardGameScreenController extends ScreenController {
     private lastUpdateTime = 0;
     private animationFrameId: number | null = null;
 
+    private paused;
+
     private keydownHandler = (e: KeyboardEvent) => {
-        if (e.key === 'Escape') {
+        if (e.key === 'Escape'){
             this.pauseGame();
             this.screenSwitcher.layerOnScreen({ type: "wizardguide" });
-        }
+        } 
     }
 
     constructor(private screenSwitcher: ScreenSwitcher, private audio: AudioController) {
@@ -37,6 +39,8 @@ export class WizardGameScreenController extends ScreenController {
         this.input = new InputHandler();
 
         this.audio.registerSound("wizard_bgm",`${import.meta.env.BASE_URL}wizardminigame/audio/mp3/Pixel 5.mp3`);
+
+        this.paused = false;
         
         this.playerController = PlayerFactory.create(
             PLAYER_START_X,
@@ -76,6 +80,8 @@ export class WizardGameScreenController extends ScreenController {
     }
 
     private updateLoop = () => {
+        if(this.paused) return;
+
         const now = performance.now();
         const delta = (now - this.lastUpdateTime) / 1000;
         this.lastUpdateTime = now;
@@ -96,8 +102,8 @@ export class WizardGameScreenController extends ScreenController {
             cancelAnimationFrame(this.animationFrameId);
             this.animationFrameId = null;
         }
-        window.removeEventListener('keydown', this.keydownHandler);
         this.input.unbind();
+        window.removeEventListener('keydown', this.keydownHandler);
         this.collisionManager.unregisterAll();
         this.audio.stopAll();
         this.enemyManager.reset();
@@ -111,13 +117,18 @@ export class WizardGameScreenController extends ScreenController {
     }
 
     pauseGame() {
+        this.paused = true;
         if (this.animationFrameId) {
             cancelAnimationFrame(this.animationFrameId);
             this.animationFrameId = null;
         }
+        this.input.unbind();
     }
 
     resumeGame() {
+        console.log("resumeGame called!");
+        this.paused = false;
+        this.input.bind();
         this.lastUpdateTime = performance.now();
         this.updateLoop();
     }
@@ -129,7 +140,7 @@ export class WizardGameScreenController extends ScreenController {
 
     mathQuestion() {
         this.pauseGame();
-        this.screenSwitcher.layerOnScreen({ type:"math" });
+        this.screenSwitcher.layerOnScreen({ type:"linear_screen" });
     }
 
     getView(): WizardGameScreenView {

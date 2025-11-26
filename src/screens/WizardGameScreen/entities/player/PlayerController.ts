@@ -44,8 +44,9 @@ export class PlayerController implements Collidable {
             this.destroy();
         }
 
-        if (this._model.stamina == 0){
+        if (this._model.stamina === 0) {
             this.mathQuestion();
+            this._model.stamina = 100;
         }
 
         let dx = 0, dy = 0;

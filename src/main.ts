@@ -97,7 +97,8 @@ class App implements ScreenSwitcher {
 		this.amongUsGameController = new AmongUsGameScreenController(this, this.audio);
 		this.amongUsResultsController = new AmongUsResultsScreenController(this);
 
-		this.linearScreenController = new LinearScreenController(this);
+		//lienar screen controller
+		this.linearScreenController = new LinearScreenController(this, this.WizardGameController);
 
 		// Add all screen groups to the layer
 		this.layer.add(this.startingController.getView().getGroup());
@@ -117,8 +118,6 @@ class App implements ScreenSwitcher {
 		this.layer.add(this.WizardGuideController.getView().getGroup());
 
 		this.layer.add(this.linearScreenController.getView().getGroup());
-		//DO I need this draw
-		this.layer.draw();
 
 		// Start with starting screen visible
 		this._lastScreen = {type: "starting"};

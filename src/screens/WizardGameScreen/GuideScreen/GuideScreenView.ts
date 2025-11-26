@@ -87,9 +87,6 @@ export class GuideScreenView implements View {
         );
     }
    
-    /**
-     * Helper Funtion — Creating text button (transparent background)
-     */
     private createTextButton(
         text: string,
         x: number,
