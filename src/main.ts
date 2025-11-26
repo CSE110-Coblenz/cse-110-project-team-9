@@ -13,8 +13,6 @@ import { STAGE_WIDTH, STAGE_HEIGHT } from "./constants";
 import { AudioController } from "./audios/AudioController";
 import {LinearScreenController} from "./screens/LinearScreen/LinearScreenController";
 
-import { Player } from "./class/MainGameScreenClasses/Player";
-
 /**
  * Main Application - Coordinates all screens including minigames
  */
@@ -22,7 +20,6 @@ class App implements ScreenSwitcher {
 	private stage: Konva.Stage;
 	private layer: Konva.Layer;
 	private _lastScreen: Screen;
-	private player: Player;
 
 	// Main game screens
 	private startingController: StartingScreenController;

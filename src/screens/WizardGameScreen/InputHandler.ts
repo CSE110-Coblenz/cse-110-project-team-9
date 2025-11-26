@@ -45,7 +45,6 @@ export class InputHandler {
     };
 
     public isDown(key: string): boolean {
-        //bang operation to convert to true/false
         return this.keys[key.toLowerCase()];
     }
 }
