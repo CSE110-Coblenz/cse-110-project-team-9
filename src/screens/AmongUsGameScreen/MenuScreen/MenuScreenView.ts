@@ -3,7 +3,7 @@ import type { View } from "../../../types";
 import { STAGE_WIDTH, STAGE_HEIGHT } from "../../../constants";
 
 /**
- * MenuScreenView - Renders the menu screen
+ * MenuScreenView - Renders the menu/instruction screen
  */
 export class AmongUsMenuScreenView implements View {
 	private group: Konva.Group;
@@ -11,8 +11,8 @@ export class AmongUsMenuScreenView implements View {
 	constructor(onStartClick: () => void) {
 		this.group = new Konva.Group({ visible: true });
 
-		//Background Image
-		Konva.Image.fromURL(`${import.meta.env.BASE_URL}AmongUsMiniGame/Background/terrace.png`, (background) => {
+		// Background Image
+		Konva.Image.fromURL(`${import.meta.env.BASE_URL}AmongUsMiniGame/Background/background.webp`, (background) => {
 			background.width(STAGE_WIDTH);
 			background.height(STAGE_HEIGHT);
 			background.x(0);
@@ -22,6 +22,7 @@ export class AmongUsMenuScreenView implements View {
 			this.group.getLayer()?.draw();
 		});
 
+		// Semi-transparent overlay for readability
 		const overlay = new Konva.Rect({
 			x: 0,
 			y: 0,
@@ -33,51 +34,151 @@ export class AmongUsMenuScreenView implements View {
 			fillLinearGradientEndPoint: { 
 				x: 0, y: STAGE_HEIGHT 
 			},
-			fillLinearGradientColorStops: [0, "rgba(0,155,255,0.7)", 1, "rgba(100,0,100,0.5)"],
+			fillLinearGradientColorStops: [0, "rgba(89, 89, 89, 0.85)", 1, "rgba(75, 75, 75, 0.85)"],
 		});
 		this.group.add(overlay);
-		overlay.moveToTop();
 
 		// Title text
 		const title = new Konva.Text({
 			x: STAGE_WIDTH / 2,
-			y: 175,
+			y: 40,
 			text: "The Mechanism",
-			fontSize: 48,
+			fontSize: 42,
 			fontFamily: "HomeScreenFont",
-			fill: "white",
-			stroke: "purple",
+			fill: "#ffffff",
+			stroke: "black",
 			strokeWidth: 1,
 			align: "center",
 		});
-		// Center the text using offsetX
 		title.offsetX(title.width() / 2);
 		this.group.add(title);
 
-		const startButtonGroup = new Konva.Group();
-		const startButton = new Konva.Rect({
-			x: STAGE_WIDTH / 2 - 100,
-			y: 300,
-			width: 200,
-			height: 60,
-			fill: "black",
-			cornerRadius: 10,
-			stroke: "purple",
-			strokeWidth: 3,
-		});
-		const startText = new Konva.Text({
+		// Subtitle
+		const subtitle = new Konva.Text({
 			x: STAGE_WIDTH / 2,
-			y: 315,
-			text: "START",
-			fontSize: 24,
+			y: 95,
+			text: "Quadratic Equation Matching",
+			fontSize: 20,
 			fontFamily: "HomeScreenFont",
-			fill: "purple",
+			fill: "white",
 			align: "center",
 		});
-		startText.offsetX(startText.width() / 2);
+		subtitle.offsetX(subtitle.width() / 2);
+		this.group.add(subtitle);
+
+		// Instructions panel background
+		const instructionBox = new Konva.Rect({
+			x: STAGE_WIDTH / 2 - 300,
+			y: 135,
+			width: 600,
+			height: 400,
+			fill: "rgba(255, 255, 255, 1)",
+			cornerRadius: 15,
+			stroke: "black",
+			strokeWidth: 1,
+		});
+		this.group.add(instructionBox);
+
+		// Instructions title
+		const instructionsTitle = new Konva.Text({
+			x: STAGE_WIDTH / 2,
+			y: 155,
+			text: "HOW TO PLAY",
+			fontSize: 24,
+			fontFamily: "HomeScreenFont",
+			fontStyle: "bold",
+			fill: "black",
+			align: "center",
+		});
+		instructionsTitle.offsetX(instructionsTitle.width() / 2);
+		this.group.add(instructionsTitle);
+
+		// Instructions content
+		const instructions = [
+			"• Wizard, you’ve stepped onto volatile ground.",
+			"• The enchanted spell mines pulse with unstable magic.",
+			"• Move — Use your W / A / S / D keys to glide across the terrain.",
+			"• Each puzzle shows quadratic equations on the LEFT",
+			"• Interact — When standing close to a spell mine, press E to begin disarment.",
+			"• To neutralize a mine:",
+			"• Click a runic equation on the left panel.",
+			"• Then click its matching set of roots on the right panel",
+			"• If your pairing is correct, the sigil dims and the mine stabilizes.",
+			"• If incorrect, the energies will flare—losing precious time!",
+			"• Defuse all mines before the countdown ends."
+		];
+
+		instructions.forEach((text, index) => {
+			const line = new Konva.Text({
+				x: STAGE_WIDTH / 2 - 280,
+				y: 195 + index * 30,
+				text: text,
+				fontSize: 16,
+				fontFamily: "HomeScreenFont",
+				fill: "black",
+				lineHeight: 1.4,
+			});
+			this.group.add(line);
+		});
+
+		// Start button group
+		const startButtonGroup = new Konva.Group({
+			x: STAGE_WIDTH / 2,
+			y: STAGE_HEIGHT - 55,
+		});
+
+		// Rectangle
+		const startButton = new Konva.Rect({
+			x: 0,
+			y: 0,
+			width: 200,
+			height: 40,
+			fill: "white",
+			cornerRadius: 12,
+			shadowBlur: 10,
+			shadowColor: "rgba(0, 0, 255, 0.5)",
+		});
+
+		// Center the rect by offset
+		startButton.offsetX(startButton.width() / 2);
+
+		// Button text
+		const startText = new Konva.Text({
+			x: 0,
+			y: startButton.height() / 2,
+			text: "START",
+			fontSize: 20,
+			fontFamily: "HomeScreenFont",
+			fontStyle: "bold",
+			fill: "black",
+		});
+
+		// Center the text horizontally
+		startText.offsetX(startText.width() / 2 + 5);
+
+		// Center the text vertically
+		startText.offsetY(startText.height() / 2);
+
+		// Add to group
 		startButtonGroup.add(startButton);
 		startButtonGroup.add(startText);
-		startButtonGroup.on("click", onStartClick);
+
+		startButtonGroup.on("click tap", onStartClick);
+		
+		// Hover effect
+		startButtonGroup.on("mouseenter", () => {
+			startButton.fill("#5de147");
+			startButton.shadowBlur(15);
+			document.body.style.cursor = "pointer";
+			this.group.getLayer()?.draw();
+		});
+		startButtonGroup.on("mouseleave", () => {
+			startButton.fill("#4cd137");
+			startButton.shadowBlur(10);
+			document.body.style.cursor = "default";
+			this.group.getLayer()?.draw();
+		});
+		
 		this.group.add(startButtonGroup);
 	}
 

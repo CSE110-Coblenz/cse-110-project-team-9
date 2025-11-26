@@ -99,7 +99,7 @@ export class MainGameScreenController extends ScreenController {
         }
     }
 
-        /**
+    /**
      * Randomly select and launch a minigame
      */
     private async triggerRandomMinigame(): Promise<void> {
