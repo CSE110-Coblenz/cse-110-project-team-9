@@ -41,14 +41,16 @@ export class LinearScreenView implements View{
 				//Points on linear graph are (0,y_intercept) and (second_point_x, m(second_point_x)+b)
 				//
 				stroke: 'red',
-				strokeWidth: 3
+				strokeWidth: 3,
+				name: 'equationLine'
 			});
 			}else{
 				this.b = Math.floor((Math.random() * (10 - (5))) + 5 ); //altering problem so that line is visible
 				ln = new Konva.Line({
 				points: [width, height-(this.b*(ax_len / num_ticks)), width+((this.b/-this.m)*(ax_len / num_ticks)  ), height],
 				stroke: 'red',
-				strokeWidth: 3
+				strokeWidth: 3,
+				name: 'equationLine'
 			});
 		}
 
@@ -305,9 +307,69 @@ export class LinearScreenView implements View{
 		}
 	}
 
+	private resetEquation() {
+		let ax_len = 200;
+		let num_ticks = 10;
+
+		this.m = Math.floor(Math.random() * (5 - (-5)) + -5); //maximum possible slope is 5, minimum is 0. Will add functionality for negative slopes.
+		this.b = Math.floor(Math.random() * 5);
+
+		let width = STAGE_WIDTH / 2 - ax_len / 2;
+		let height = STAGE_HEIGHT / 2 + ax_len / 2 - 80;
+
+		let second_point_x = (num_ticks - this.b) / this.m;
+
+		// Remove previous line
+		this.group.find('.equationLine').forEach(line => line.destroy());
+
+		// Create new line
+		let ln: Konva.Line;
+		if (this.m >= 0) {
+			ln = new Konva.Line({
+				points: [
+					width,
+					height - this.b * (ax_len / num_ticks),
+					width + second_point_x * (ax_len / num_ticks),
+					height - (this.m * second_point_x + this.b) * (ax_len / num_ticks)
+					//Points on linear graph are (0,y_intercept) and (second_point_x, m(second_point_x)+b)
+				],
+				stroke: 'red',
+				strokeWidth: 3,
+				name: 'equationLine'
+			});
+		} else {
+			this.b = Math.floor(Math.random() * (10 - 5) + 5);
+			ln = new Konva.Line({
+				points: [
+					width,
+					height - this.b * (ax_len / num_ticks),
+					width + (this.b / -this.m) * (ax_len / num_ticks),
+					height
+				],
+				stroke: 'red',
+				strokeWidth: 3,
+				name: 'equationLine'
+			});
+		}
+
+		this.group.add(ln);
+
+		// Reset input state
+		this.slope = '';
+		this.intercept = '';
+		this.current = this.slope;
+		this.current_marker = 0;
+		this.currentText = this.slopeText;
+		this.slopeText.text('');
+		this.intText.text('');
+		this.slope_answer.stroke('red');
+		this.int_answer.stroke('black');
+	}
+
 	show(): void{
+		this.resetEquation();
 		this.group.visible(true);
-		 this.group.moveToTop();
+		this.group.moveToTop();
 		window.addEventListener("keydown", this.keyHandler);
 	}
 
