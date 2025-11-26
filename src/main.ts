@@ -13,11 +13,6 @@ import { STAGE_WIDTH, STAGE_HEIGHT } from "./constants";
 import { AudioController } from "./audios/AudioController";
 import {LinearScreenController} from "./screens/LinearScreen/LinearScreenController";
 
-import { MathScreenController } from "./screens/MathScreen/MathScreenController";
-import { MathScreenView } from "./screens/MathScreen/MathScreenView";
-import { MathScreenModel } from "./screens/MathScreen/MathScreenModel";
-import { QuadraticEquationsHelper } from "./class/MathEquations/QuadraticEquationsHelper";
-
 import { Player } from "./class/MainGameScreenClasses/Player";
 
 /**
@@ -34,12 +29,6 @@ class App implements ScreenSwitcher {
 	private homeController: HomeScreenController;
 	private settingsController: SettingsScreenController;
 	private mainGameController: MainGameScreenController;
-
-	// Math functions
-	private mathScreenController: MathScreenController;
-	private mathScreenView: MathScreenView;
-	private mathScreenModel: MathScreenModel;
-	private mathHelper: QuadraticEquationsHelper;
 
 	// Wizard minigame screens
 	private WizardGameController: WizardGameScreenController;
@@ -68,25 +57,13 @@ class App implements ScreenSwitcher {
 		
 		// Initialize AudioController
 		this.audio = new AudioController();
-		this.player = new Player();
 
 		// Initialize all screen controllers
 		this.startingController = new StartingScreenController(this);
 		this.homeController = new HomeScreenController(this, this.audio);
 		this.settingsController = new SettingsScreenController(this, this.audio);
-		this.mainGameController = new MainGameScreenController(this, this.audio, this.player);
+		this.mainGameController = new MainGameScreenController(this, this.audio);
 
-		// Math screen pieces
-		this.mathScreenModel = new MathScreenModel();
-		this.mathHelper = new QuadraticEquationsHelper();
-		this.mathScreenView = new MathScreenView();
-		this.mathScreenController = new MathScreenController(
-			this.mathScreenView,
-			this.mathScreenModel,
-			this.mathHelper,
-			this,
-			this.player
-		);
 
 		// initalize Wizard minigame screens
 		this.WizardGameController = new WizardGameScreenController(this, this.audio);
@@ -104,7 +81,6 @@ class App implements ScreenSwitcher {
 		this.layer.add(this.startingController.getView().getGroup());
 		this.layer.add(this.homeController.getView().getGroup());
 		this.layer.add(this.settingsController.getView().getGroup());
-		this.layer.add(this.mathScreenController.getView().getGroup());
 		this.layer.add(this.mainGameController.getView().getGroup());
 		this.layer.add(this.amongUsMenuController.getView().getGroup());
 		this.layer.add(this.amongUsGameController.getView().getGroup());
@@ -186,10 +162,6 @@ class App implements ScreenSwitcher {
 				break;
 			case "wizardguide":
 				this.WizardGuideController.show();
-				break;
-			case "math":
-				this.mathScreenController.init(); 
-				this.mathScreenController.show();
 				break;
 			case "linear_screen":
 				this.linearScreenController.show();

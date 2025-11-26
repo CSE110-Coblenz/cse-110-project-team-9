@@ -4,8 +4,6 @@ import { STAGE_WIDTH, STAGE_HEIGHT } from "../../constants";
 import { MainGameScreenModel, NodeType } from "./MainGameScreenModel";
 import { AudioController } from "../../audios/AudioController";
 
-import { Player } from "../../class/MainGameScreenClasses/Player";
-
 export class MainGameScreenView implements View {
     private group: Konva.Group;
     private tiles: Konva.Circle[] = [];
@@ -21,12 +19,10 @@ export class MainGameScreenView implements View {
     private audio: AudioController;
     private bg1!: Konva.Image;
     private bg2!: Konva.Image;
+    private scaledBgWidth!: number;
     private boardHeadIndex = 39; // Start with the 40th tile (index 39) as the leftmost
-    private player: Player;
-    private scoreText: Konva.Text;
 
-    constructor(model: MainGameScreenModel, audio: AudioController, player: Player) {
-        this.player = player;
+    constructor(model: MainGameScreenModel, audio: AudioController) {
         this.model = model;
         this.audio = audio;
         const boardLength = 40;
@@ -34,7 +30,17 @@ export class MainGameScreenView implements View {
 
         // Background image
         Konva.Image.fromURL(`${import.meta.env.BASE_URL}mainboard/images/forestRoad.png`, (imageNode: Konva.Image) => {
-            const imageObj = imageNode.image();
+            const imageObj = imageNode.image(); // Call the method to get the HTMLImageElement
+            // Type guard to ensure we have an HTMLImageElement with width and height
+            if (!(imageObj instanceof HTMLImageElement)) {
+                console.error("Background image is not an HTMLImageElement", imageObj);
+                return;
+            }
+
+            const bgWidth = imageObj.width;
+            const bgHeight = imageObj.height;
+
+            this.scaledBgWidth = STAGE_WIDTH;
 
             this.bg1 = new Konva.Image({
                 image: imageObj,
@@ -56,18 +62,30 @@ export class MainGameScreenView implements View {
             this.group.add(this.bg2);
             this.bg2.moveToBottom();
         });
+        // const titleText = new Konva.Text({
+        //     x: 0,
+        //     y: 20,
+        //     width: STAGE_WIDTH,
+        //     text: "main game board",
+        //     fontSize: 30,
+        //     fontStyle: 'bold',
+        //     fill: '#333',
+        //     align: 'center'
+        // });
+        // this.group.add(titleText);
 
         // Score Text
-        let score = this.player.getScore();
-        this.scoreText = new Konva.Text({
-            x: 20,
-            y: 20,
-            text: `Score: ${score}`,
-            fontSize: 24,
-            fontStyle: 'bold',
-            fill: '#d1c7c7ff',
-        });
-        this.group.add(this.scoreText);
+        //const score = this.model.getPlayerScore(currentPlayerID);
+        // this.scoreText = new Konva.Text({
+        //     x: 20,
+        //     y: 20,
+        //     //text: `Score: ${score}`,
+        //     fontSize: 24,
+        //     fontStyle: 'bold',
+        //     fill: '#333',
+        // });
+        //this.group.add(this.scoreText);
+
 
         const nodeSize = 100;
         const startX = STAGE_WIDTH / 2 - (nodeSize * 2 + 45);
@@ -143,6 +161,8 @@ export class MainGameScreenView implements View {
         const settingsBg = new Konva.Rect({
             width: 200,
             height: 100,
+            // fill: 'red', // uncomment for debugging hit area
+            // opacity: 0.5,
         });
 
         const settingsButtonText = new Konva.Text({
@@ -197,6 +217,8 @@ export class MainGameScreenView implements View {
         this.createMinigameWheel();
     }
 
+    
+
     async animatePlayerPieceRoll(count: number): Promise<void> {
         for (let i = 0; i < count; i++) {
             await this.doSinglePieceAnimation();
@@ -234,12 +256,13 @@ export class MainGameScreenView implements View {
                     onFinish: () => {
                         // If a bg image completely leaves the screen to the left,
                         // move it to the right of the other one.
-                        if (bg.x() <= -STAGE_WIDTH) {
-                            bg.x(bg.x() + STAGE_WIDTH * 2);
+                        if (bg.x() <= -this.scaledBgWidth) {
+                            bg.x(bg.x() + this.scaledBgWidth * 2);
                         }
                     }
                 }).play();
             });
+
 
             allTiles.forEach(tile => {
                 new Konva.Tween({ node: tile, x: tile.x() - distance, duration: 0.65, easing: Konva.Easings.EaseInOut }).play();
@@ -507,7 +530,7 @@ export class MainGameScreenView implements View {
     }
 
     displayRollResult(result: number): void {
-        this.diceResultText.text(`you rolled a ${result}!`);
+        this.diceResultText.text(`You rolled a ${result}!`);
         // Explicitly move the text to the top of the drawing order within its group.
         this.diceResultText.moveToTop();
         this.diceResultText.visible(true);
@@ -533,8 +556,21 @@ export class MainGameScreenView implements View {
         this.group.getLayer()?.batchDraw();
     }
 
-    updateScoreDisplay(): void {
-        this.scoreText.text(`Score: ${this.player.getScore()}`);
+    displayNodeEvent(message: string): void {
+        this.nodeEventText.text(message);
+        this.nodeEventText.moveToTop();
+        this.nodeEventText.visible(true);
+
         this.group.getLayer()?.batchDraw();
+
+        setTimeout(() => {
+            this.nodeEventText.visible(false);
+            this.group.getLayer()?.batchDraw();
+        }, 3000); // Hide after 3 seconds
     }
+
+    // updateScoreDisplay(newScore: number): void {
+    //     this.scoreText.text(`Score: ${newScore}`);
+    //     this.group.getLayer()?.batchDraw();
+    // }
 }
