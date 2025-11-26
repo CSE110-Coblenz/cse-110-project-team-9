@@ -140,12 +140,8 @@ export class GuideScreenView implements View {
         return this.group;
     }
    
-    /**
-     * Show / Hide
-     */
     show(): void {
         this.group.visible(true);
-        this.group.moveToTop();
     }
    
     hide(): void {

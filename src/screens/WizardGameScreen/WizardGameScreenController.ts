@@ -126,7 +126,6 @@ export class WizardGameScreenController extends ScreenController {
     }
 
     resumeGame() {
-        console.log("resumeGame called!");
         this.paused = false;
         this.input.bind();
         this.lastUpdateTime = performance.now();

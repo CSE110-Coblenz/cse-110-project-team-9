@@ -27,7 +27,7 @@ export class HomeScreenController extends ScreenController {
 
 		this.view.getStartButton().on("click", () => {
 			this.audio.play("click_sfx");
-			this.screenSwitcher.switchToScreen({ type: "mainGame" });
+			this.screenSwitcher.switchToScreen({ type: "wizardminigame" });
 		});
 	}
 
