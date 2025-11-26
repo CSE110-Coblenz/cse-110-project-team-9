@@ -49,7 +49,7 @@ export class AmongUsGameScreenController extends ScreenController {
 
 		this.audio = audio;
 
-		audio.registerSound("background_music", `${import.meta.env.BASE_URL}AmongUsMiniGame/Audio/background_music.mp3`);
+		audio.registerSound("background_music", `${import.meta.env.BASE_URL}AmongUsMiniGame/Audio/background-music.mp3`);
 		audio.registerSound("timer_beep", `${import.meta.env.BASE_URL}AmongUsMiniGame/Audio/timer-beep.wav`);
 		audio.registerSound("correct_answer", `${import.meta.env.BASE_URL}AmongUsMiniGame/Audio/correct-answer.mp3`);
 		audio.registerSound("wrong_answer", `${import.meta.env.BASE_URL}AmongUsMiniGame/Audio/wrong-answer.mp3`);

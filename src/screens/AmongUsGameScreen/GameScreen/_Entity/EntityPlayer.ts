@@ -92,11 +92,11 @@ export class PlayerSprite {
         this.hurtImg.onload = checkReady;
         this.accessImg.onload = checkReady;
 
-        this.idleImg.src = `${import.meta.env.BASE_URL}AmongUsMiniGame/Sprites/Wanderer/Idle.png`;
-        this.walkImg.src = `${import.meta.env.BASE_URL}AmongUsMiniGame/Sprites/Wanderer/Run.png`;
-        this.attackImg.src = `${import.meta.env.BASE_URL}AmongUsMiniGame/Sprites/Wanderer/Attack_1.png`;
-        this.hurtImg.src = `${import.meta.env.BASE_URL}AmongUsMiniGame/Sprites/Wanderer/Hurt.png`;
-        this.accessImg.src = `${import.meta.env.BASE_URL}AmongUsMiniGame/Sprites/Wanderer/Magic_sphere.png`;
+        this.idleImg.src = `${import.meta.env.BASE_URL}AmongUsMiniGame/Sprites/idle.png`;
+        this.walkImg.src = `${import.meta.env.BASE_URL}AmongUsMiniGame/Sprites/run.png`;
+        this.attackImg.src = `${import.meta.env.BASE_URL}AmongUsMiniGame/Sprites/attack.png`;
+        this.hurtImg.src = `${import.meta.env.BASE_URL}AmongUsMiniGame/Sprites/hurt.png`;
+        this.accessImg.src = `${import.meta.env.BASE_URL}AmongUsMiniGame/Sprites/magic.png`;
     }
 
     private createSprite(parentGroup: Konva.Group, x: number, y: number, options?: { scale?: number; frameRate?: number; onReady?: (p: PlayerSprite) => void }) {
