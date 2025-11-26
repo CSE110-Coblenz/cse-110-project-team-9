@@ -41,7 +41,7 @@ export class PuzzleView {
             y: STAGE_HEIGHT / 2,
             text: "",
             fontSize: 48,
-            fontFamily: "HomeScreenFont",
+            fontFamily: "Serif",
             fill: "white",
             align: "center",
             visible: false,
@@ -116,7 +116,7 @@ export class PuzzleView {
             y: 80,
             text: "Match the pairs",
             fontSize: 32,
-            fontFamily: "HomeScreenFont",
+            fontFamily: "Serif",
             fill: "white",
             align: "center",
         });
@@ -154,7 +154,7 @@ export class PuzzleView {
             y: STAGE_HEIGHT - 88,
             text: "Submit",
             fontSize: 24,
-            fontFamily: "HomeScreenFont",
+            fontFamily: "Serif",
             fill: "white",
             align: "center",
         });
@@ -192,7 +192,7 @@ export class PuzzleView {
             y: y + 10,
             text: text,
             fontSize: 16,
-            fontFamily: "HomeScreenFont",
+            fontFamily: "Serif",
             fill: "white",
             width: 180,
             align: side === "left" ? "left" : "right",
@@ -226,13 +226,19 @@ export class PuzzleView {
 
     private handleLeftClick(index: number) {
         if (this.selectedLeft === index) {
-            // Deselect
+            // Deselect - clicking the same button again
             this.selectedLeft = null;
             if (this.tempLine) {
                 this.tempLine.destroy();
                 this.tempLine = null;
             }
         } else {
+            // Clear any existing temporary line first
+            if (this.tempLine) {
+                this.tempLine.destroy();
+                this.tempLine = null;
+            }
+            
             // Remove existing connection from this left button
             if (this.matches.has(index)) {
                 const rightIdx = this.matches.get(index)!;
@@ -241,13 +247,13 @@ export class PuzzleView {
             }
             
             this.selectedLeft = index;
-            // Create temporary line
+            // Create new temporary line
             const pos = this.getConnectionPoint("left", index);
             this.tempLine = new Konva.Line({
                 points: [pos.x, pos.y, pos.x, pos.y],
                 stroke: "white",
-                strokeWidth: 3,
-                opacity: 0.5,
+                strokeWidth: 4,
+                opacity: 1, // Full opacity for visibility
                 lineCap: "round",
             });
             this.linesLayer.add(this.tempLine);
@@ -257,7 +263,7 @@ export class PuzzleView {
 
     private handleRightClick(index: number) {
         if (this.selectedLeft !== null) {
-            // Create connection
+            // Create connection from left to right
             this.matches.set(this.selectedLeft, index);
             
             // Clear temp line
@@ -269,12 +275,27 @@ export class PuzzleView {
             this.selectedLeft = null;
             this.redrawLines();
         } else {
-            // Check if this right button is already connected and remove that connection
+            // Starting from right side - allow right-to-left selection
+            // Check if this right button is already connected and start from that left button
             for (const [leftIdx, rightIdx] of this.matches.entries()) {
                 if (rightIdx === index) {
+                    // Found existing connection, remove it and start selecting from the left
                     this.matches.delete(leftIdx);
                     this.redrawLines();
-                    break;
+                    
+                    // Start new selection from that left button
+                    this.selectedLeft = leftIdx;
+                    const pos = this.getConnectionPoint("left", leftIdx);
+                    this.tempLine = new Konva.Line({
+                        points: [pos.x, pos.y, pos.x, pos.y],
+                        stroke: "white",
+                        strokeWidth: 4,
+                        opacity: 1,
+                        lineCap: "round",
+                    });
+                    this.linesLayer.add(this.tempLine);
+                    this.parent.getLayer()?.draw();
+                    return;
                 }
             }
         }
@@ -378,6 +399,9 @@ export class PuzzleView {
         this.shuffleMapping = [];
         this.selectedLeft = null;
         this.tempLine = null;
+        
+        // Ensure puzzle is hidden
+        this.puzzleGroup.visible(false);
         
         this.feedbackText.text("");
         this.feedbackText.visible(false);

@@ -15,15 +15,15 @@ export class AmongUsGameScreenController extends ScreenController {
 	private screenSwitcher: ScreenSwitcher;
 	private gameTimer: number | null = null;
 	private audio: AudioController;
+	private timeRemaining: number = GAME_DURATION;
 
 	// The puzzle currently opened by the player (via clicking an obstacle)
 	private currentOpenPuzzle: PuzzleModel | null = null;
 
-	// private backgroundSound: HTMLAudioElement;
-	// private timerSound: HTMLAudioElement;
-	// private correctSound: HTMLAudioElement;
-	// private wrongSound: HTMLAudioElement;
-	// private	clickSound: HTMLAudioElement;
+	// Track the nearest unsolved obstacle for E-key interaction
+	private nearbyObstacle: PuzzleModel | null = null;
+	private static readonly INTERACTION_DISTANCE = 100;
+	private static readonly TIME_PENALTY_WRONG = 10;
 
 	private keysDown = new Set<string>();
 	private rafId: number | null = null;
@@ -36,25 +36,18 @@ export class AmongUsGameScreenController extends ScreenController {
 		this.screenSwitcher = screenSwitcher;
 
 		this.model = new AmongUsGameScreenModel();
-		// Updated: pass handleMatchingSubmit instead of handleClick
+		// Updated: pass handleMatchingSubmit callback
 		this.view = new AmongUsGameScreenView(
-			(matches: Map<number, number>) => this.handleMatchingSubmit(matches), 
-			(puzzle) => this.handleObstacleClick(puzzle)
+			(matches: Map<number, number>) => this.handleMatchingSubmit(matches)
 		);
 
 		this.audio = audio;
 
 		audio.registerSound("background_music", `${import.meta.env.BASE_URL}AmongUsMiniGame/Audio/background-music.mp3`);
-		audio.registerSound("timer_beep", `${import.meta.env.BASE_URL}AmongUsMiniGame/Audio/timer-beep.mp3`);
+		audio.registerSound("timer_beep", `${import.meta.env.BASE_URL}AmongUsMiniGame/Audio/timer-beep.wav`);
 		audio.registerSound("correct_answer", `${import.meta.env.BASE_URL}AmongUsMiniGame/Audio/correct-answer.mp3`);
 		audio.registerSound("wrong_answer", `${import.meta.env.BASE_URL}AmongUsMiniGame/Audio/wrong-answer.mp3`);
-		audio.registerSound("click_sound", `${import.meta.env.BASE_URL}AmongUsMiniGame/Audio/click-sound.mp3`);
-
-		// this.backgroundSound = new Audio("AmongUsMiniGame/Audio/background-music.mp3");
-		// this.timerSound = new Audio("AmongUsMiniGame/Audio/timer-beep.mp3");
-		// this.correctSound = new Audio("AmongUsMiniGame/Audio/correct-answer.mp3");
-		// this.wrongSound = new Audio("AmongUsMiniGame/Audio/wrong-answer.mp3");
-		// this.clickSound = new Audio("AmongUsMiniGame/Audio/click-sound.mp3");
+		audio.registerSound("click_sound", `${import.meta.env.BASE_URL}AmongUsMiniGame/Audio/click-sound.wav`);
 	}
 
 	/**
@@ -62,6 +55,16 @@ export class AmongUsGameScreenController extends ScreenController {
 	 */
 	startGame(): void {
 		this.model.reset();
+		this.timeRemaining = GAME_DURATION;
+		
+		// Clear any existing obstacles from previous games
+		this.view.clearObstacles();
+		
+		// Reset puzzle view to clear any open puzzles or feedback
+		this.view.resetPuzzleView();
+		
+		// Reset the currently open puzzle
+		this.currentOpenPuzzle = null;
 		
 		this.view.updateScore(this.model.getScore());
 		this.view.updateTimer(GAME_DURATION);
@@ -70,14 +73,11 @@ export class AmongUsGameScreenController extends ScreenController {
 		const puzzles = this.model.getPuzzles();
 		puzzles.forEach((p, idx) => {
 			const x = STAGE_WIDTH / 2 - 200 + idx * 200;
-			const y = STAGE_HEIGHT / 2;
+			const y = STAGE_HEIGHT / 1.25;
 			this.view.addObstacle(idx + 1, x, y, p);
 		});
 
 		this.startTimer();
-
-		// this.backgroundSound.loop = true;
-		// this.backgroundSound.play();
 
 		this.audio.play("background_music", true);
 
@@ -91,18 +91,14 @@ export class AmongUsGameScreenController extends ScreenController {
 	 * Start the countdown timer
 	 */
 	private startTimer(): void {
-		let timeRemaining = GAME_DURATION;
 		let timerId = setInterval(() => {
-			timeRemaining = timeRemaining - 1;
-			this.view.updateTimer(timeRemaining);		
-			if(timeRemaining <= 0) {
+			this.timeRemaining = this.timeRemaining - 1;
+			this.view.updateTimer(this.timeRemaining);		
+			if(this.timeRemaining <= 0) {
 				this.endGame();
 			}
 		}, 1000);
 		this.gameTimer = timerId;
-
-		// this.timerSound.loop = true;
-		// this.timerSound.play();
 
 		this.audio.play("timer_beep", true);
 	}
@@ -137,6 +133,12 @@ export class AmongUsGameScreenController extends ScreenController {
 			this.view.setRogueMoving(false);
 		}
 
+		// Check for nearby obstacles
+		const playerPos = this.view.getRoguePosition();
+		if (playerPos) {
+			this.updateNearbyObstacle(playerPos);
+		}
+
 		this.rafId = requestAnimationFrame(this.gameLoop);
 	};
 
@@ -151,38 +153,59 @@ export class AmongUsGameScreenController extends ScreenController {
 		const isCorrect = puzzle.evaluateMatching(matches);
 
 		this.audio.play("click_sound");
-		// this.clickSound.play();
+		
+		// Step 1: Play attack animation for 1 second
+		this.view.playPlayerAttack();
+		
+		// Step 2: After 1 second, show feedback
+		setTimeout(() => {
+			const feedbackMessage = isCorrect ? "Correct!" : "Wrong!";
+			this.view.hidePuzzle(feedbackMessage);
 
-		const feedbackMessage = isCorrect ? "Correct!" : "Wrong!";
-		this.view.hidePuzzle(feedbackMessage);
+			if (isCorrect) {
+				this.audio.play("correct_answer");
+				this.view.markObstacleSolved(puzzle);
+				this.model.incrementScore();
 
-		if (isCorrect) {
-			// this.correctSound.play();
-			// this.correctSound.currentTime = 0;
-			this.audio.play("correct_answer");
+				this.view.setObstaclesInteractive(false);
+				setTimeout(() => {
+					this.view.resetPlayerToIdle();
+					this.view.setObstaclesInteractive(true);
+					this.currentOpenPuzzle = null; // Clear after feedback
+				}, 1500);
+			} else {
+				// Play hurt and explode animations simultaneously
+				this.view.playPlayerHurt();
+				this.view.playObstacleExplode(puzzle);
+				this.audio.play("wrong_answer");
 
-			this.view.markObstacleSolved(puzzle);
-			this.model.incrementScore();
-			this.view.updateScore(this.model.getScore());
-		} else {
-			// this.wrongSound.play();
-			// this.wrongSound.currentTime = 0;
-			this.audio.play("wrong_answer");
-		}
+				// Apply time penalty for wrong answer
+				this.timeRemaining -= AmongUsGameScreenController.TIME_PENALTY_WRONG;
+				if (this.timeRemaining < 0) {
+					this.timeRemaining = 0;
+				}
+				this.view.updateTimer(this.timeRemaining);
 
-		this.currentOpenPuzzle = null;
+				this.view.setObstaclesInteractive(false);
+				setTimeout(() => {
+					this.view.setObstaclesInteractive(true);
+				}, 1500);	
 
-		if (this.model.getIsComplete()) {
-			setTimeout(() => this.endGame(), 1500);
-		}
-	}
+				// Re-open the same puzzle after feedback
+				setTimeout(() => {
+					if (this.currentOpenPuzzle) {
+						this.view.resetPlayerToIdle();
+						const question = this.currentOpenPuzzle.getQuestion();
+						const options = this.currentOpenPuzzle.getOptions().map(o => String(o));
+						this.view.renderPuzzle({ question, options });
+					}
+				}, 1500);
+			}
 
-	private handleObstacleClick(puzzle: PuzzleModel | null): void {
-		if (!puzzle) return;
-		this.currentOpenPuzzle = puzzle;
-		const question = puzzle.getQuestion();
-		const options = puzzle.getOptions().map(o => String(o));
-		this.view.renderPuzzle({ question, options });
+			if (this.model.getIsComplete()) {
+				setTimeout(() => this.endGame(), 1500);
+			}
+		}, 1000);
 	}
 
 	private onKeyDown = (e: KeyboardEvent) => {
@@ -191,7 +214,44 @@ export class AmongUsGameScreenController extends ScreenController {
 			e.preventDefault();
 			this.keysDown.add(key);
 		}
+		if (key === "e") {
+			e.preventDefault();
+			this.handleEKeyPressed();
+		}
 	};
+
+	/**
+	 * Handle E key press to interact with nearby obstacle
+	 */
+	private handleEKeyPressed(): void {
+		if (!this.nearbyObstacle) return;
+		
+		// Allow switching to a different puzzle even if one is already open
+		// Only prevent if trying to open the same puzzle again
+		if (this.currentOpenPuzzle === this.nearbyObstacle) return;
+		
+		this.audio.play("click_sound");
+		this.currentOpenPuzzle = this.nearbyObstacle;
+		
+		// Play access animation first
+		this.view.playPlayerAccess();
+		
+		// After access animation completes (16 frames at 12 fps ≈ 1333ms), show the puzzle
+		setTimeout(() => {
+			const question = this.nearbyObstacle!.getQuestion();
+			const options = this.nearbyObstacle!.getOptions().map(o => String(o));
+			this.view.renderPuzzle({ question, options });
+			this.view.resetPlayerToIdle();
+		}, 1500);
+	}
+
+	/**
+	 * Update which obstacle the player is near (if any)
+	 */
+	private updateNearbyObstacle(playerPos: { x: number; y: number }): void {
+		this.nearbyObstacle = this.view.getNearestNearbyObstacle(playerPos, AmongUsGameScreenController.INTERACTION_DISTANCE);
+		this.view.setNearbyObstacleHint(this.nearbyObstacle !== null);
+	}
 
 	private onKeyUp = (e: KeyboardEvent) => {
 		const key = e.key.toLowerCase();
@@ -209,8 +269,6 @@ export class AmongUsGameScreenController extends ScreenController {
 			this.gameTimer = null;
 		}
 		
-		// this.backgroundSound.pause();
-		// this.timerSound.pause();
 		this.audio.stop("background_music");
 		this.audio.stop("timer_beep");
 	}
