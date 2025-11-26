@@ -45,6 +45,7 @@ export class InputHandler {
     };
 
     public isDown(key: string): boolean {
-        return this.keys[key.toLowerCase()];
+        //first pressed keys set to false
+        return Boolean(this.keys[key.toLowerCase()]);
     }
 }
