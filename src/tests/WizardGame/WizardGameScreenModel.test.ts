@@ -3,7 +3,7 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { WizardGameScreenModel } from "../../screens/WizardGameScreen/WizardGameScreenModel.ts";
+import { WizardGameScreenModel } from "../../screens/WizardGameScreen/WizardGameScreenModel";
 import { STAGE_WIDTH, STAGE_HEIGHT } from "../../constants";
 
 describe("WizardGameScreenModel", () => {
