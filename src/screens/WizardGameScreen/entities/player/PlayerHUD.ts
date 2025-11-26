@@ -1,6 +1,7 @@
 import Konva from 'konva';
 import { PlayerModel } from './PlayerModel';
 import { DEFAULT_HEALTH } from '../../config';
+import { PLAYER_SCALE, SPRITE_WIDTH, SPRITE_HEIGHT, DEFAULT_STAMINA } from '../../config';
 
 export class PlayerHUD {
     private healthBar: Konva.Rect;
@@ -36,15 +37,18 @@ export class PlayerHUD {
     render() {
         // calculate percentage
         const healthPercent = Math.max(0, this.model.health / DEFAULT_HEALTH);
-        const staminaPercent = Math.max(0, this.model.stamina / 100);
+        const staminaPercent = Math.max(0, this.model.stamina / DEFAULT_STAMINA);
+
+        //offset y so it does not
+        const offsetY = 60;
 
         // move above player
-        this.healthBar.x(this.model.x + 200 - this.barWidth / 2);
-        this.healthBar.y(this.model.y + 140 - (10 + this.barHeight));
+        this.healthBar.x(this.model.x + SPRITE_WIDTH / 2 * PLAYER_SCALE - this.barWidth / 2);
+        this.healthBar.y(this.model.y + SPRITE_HEIGHT / 2 * PLAYER_SCALE - offsetY - (10 + this.barHeight));
         this.healthBar.width(this.barWidth * healthPercent);
 
-        this.staminaBar.x(this.model.x + 200 - this.barWidth / 2);
-        this.staminaBar.y(this.model.y + 140 - (5 + this.barHeight));
+        this.staminaBar.x(this.model.x + SPRITE_WIDTH / 2 * PLAYER_SCALE - this.barWidth / 2);
+        this.staminaBar.y(this.model.y + SPRITE_HEIGHT / 2 * PLAYER_SCALE - offsetY - (5 + this.barHeight));
         this.staminaBar.width(this.barWidth * staminaPercent);
 
         this.healthBar.moveToTop();
