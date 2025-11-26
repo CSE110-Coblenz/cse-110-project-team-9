@@ -13,11 +13,13 @@ export class LinearScreenController extends ScreenController{
 		this.view = new LinearScreenView();
 		this.screenswitcher = screenswitcher;
 
-		this.view.setOnSubmit(() => {
+		this.view.setOnSubmit((isCorrect) => {
+			if (!isCorrect) {
+				return;
+			}
+
 			this.view.hide();
-			this.parentGameController.getView().show();
-            this.parentGameController.getView().getGroup().moveToTop();
-			this.parentGameController.resumeGame();
+			this.parentGameController.handleMathQuestionAnswered(true);
 		});
 	}
 

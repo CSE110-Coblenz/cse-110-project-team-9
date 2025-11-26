@@ -112,10 +112,6 @@ export class WizardGameScreenController extends ScreenController {
         this.view.hide();
     }
 
-    hide(): void {
-        this.stopGame();
-    }
-
     pauseGame() {
         this.paused = true;
         if (this.animationFrameId) {
@@ -140,6 +136,19 @@ export class WizardGameScreenController extends ScreenController {
     mathQuestion() {
         this.pauseGame();
         this.screenSwitcher.layerOnScreen({ type:"linear_screen" });
+    }
+
+    handleMathQuestionAnswered(correct: boolean) {
+        this.playerController.handleMathQuestionAnswered(correct);
+
+        if (correct) {
+            this.view.getGroup().moveToTop();
+            this.resumeGame();
+        }
+    }
+
+    hide(): void {
+        this.stopGame();
     }
 
     getView(): WizardGameScreenView {

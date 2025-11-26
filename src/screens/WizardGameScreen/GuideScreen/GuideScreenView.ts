@@ -142,6 +142,7 @@ export class GuideScreenView implements View {
    
     show(): void {
         this.group.visible(true);
+        this.group.moveToTop();
     }
    
     hide(): void {
