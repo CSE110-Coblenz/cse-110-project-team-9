@@ -69,7 +69,7 @@ export class Obstacle {
             this.sprite.start();
             this.group.getLayer()?.draw();
         };
-        img.src = `${import.meta.env.BASE_URL}AmongUsMiniGame/Objects/bomb.png`;
+        img.src = `${import.meta.env.BASE_URL}AmongUsMiniGame/Objects/Bomb.png`;
     }
 
     markSolved(): void {
