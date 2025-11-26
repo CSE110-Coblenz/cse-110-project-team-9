@@ -25,12 +25,6 @@ export class AmongUsGameScreenController extends ScreenController {
 	private static readonly INTERACTION_DISTANCE = 100;
 	private static readonly TIME_PENALTY_WRONG = 10;
 
-	// private backgroundSound: HTMLAudioElement;
-	// private timerSound: HTMLAudioElement;
-	// private correctSound: HTMLAudioElement;
-	// private wrongSound: HTMLAudioElement;
-	// private	clickSound: HTMLAudioElement;
-
 	private keysDown = new Set<string>();
 	private rafId: number | null = null;
 	private lastFrameTime = 0;
@@ -54,12 +48,6 @@ export class AmongUsGameScreenController extends ScreenController {
 		audio.registerSound("correct_answer", `${import.meta.env.BASE_URL}AmongUsMiniGame/Audio/correct-answer.mp3`);
 		audio.registerSound("wrong_answer", `${import.meta.env.BASE_URL}AmongUsMiniGame/Audio/wrong-answer.mp3`);
 		audio.registerSound("click_sound", `${import.meta.env.BASE_URL}AmongUsMiniGame/Audio/click-sound.wav`);
-
-		// this.backgroundSound = new Audio("AmongUsMiniGame/Audio/background-music.mp3");
-		// this.timerSound = new Audio("AmongUsMiniGame/Audio/timer-beep.mp3");
-		// this.correctSound = new Audio("AmongUsMiniGame/Audio/correct-answer.mp3");
-		// this.wrongSound = new Audio("AmongUsMiniGame/Audio/wrong-answer.mp3");
-		// this.clickSound = new Audio("AmongUsMiniGame/Audio/click-sound.mp3");
 	}
 
 	/**
@@ -91,9 +79,6 @@ export class AmongUsGameScreenController extends ScreenController {
 
 		this.startTimer();
 
-		// this.backgroundSound.loop = true;
-		// this.backgroundSound.play();
-
 		this.audio.play("background_music", true);
 
 		window.addEventListener("keydown", this.onKeyDown);
@@ -114,9 +99,6 @@ export class AmongUsGameScreenController extends ScreenController {
 			}
 		}, 1000);
 		this.gameTimer = timerId;
-
-		// this.timerSound.loop = true;
-		// this.timerSound.play();
 
 		this.audio.play("timer_beep", true);
 	}
@@ -226,15 +208,6 @@ export class AmongUsGameScreenController extends ScreenController {
 		}, 1000);
 	}
 
-	private handleObstacleClick(puzzle: PuzzleModel | null): void {
-		if (!puzzle) return;
-		this.audio.play("click_sound");
-		this.currentOpenPuzzle = puzzle;
-		const question = puzzle.getQuestion();
-		const options = puzzle.getOptions().map(o => String(o));
-		this.view.renderPuzzle({ question, options });
-	}
-
 	private onKeyDown = (e: KeyboardEvent) => {
 		const key = e.key.toLowerCase();
 		if (["w","a","s","d"].includes(key)) {
@@ -296,8 +269,6 @@ export class AmongUsGameScreenController extends ScreenController {
 			this.gameTimer = null;
 		}
 		
-		// this.backgroundSound.pause();
-		// this.timerSound.pause();
 		this.audio.stop("background_music");
 		this.audio.stop("timer_beep");
 	}

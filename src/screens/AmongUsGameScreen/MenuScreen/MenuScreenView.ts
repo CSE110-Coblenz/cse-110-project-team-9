@@ -99,13 +99,13 @@ export class AmongUsMenuScreenView implements View {
 			"• The enchanted spell mines pulse with unstable magic.",
 			"• Move — Use your W / A / S / D keys to glide across the terrain.",
 			"• Each puzzle shows quadratic equations on the LEFT",
-			"• Interact — When standing close to a Spell Mine, press E to begin disarment.",
+			"• Interact — When standing close to a spell mine, press E to begin disarment.",
 			"• To neutralize a mine:",
 			"• Click a runic equation on the left panel.",
 			"• Then click its matching set of roots on the right panel",
 			"• If your pairing is correct, the sigil dims and the mine stabilizes.",
 			"• If incorrect, the energies will flare—losing precious time!",
-			"• Defuse all three Spell Mines before the countdown ends."
+			"• Defuse all mines before the countdown ends."
 		];
 
 		instructions.forEach((text, index) => {
