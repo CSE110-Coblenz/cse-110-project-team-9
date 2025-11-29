@@ -5,7 +5,8 @@ export enum NodeType {
     EASY_QUESTION,
     MEDIUM_QUESTION,
     HARD_QUESTION,
-    MINIGAME
+    MINIGAME,
+    END
 }
 
 export class MainGameScreenModel {
@@ -52,7 +53,7 @@ export class MainGameScreenModel {
     NodeType.EASY_QUESTION,    // 37
     NodeType.HARD_QUESTION,    // 38
     NodeType.EASY_QUESTION,    // 39
-    NodeType.MINIGAME          // 40
+    NodeType.END          // 40
     ]
 
     constructor(){

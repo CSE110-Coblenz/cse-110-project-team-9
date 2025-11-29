@@ -39,8 +39,8 @@ export class MainGameScreenController extends ScreenController {
     }
 
     public diceRoll(): number {
-        return Math.floor(Math.random() * 6) + 1;
-        //return 4;
+        //return Math.floor(Math.random() * 6) + 1;
+        return 30;
     }
 
     public async onPlayerRoll() {
@@ -59,12 +59,21 @@ export class MainGameScreenController extends ScreenController {
     private async executeTurn(roll: number): Promise<void> {
         await this.view.animatePlayerPieceRoll(roll);
         const currentPosition = this.gameModel.getPlayerPosition();
+        const potentialNewPosition = currentPosition + roll;
 
-        const newPosition = (currentPosition + roll) % this.BOARD_LENGTH;
-        this.gameModel.setPlayerPosition(newPosition); // newPosition is 0-indexed
-        this.triggerNodeEvent(newPosition + 1); // getNodeType is 1-indexed
-
-        this.view.enableRollButton();
+        if (potentialNewPosition >= this.BOARD_LENGTH - 1) {
+            // Player reached or passed the final tile
+            const finalPosition = this.BOARD_LENGTH - 1;
+            this.gameModel.setPlayerPosition(finalPosition);
+            this.triggerNodeEvent(finalPosition + 1);
+            // The triggerNodeEvent for END will call displayEnd.
+            // No need to re-enable the roll button.
+        } else {
+            // Normal move
+            this.gameModel.setPlayerPosition(potentialNewPosition); // newPosition is 0-indexed
+            this.triggerNodeEvent(potentialNewPosition + 1); // getNodeType is 1-indexed
+            this.view.enableRollButton();
+        }
     }
 
     public triggerNodeEvent(nodeIndex: number): void {
@@ -92,6 +101,10 @@ export class MainGameScreenController extends ScreenController {
 
             case NodeType.START:
                 // No action needed for the start tile
+                break;
+
+            case NodeType.END:
+                this.view.displayEnd();
                 break;
 
             default:
