@@ -57,23 +57,38 @@ export class MainGameScreenController extends ScreenController {
     }
 
     private async executeTurn(roll: number): Promise<void> {
-        await this.view.animatePlayerPieceRoll(roll);
         const currentPosition = this.gameModel.getPlayerPosition();
         const potentialNewPosition = currentPosition + roll;
+        const finalPosition = this.BOARD_LENGTH - 1; // End node is at index 39
 
-        if (potentialNewPosition >= this.BOARD_LENGTH - 1) {
-            // Player reached or passed the final tile
-            const finalPosition = this.BOARD_LENGTH - 1;
-            this.gameModel.setPlayerPosition(finalPosition);
-            this.triggerNodeEvent(finalPosition + 1);
-            // The triggerNodeEvent for END will call displayEnd.
-            // No need to re-enable the roll button.
+        // Calculate how many moves we can actually make before reaching the end
+        let actualMoves: number;
+        let targetPosition: number;
+
+        if (potentialNewPosition >= finalPosition) {
+            // Player would reach or pass the end node - stop at the end
+            actualMoves = finalPosition - currentPosition;
+            targetPosition = finalPosition;
         } else {
-            // Normal move
-            this.gameModel.setPlayerPosition(potentialNewPosition); // newPosition is 0-indexed
-            this.triggerNodeEvent(potentialNewPosition + 1); // getNodeType is 1-indexed
+            // Normal move - can use the full roll
+            actualMoves = roll;
+            targetPosition = potentialNewPosition;
+        }
+
+        // Only animate the actual moves we can make
+        if (actualMoves > 0) {
+            await this.view.animatePlayerPieceRoll(actualMoves);
+        }
+
+        // Set the final position
+        this.gameModel.setPlayerPosition(targetPosition);
+        this.triggerNodeEvent(targetPosition + 1); // getNodeType is 1-indexed
+
+        // Only re-enable the roll button if we didn't reach the end
+        if (targetPosition < finalPosition) {
             this.view.enableRollButton();
         }
+        // If we reached the end, triggerNodeEvent will call displayEnd and the button stays disabled
     }
 
     public triggerNodeEvent(nodeIndex: number): void {
@@ -83,14 +98,14 @@ export class MainGameScreenController extends ScreenController {
             case NodeType.EASY_QUESTION:
             case NodeType.MEDIUM_QUESTION:
             case NodeType.HARD_QUESTION:
-                this.view.displayNodeEvent("You landed on a Question tile!");
+                this.view.displayNodeEvent("Landed on a Question tile!");
                 //const newQuestionScore = this.gameModel.getPlayerScore("default") + 5;
                 //this.gameModel.setPlayerScore("default", newQuestionScore);
                 //this.view.updateScoreDisplay(newQuestionScore);
                 break;
 
             case NodeType.MINIGAME:
-                this.view.displayNodeEvent("You landed on a Minigame tile!");
+                this.view.displayNodeEvent("Landed on a Minigame tile!");
                 //this.screenSwitcher.switchToScreen({ type: "wizardminigame" });
                 this.triggerRandomMinigame();
                 // Wait for the message to display, then trigger minigame

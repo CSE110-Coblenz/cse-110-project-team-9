@@ -231,7 +231,7 @@ export class MainGameScreenView implements View {
         });
 
         const endText = new Konva.Text({
-            text: 'You win!',
+            text: 'Completed!',
             fontSize: 60,
             fontFamily: 'homeScreenFont',
             fill: 'white',
@@ -559,7 +559,7 @@ export class MainGameScreenView implements View {
     }
 
     displayRollResult(result: number): void {
-        this.diceResultText.text(`You rolled a ${result}!`);
+        this.diceResultText.text(`Rolled a ${result}!`);
         // Explicitly move the text to the top of the drawing order within its group.
         this.diceResultText.moveToTop();
         this.diceResultText.visible(true);
