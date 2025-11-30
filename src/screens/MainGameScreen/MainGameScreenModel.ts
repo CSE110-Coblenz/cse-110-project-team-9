@@ -79,14 +79,4 @@ export class MainGameScreenModel {
     public setPlayerPosition( position: number): void {
         this.position = position;
     }
-
-    // public getPlayerScore(playerID: string): number {
-    //     return this.getPlayer(playerID).score;
-    // }
-
-    // public setPlayerScore(playerID: string, score: number): void {
-    //     this.getPlayer(playerID).score = score;
-    // }
-
-
 }

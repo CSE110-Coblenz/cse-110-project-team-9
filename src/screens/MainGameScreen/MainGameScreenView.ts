@@ -63,29 +63,6 @@ export class MainGameScreenView implements View {
             this.group.add(this.bg2);
             this.bg2.moveToBottom();
         });
-        // const titleText = new Konva.Text({
-        //     x: 0,
-        //     y: 20,
-        //     width: STAGE_WIDTH,
-        //     text: "main game board",
-        //     fontSize: 30,
-        //     fontStyle: 'bold',
-        //     fill: '#333',
-        //     align: 'center'
-        // });
-        // this.group.add(titleText);
-
-        // Score Text
-        //const score = this.model.getPlayerScore(currentPlayerID);
-        // this.scoreText = new Konva.Text({
-        //     x: 20,
-        //     y: 20,
-        //     //text: `Score: ${score}`,
-        //     fontSize: 24,
-        //     fontStyle: 'bold',
-        //     fill: '#333',
-        // });
-        //this.group.add(this.scoreText);
 
 
         const nodeSize = 100;
@@ -611,8 +588,4 @@ export class MainGameScreenView implements View {
         // Execute the callback if provided
         onDisplay?.();
     }
-    // updateScoreDisplay(newScore: number): void {
-    //     this.scoreText.text(`Score: ${newScore}`);
-    //     this.group.getLayer()?.batchDraw();
-    // }
 }
