@@ -31,11 +31,6 @@ export class MainGameScreenController extends ScreenController {
         audio.registerSound("piece_move_sfx", `${import.meta.env.BASE_URL}mainboard/audio/piece_move.mp3`);
 
         const tiles = this.view.getTiles();
-
-        // tiles[0].on("click", () => this.screenSwitcher.switchToScreen({ type: "wizard" }));
-        // tiles[1].on("click", () => this.screenSwitcher.switchToScreen({ type: "amongus" }));
-        // tiles[2].on("click", () => this.screenSwitcher.switchToScreen({ type: "basicQuestion1" }));
-        // tiles[3].on("click", () => this.screenSwitcher.switchToScreen({ type: "basicQuestion2" }));
     }
 
     public diceRoll(): number {
@@ -99,19 +94,11 @@ export class MainGameScreenController extends ScreenController {
             case NodeType.MEDIUM_QUESTION:
             case NodeType.HARD_QUESTION:
                 this.view.displayNodeEvent("Landed on a Question tile!");
-                //const newQuestionScore = this.gameModel.getPlayerScore("default") + 5;
-                //this.gameModel.setPlayerScore("default", newQuestionScore);
-                //this.view.updateScoreDisplay(newQuestionScore);
                 break;
 
             case NodeType.MINIGAME:
                 this.view.displayNodeEvent("Landed on a Minigame tile!");
-                //this.screenSwitcher.switchToScreen({ type: "wizardminigame" });
                 this.triggerRandomMinigame();
-                // Wait for the message to display, then trigger minigame
-                // setTimeout(() => {
-                //     this.triggerRandomMinigame();
-                // }, 1000);
                 break;
 
             case NodeType.START:
