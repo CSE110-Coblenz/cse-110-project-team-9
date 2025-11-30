@@ -31,16 +31,11 @@ export class MainGameScreenController extends ScreenController {
         audio.registerSound("piece_move_sfx", `${import.meta.env.BASE_URL}mainboard/audio/piece_move.mp3`);
 
         const tiles = this.view.getTiles();
-
-        // tiles[0].on("click", () => this.screenSwitcher.switchToScreen({ type: "wizard" }));
-        // tiles[1].on("click", () => this.screenSwitcher.switchToScreen({ type: "amongus" }));
-        // tiles[2].on("click", () => this.screenSwitcher.switchToScreen({ type: "basicQuestion1" }));
-        // tiles[3].on("click", () => this.screenSwitcher.switchToScreen({ type: "basicQuestion2" }));
     }
 
     public diceRoll(): number {
         return Math.floor(Math.random() * 6) + 1;
-        //return 4;
+        //return 30;
     }
 
     public async onPlayerRoll() {
@@ -57,14 +52,38 @@ export class MainGameScreenController extends ScreenController {
     }
 
     private async executeTurn(roll: number): Promise<void> {
-        await this.view.animatePlayerPieceRoll(roll);
         const currentPosition = this.gameModel.getPlayerPosition();
+        const potentialNewPosition = currentPosition + roll;
+        const finalPosition = this.BOARD_LENGTH - 1; // End node is at index 39
 
-        const newPosition = (currentPosition + roll) % this.BOARD_LENGTH;
-        this.gameModel.setPlayerPosition(newPosition); // newPosition is 0-indexed
-        this.triggerNodeEvent(newPosition + 1); // getNodeType is 1-indexed
+        // Calculate how many moves we can actually make before reaching the end
+        let actualMoves: number;
+        let targetPosition: number;
 
-        this.view.enableRollButton();
+        if (potentialNewPosition >= finalPosition) {
+            // Player would reach or pass the end node - stop at the end
+            actualMoves = finalPosition - currentPosition;
+            targetPosition = finalPosition;
+        } else {
+            // Normal move - can use the full roll
+            actualMoves = roll;
+            targetPosition = potentialNewPosition;
+        }
+
+        // Only animate the actual moves we can make
+        if (actualMoves > 0) {
+            await this.view.animatePlayerPieceRoll(actualMoves);
+        }
+
+        // Set the final position
+        this.gameModel.setPlayerPosition(targetPosition);
+        this.triggerNodeEvent(targetPosition + 1); // getNodeType is 1-indexed
+
+        // Only re-enable the roll button if we didn't reach the end
+        if (targetPosition < finalPosition) {
+            this.view.enableRollButton();
+        }
+        // If we reached the end, triggerNodeEvent will call displayEnd and the button stays disabled
     }
 
     public triggerNodeEvent(nodeIndex: number): void {
@@ -74,24 +93,23 @@ export class MainGameScreenController extends ScreenController {
             case NodeType.EASY_QUESTION:
             case NodeType.MEDIUM_QUESTION:
             case NodeType.HARD_QUESTION:
-                this.view.displayNodeEvent("You landed on a Question tile!");
-                //const newQuestionScore = this.gameModel.getPlayerScore("default") + 5;
-                //this.gameModel.setPlayerScore("default", newQuestionScore);
-                //this.view.updateScoreDisplay(newQuestionScore);
+                this.view.displayNodeEvent("Landed on a Question tile!");
                 break;
 
             case NodeType.MINIGAME:
-                this.view.displayNodeEvent("You landed on a Minigame tile!");
-                //this.screenSwitcher.switchToScreen({ type: "wizardminigame" });
+                this.view.displayNodeEvent("Landed on a Minigame tile!");
                 this.triggerRandomMinigame();
-                // Wait for the message to display, then trigger minigame
-                // setTimeout(() => {
-                //     this.triggerRandomMinigame();
-                // }, 1000);
                 break;
 
             case NodeType.START:
                 // No action needed for the start tile
+                break;
+
+            case NodeType.END:
+                this.view.displayEnd(() => {
+                    // After 5 seconds, reload the page
+                    setTimeout(() => window.location.reload(), 5000);
+                });
                 break;
 
             default:
