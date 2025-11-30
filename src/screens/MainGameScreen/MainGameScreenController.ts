@@ -104,7 +104,10 @@ export class MainGameScreenController extends ScreenController {
                 break;
 
             case NodeType.END:
-                this.view.displayEnd();
+                this.view.displayEnd(() => {
+                    // After 5 seconds, switch to the home screen
+                    setTimeout(() => this.screenSwitcher.switchToScreen({ type: "home" }), 5000);
+                });
                 break;
 
             default:

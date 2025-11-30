@@ -598,7 +598,7 @@ export class MainGameScreenView implements View {
         }, 3000); // Hide after 3 seconds
     }
 
-    displayEnd(): void {
+    displayEnd(onDisplay?: () => void): void {
         // Hide all other children of the main group
         this.group.children.forEach(child => {
             if (child !== this.endScreenGroup) {
@@ -607,6 +607,9 @@ export class MainGameScreenView implements View {
         });
         this.endScreenGroup.show();
         this.group.getLayer()?.batchDraw();
+
+        // Execute the callback if provided
+        onDisplay?.();
     }
     // updateScoreDisplay(newScore: number): void {
     //     this.scoreText.text(`Score: ${newScore}`);
