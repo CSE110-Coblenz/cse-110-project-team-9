@@ -39,8 +39,8 @@ export class MainGameScreenController extends ScreenController {
     }
 
     public diceRoll(): number {
-        //return Math.floor(Math.random() * 6) + 1;
-        return 30;
+        return Math.floor(Math.random() * 6) + 1;
+        //return 30;
     }
 
     public async onPlayerRoll() {
