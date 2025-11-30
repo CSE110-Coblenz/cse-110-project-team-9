@@ -24,7 +24,7 @@ describe('MainGameScreenModel', () => {
     // The board is 1-indexed in the model's public interface
     expect(model.getNodeType(1)).toBe(NodeType.START);
     expect(model.getNodeType(2)).toBe(NodeType.EASY_QUESTION);
-    expect(model.getNodeType(40)).toBe(NodeType.MINIGAME);
+    expect(model.getNodeType(39)).toBe(NodeType.EASY_QUESTION);
   });
 
   it('should throw an error for an out-of-bounds node index', () => {
