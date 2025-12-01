@@ -238,8 +238,10 @@ describe("Quadratic Equation Formatting", () => {
       expect(equation).not.toMatch(/\+\s*-/);
       expect(equation).not.toMatch(/-\s*\+/);
       
-      // Should have proper spacing around operators
-      expect(equation).toMatch(/\s[+\-]\s/);
+      // Should have proper spacing around operators (only if operators exist)
+      if (equation.match(/[+\-]/)) {
+        expect(equation).toMatch(/\s[+\-]\s/);
+      }
     });
   });
 
