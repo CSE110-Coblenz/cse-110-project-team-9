@@ -1,4 +1,5 @@
 import type { Group } from "konva/lib/Group";
+import { DifficultyLevel } from "./class/MathEquations/dictionaryMethods";
 
 export interface View {
 	getGroup(): Group;

@@ -9,9 +9,10 @@ import { GuideScreenController } from "./screens/WizardGameScreen/GuideScreen/Gu
 import { AmongUsMenuScreenController } from "./screens/AmongUsGameScreen/MenuScreen/MenuScreenController";
 import { AmongUsGameScreenController } from "./screens/AmongUsGameScreen/GameScreen/GameScreenController";
 import { AmongUsResultsScreenController } from "./screens/AmongUsGameScreen/ResultsScreen/ResultsScreenController";
+import { MathScreenController } from "./screens/MathScreen/MathScreenController";
 import { STAGE_WIDTH, STAGE_HEIGHT } from "./constants";
 import { AudioController } from "./audios/AudioController";
-import {LinearScreenController} from "./screens/LinearScreen/LinearScreenController";
+import { LinearScreenController } from "./screens/LinearScreen/LinearScreenController";
 
 /**
  * Main Application - Coordinates all screens including minigames
@@ -26,6 +27,8 @@ class App implements ScreenSwitcher {
 	private homeController: HomeScreenController;
 	private settingsController: SettingsScreenController;
 	private mainGameController: MainGameScreenController;
+
+	private mathScreenController: MathScreenController;
 
 	// Wizard minigame screens
 	private WizardGameController: WizardGameScreenController;
@@ -71,6 +74,9 @@ class App implements ScreenSwitcher {
 		this.amongUsGameController = new AmongUsGameScreenController(this, this.audio);
 		this.amongUsResultsController = new AmongUsResultsScreenController(this);
 
+		// Initialize Math screen
+		this.mathScreenController = new MathScreenController(this);
+
 		//lienar screen controller
 		this.linearScreenController = new LinearScreenController(this, this.WizardGameController);
 
@@ -79,6 +85,7 @@ class App implements ScreenSwitcher {
 		this.layer.add(this.homeController.getView().getGroup());
 		this.layer.add(this.settingsController.getView().getGroup());
 		this.layer.add(this.mainGameController.getView().getGroup());
+		this.layer.add(this.mathScreenController.getView().getGroup());
 		this.layer.add(this.amongUsMenuController.getView().getGroup());
 		this.layer.add(this.amongUsGameController.getView().getGroup());
 		this.layer.add(this.amongUsResultsController.getView().getGroup());
@@ -93,7 +100,7 @@ class App implements ScreenSwitcher {
 		this.layer.add(this.linearScreenController.getView().getGroup());
 
 		// Start with starting screen visible
-		this._lastScreen = {type: "starting"};
+		this._lastScreen = { type: "starting" };
 		this.switchToScreen({ type: "starting" });
 	}
 
@@ -109,6 +116,7 @@ class App implements ScreenSwitcher {
 		this.homeController.hide();
 		this.settingsController.hide();
 		this.mainGameController.hide();
+		this.mathScreenController.hide();
 		this.WizardGameController.hide();
 
 		// Hide all minigame screens
@@ -160,13 +168,19 @@ class App implements ScreenSwitcher {
 			case "wizardguide":
 				this.WizardGuideController.show();
 				break;
+			case "math":
+				this.mathScreenController.init(); 
+				this.mathScreenController.show();
+				break;
 			case "linear_screen":
 				this.linearScreenController.show();
 				break;
 		}
 	}
 
-	get lastScreen() { return this._lastScreen; }
+	get lastScreen() { 
+		return this._lastScreen; 
+	}
 }
 
 // Initialize the application
