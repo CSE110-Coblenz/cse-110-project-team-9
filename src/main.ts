@@ -31,11 +31,11 @@ class App implements ScreenSwitcher {
 	private homeController: HomeScreenController;
 	private settingsController: SettingsScreenController;
 	private mainGameController: MainGameScreenController;
-	private mathScreenController: MathScreenController;
 
-	private mathScreenView: MathScreenView;
-	private mathScreenModel: MathScreenModel;
-	private mathHelper: QuadraticEquationsHelper;
+	private mathScreenController!: MathScreenController;
+	private mathScreenView!: MathScreenView;
+	private mathScreenModel!: MathScreenModel;
+	private mathHelper!: QuadraticEquationsHelper;
 
 	// Wizard minigame screens
 	private WizardGameController: WizardGameScreenController;
