@@ -99,11 +99,9 @@ export class StartingScreenView implements View {
 	 */
 	show(): void {
 		this.group.visible(true);
-		this.group.getLayer()?.draw();
 	}
 
 	hide(): void {
 		this.group.visible(false);
-		this.group.getLayer()?.draw();
 	}
 }

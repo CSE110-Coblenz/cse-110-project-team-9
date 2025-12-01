@@ -87,9 +87,6 @@ export class GuideScreenView implements View {
         );
     }
    
-    /**
-     * Helper Funtion — Creating text button (transparent background)
-     */
     private createTextButton(
         text: string,
         x: number,
@@ -143,9 +140,6 @@ export class GuideScreenView implements View {
         return this.group;
     }
    
-    /**
-     * Show / Hide
-     */
     show(): void {
         this.group.visible(true);
         this.group.moveToTop();

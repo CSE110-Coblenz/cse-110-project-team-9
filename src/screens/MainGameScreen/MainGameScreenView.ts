@@ -21,6 +21,7 @@ export class MainGameScreenView implements View {
     private bg2!: Konva.Image;
     private scaledBgWidth!: number;
     private boardHeadIndex = 39; // Start with the 40th tile (index 39) as the leftmost
+    private endScreenGroup: Konva.Group;
 
     constructor(model: MainGameScreenModel, audio: AudioController) {
         this.model = model;
@@ -62,29 +63,6 @@ export class MainGameScreenView implements View {
             this.group.add(this.bg2);
             this.bg2.moveToBottom();
         });
-        // const titleText = new Konva.Text({
-        //     x: 0,
-        //     y: 20,
-        //     width: STAGE_WIDTH,
-        //     text: "main game board",
-        //     fontSize: 30,
-        //     fontStyle: 'bold',
-        //     fill: '#333',
-        //     align: 'center'
-        // });
-        // this.group.add(titleText);
-
-        // Score Text
-        //const score = this.model.getPlayerScore(currentPlayerID);
-        // this.scoreText = new Konva.Text({
-        //     x: 20,
-        //     y: 20,
-        //     //text: `Score: ${score}`,
-        //     fontSize: 24,
-        //     fontStyle: 'bold',
-        //     fill: '#333',
-        // });
-        //this.group.add(this.scoreText);
 
 
         const nodeSize = 100;
@@ -215,6 +193,32 @@ export class MainGameScreenView implements View {
         this.group.add(this.nodeEventText);
 
         this.createMinigameWheel();
+
+        // Create End Screen Group (initially hidden)
+        this.endScreenGroup = new Konva.Group({
+            visible: false,
+        });
+
+        const endBackground = new Konva.Rect({
+            x: 0,
+            y: 0,
+            width: STAGE_WIDTH,
+            height: STAGE_HEIGHT,
+            fill: 'black',
+        });
+
+        const endText = new Konva.Text({
+            text: 'Completed!',
+            fontSize: 60,
+            fontFamily: 'homeScreenFont',
+            fill: 'white',
+            width: STAGE_WIDTH,
+            align: 'center',
+            y: STAGE_HEIGHT / 2 - 30,
+        });
+
+        this.endScreenGroup.add(endBackground, endText);
+        this.group.add(this.endScreenGroup);
     }
 
     
@@ -491,10 +495,12 @@ export class MainGameScreenView implements View {
                 return { label: "Hard Q", color: "#fab1a0" };
             case NodeType.MINIGAME:
                 return { label: "Minigame", color: "#a29bfe" };
-            default:
-                return { label: "Unknown", color: "#dfe6e9" };
+            case NodeType.END:
+                return { label: "End", color: "#dfe6e9" };
         }
     }
+
+    
 
     getTiles(): Konva.Circle[] {
         return this.tiles;
@@ -530,7 +536,7 @@ export class MainGameScreenView implements View {
     }
 
     displayRollResult(result: number): void {
-        this.diceResultText.text(`You rolled a ${result}!`);
+        this.diceResultText.text(`Rolled a ${result}!`);
         // Explicitly move the text to the top of the drawing order within its group.
         this.diceResultText.moveToTop();
         this.diceResultText.visible(true);
@@ -569,8 +575,17 @@ export class MainGameScreenView implements View {
         }, 3000); // Hide after 3 seconds
     }
 
-    // updateScoreDisplay(newScore: number): void {
-    //     this.scoreText.text(`Score: ${newScore}`);
-    //     this.group.getLayer()?.batchDraw();
-    // }
+    displayEnd(onDisplay?: () => void): void {
+        // Hide all other children of the main group
+        this.group.children.forEach(child => {
+            if (child !== this.endScreenGroup) {
+                child.hide();
+            }
+        });
+        this.endScreenGroup.show();
+        this.group.getLayer()?.batchDraw();
+
+        // Execute the callback if provided
+        onDisplay?.();
+    }
 }

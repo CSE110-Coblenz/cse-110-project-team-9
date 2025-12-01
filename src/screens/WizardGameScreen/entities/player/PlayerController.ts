@@ -7,6 +7,8 @@ import { PlayerHUD } from "./PlayerHUD";
 import { ENEMY_DAMAGE, PLAYER_STAMINA_DRAIN } from "../../config";
 
 export class PlayerController implements Collidable {
+    private questionActive = false;
+    
     constructor(
         private _model: PlayerModel, 
         private _hud: PlayerHUD,
@@ -15,7 +17,6 @@ export class PlayerController implements Collidable {
         private input: InputHandler,
         private exit: () => void,
         private mathQuestion: () => void
-
     ) {
         for (const key in this._model.audio) {
             this.audio.registerSound(key, this._model.audio[key]);
@@ -45,7 +46,8 @@ export class PlayerController implements Collidable {
             this.destroy();
         }
 
-        if (this._model.stamina == 0){
+        if (this._model.stamina === 0 && !this.questionActive) {
+            this.questionActive = true;
             this.mathQuestion();
         }
 
@@ -105,6 +107,14 @@ export class PlayerController implements Collidable {
         }
         this._hud.render();
         this.view.render(this._model);
+    }
+
+    handleMathQuestionAnswered(correct: boolean) {
+        this.questionActive = false;
+
+        if (correct) {
+            this._model.stamina = 100;
+        }
     }
 
     get model() { return this._model; }

@@ -18,7 +18,7 @@ export class HomeScreenView implements View {
 		 */
 		const video = document.createElement("video");
 		video.src = `${import.meta.env.BASE_URL}homescreen/video/homescreen_video.mp4`;
-		video.load(); //
+		video.load();
 		video.style.display = "none";
 		video.muted = true;
 

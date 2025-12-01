@@ -20,7 +20,8 @@ export type Screen =
 	| { type: "wizardguide" }
 	| { type: "amongUsMenu" }
 	| { type: "amongUsGame" }
-	| { type: "amongUsResult", score: number };
+	| { type: "amongUsResult", score: number }
+	| { type: "linear_screen"};
 
 export abstract class ScreenController {
 	abstract getView(): View;

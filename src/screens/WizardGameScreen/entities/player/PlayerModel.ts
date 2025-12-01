@@ -111,6 +111,7 @@ export class PlayerModel {
 
     set x(x: number) { this._x = x; }
     set y(y: number) { this._y = y; }
+    set stamina(v: number) { this._stamina = v; }
     set direction(d: "left" | "right") { this._direction = d; }
     set bodyCurrentAnimation(a: string) { this._bodyCurrentAnimation = a; }
     set attackCurrentAnimation(a: string | null) { this._attackCurrentAnimation = a; }

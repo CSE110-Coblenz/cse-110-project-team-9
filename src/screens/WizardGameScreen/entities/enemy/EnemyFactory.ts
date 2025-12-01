@@ -1,5 +1,5 @@
 import Konva from 'konva';
-import { EnemyViewer } from './EnemyView';
+import { EnemyView } from './EnemyView';
 import { EnemyModel } from './EnemyModel'; 
 import { EnemyController } from './EnemyController';
 import { AudioController } from '../../../../audios/AudioController';
@@ -20,7 +20,7 @@ export class EnemyFactory {
         audio: AudioController
     ): EnemyController {
         let model: EnemyModel;
-        let viewer: EnemyViewer;
+        let viewer: EnemyView;
 
         switch(type) {
             case "orc":
@@ -32,7 +32,7 @@ export class EnemyFactory {
                     ORC_BOUNDING_BOXES,
                     ORC_ATTACK_BOUNDING_BOXES
                 );
-                viewer = new EnemyViewer(
+                viewer = new EnemyView(
                     group,
                     { image: orcSrc, animations: ORC_ANIMATIONS },
                     { image: orcAttackSrc, animations: ORC_ATTACK_ANIMATIONS },
