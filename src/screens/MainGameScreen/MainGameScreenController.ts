@@ -37,7 +37,6 @@ export class MainGameScreenController extends ScreenController {
 
     public diceRoll(): number {
         return Math.floor(Math.random() * 6) + 1;
-        //return 30;
     }
 
     public async onPlayerRoll() {
@@ -49,61 +48,53 @@ export class MainGameScreenController extends ScreenController {
         this.audio.play("dice_sfx", false);
         this.view.displayRollResult(roll);
 
-        // Execute the rest of the turn logic asynchronously.
         this.executeTurn(roll);
     }
 
     private async executeTurn(roll: number): Promise<void> {
         const currentPosition = this.gameModel.getPlayerPosition();
         const potentialNewPosition = currentPosition + roll;
-        const finalPosition = this.BOARD_LENGTH - 1; // End node is at index 39
+        const finalPosition = this.BOARD_LENGTH - 1;
 
-        // Calculate how many moves we can actually make before reaching the end
         let actualMoves: number;
         let targetPosition: number;
 
         if (potentialNewPosition >= finalPosition) {
-            // Player would reach or pass the end node - stop at the end
             actualMoves = finalPosition - currentPosition;
             targetPosition = finalPosition;
         } else {
-            // Normal move - can use the full roll
             actualMoves = roll;
             targetPosition = potentialNewPosition;
         }
 
-        // Only animate the actual moves we can make
         if (actualMoves > 0) {
             await this.view.animatePlayerPieceRoll(actualMoves);
         }
 
-        // Set the final position
         this.gameModel.setPlayerPosition(targetPosition);
-        this.triggerNodeEvent(targetPosition + 1); // getNodeType is 1-indexed
+        this.triggerNodeEvent(targetPosition + 1);
 
-        // Only re-enable the roll button if we didn't reach the end
         if (targetPosition < finalPosition) {
             this.view.enableRollButton();
         }
-        // If we reached the end, triggerNodeEvent will call displayEnd and the button stays disabled
     }
 
     public triggerNodeEvent(nodeIndex: number): void {
         const nodeType = this.gameModel.getNodeType(nodeIndex); 
         switch (nodeType)
         {   
-            ///used to be if statements; set up casee statements for maintainbility 
             case NodeType.EASY_QUESTION:
                 setCurrentDifficulty("easy" as DifficultyLevel);
-                this.view.displayNodeEvent("You landed on an Easy Question tile!");
+                this.view.displayNodeEvent("Landed on a Question tile!");
                 this.screenSwitcher.layerOnScreen({ type: "math" });
-                //try diaabling roll button here
                 break;
+
             case NodeType.MEDIUM_QUESTION:
                 setCurrentDifficulty("medium" as DifficultyLevel);
                 this.view.displayNodeEvent("You landed on a Medium Question tile!");
                 this.screenSwitcher.layerOnScreen({ type: "math" });
                 break;
+
             case NodeType.HARD_QUESTION:
                 setCurrentDifficulty("hard" as DifficultyLevel);
                 this.view.displayNodeEvent("You landed on a Hard Question tile!");  
@@ -116,12 +107,10 @@ export class MainGameScreenController extends ScreenController {
                 break;
 
             case NodeType.START:
-                // No action needed for the start tile
                 break;
 
             case NodeType.END:
                 this.view.displayEnd(() => {
-                    // After 5 seconds, reload the page
                     setTimeout(() => window.location.reload(), 5000);
                 });
                 break;
@@ -131,17 +120,12 @@ export class MainGameScreenController extends ScreenController {
         }
     }
 
-    /**
-     * Randomly select and launch a minigame
-     */
     private async triggerRandomMinigame(): Promise<void> {
         const choice = await this.view.spinMinigameWheel();
 
         if (choice === 1) {
-            // Red side: Launch Among Us minigame
             this.screenSwitcher.switchToScreen({ type: "amongUsMenu" });
         } else {
-            // Blue side: Launch Wizard minigame
             this.screenSwitcher.switchToScreen({ type: "wizardminigame" });
         }
     }
