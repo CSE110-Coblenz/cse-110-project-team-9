@@ -4,24 +4,20 @@ import {
   QuadraticEquationsHelper,
   getCurrentDifficulty,
 } from "../../class/MathEquations/QuadraticEquationsHelper";
-import type { ScreenSwitcher } from "../../types";
+import { ScreenController, type ScreenSwitcher } from "../../types";
 
-export class MathScreenController {
+export class MathScreenController extends ScreenController {
   private view: MathScreenView;
   private model: MathScreenModel;
   private helper: QuadraticEquationsHelper;
   private screenSwitcher: ScreenSwitcher;
   private phase: "factored" | "solutions" = "factored";
 
-  constructor(
-    view: MathScreenView,
-    model: MathScreenModel,
-    helper: QuadraticEquationsHelper,
-    screenSwitcher: ScreenSwitcher
-  ) {
-    this.view = view;
-    this.model = model;
-    this.helper = helper;
+  constructor(screenSwitcher: ScreenSwitcher) {
+    super();
+    this.view = new MathScreenView();
+    this.model = new MathScreenModel();
+    this.helper = new QuadraticEquationsHelper();
     this.screenSwitcher = screenSwitcher;
 
     this.view.setOnCheck((answer) => this.handleCheck(answer));
@@ -61,9 +57,12 @@ export class MathScreenController {
       this.view.clearAnswer();
     } else {
       this.view.showFeedback(
-        "❌ Try again. Make sure parentheses and signs match.",
+        "❌ Incorrect.",
         false
       );
+      setTimeout(() => {
+        this.hide();
+      }, 800);
     }
   }
 
@@ -71,26 +70,17 @@ export class MathScreenController {
     const isCorrect = this.helper.checkSolutions(userInput);
 
     if (isCorrect) {
-      const question = this.model.getCurrentQuestion();
-      if (question) {
-        this.model.addPoints(question.points);
-      }
-
-      const score = this.model.getScore();
-      this.view.showFeedback(`✅ Correct! Score: ${score}`, true);
-
-      // After finishing ONE full question (factored + solutions),
-      // hide overlay after question is answered correctly.
-      setTimeout(() => {
-        this.hide();
-        
-      }, 800);
+      this.view.showFeedback("✅ Correct!", true);
     } else {
       this.view.showFeedback(
-        "❌ Incorrect solutions. Try again (e.g., 2, 5).",
+        "❌ Incorrect.",
         false
       );
     }
+
+    setTimeout(() => {
+      this.hide();
+    }, 800);
   }
 
   show(): void {

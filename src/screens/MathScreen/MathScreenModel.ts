@@ -2,7 +2,6 @@ import type { QuadraticQuestion } from "../../class/MathEquations/QuadraticEquat
 
 export class MathScreenModel {
   private currentQuestion: QuadraticQuestion | null = null;
-  private score = 0;
 
   constructor() {}
 
@@ -13,13 +12,5 @@ export class MathScreenModel {
 
   getCurrentQuestion(): QuadraticQuestion | null {
     return this.currentQuestion;
-  }
-
-  addPoints(points: number): void {
-    this.score += points;
-  }
-
-  getScore(): number {
-    return this.score;
   }
 }

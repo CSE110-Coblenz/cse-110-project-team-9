@@ -1,5 +1,4 @@
 import Konva from "konva";
-import { STAGE_WIDTH, STAGE_HEIGHT } from "../../constants";
 
 export class MathScreenView {
   private group: Konva.Group;
@@ -19,6 +18,7 @@ export class MathScreenView {
   private isTyping = false;
 
   private onCheckCallback: ((answer: string) => void) | null = null;
+  private keyHandler = (e: KeyboardEvent) => this.handleKey(e);
 
   constructor() {
     this.group = new Konva.Group({ visible: true });
@@ -149,9 +149,6 @@ export class MathScreenView {
     // Click events for check
     this.checkButtonRect.on("click", () => this.handleCheck());
     this.checkButtonText.on("click", () => this.handleCheck());
-
-    // Keyboard functionality
-    window.addEventListener("keydown", (e) => this.handleKey(e));
   }
 
   public setOnCheck(cb: (answer: string) => void): void {
@@ -246,6 +243,7 @@ export class MathScreenView {
 	show(): void {
 		this.group.visible(true);
 		this.group.getLayer()?.draw();
+		window.addEventListener("keydown", this.keyHandler);
 	}
 
 	/**
@@ -254,6 +252,7 @@ export class MathScreenView {
 	hide(): void {
 		this.group.visible(false);
 		this.group.getLayer()?.draw();
+		window.removeEventListener("keydown", this.keyHandler);
 	}
 
 	getGroup(): Konva.Group {

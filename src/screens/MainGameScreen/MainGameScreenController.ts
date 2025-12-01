@@ -91,13 +91,13 @@ export class MainGameScreenController extends ScreenController {
 
             case NodeType.MEDIUM_QUESTION:
                 setCurrentDifficulty("medium" as DifficultyLevel);
-                this.view.displayNodeEvent("You landed on a Medium Question tile!");
+                this.view.displayNodeEvent("Landed on a Medium Question tile!");
                 this.screenSwitcher.layerOnScreen({ type: "math" });
                 break;
 
             case NodeType.HARD_QUESTION:
                 setCurrentDifficulty("hard" as DifficultyLevel);
-                this.view.displayNodeEvent("You landed on a Hard Question tile!");  
+                this.view.displayNodeEvent("Landed on a Hard Question tile!");  
                 this.screenSwitcher.layerOnScreen({ type: "math" });
                 break;
 
