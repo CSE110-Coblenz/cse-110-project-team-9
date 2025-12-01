@@ -80,7 +80,7 @@ export class MathScreenController {
       this.view.showFeedback(`✅ Correct! Score: ${score}`, true);
 
       // After finishing ONE full question (factored + solutions),
-      // go back to the main board screen.
+      // hide overlay after question is answered correctly.
       setTimeout(() => {
         this.hide();
         
