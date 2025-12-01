@@ -127,3 +127,7 @@ src/
 
 - Repository: [GitHub](https://github.com/CSE110-Coblenz/cse-110-project-team-9)
 - Issues: [GitHub Issues](https://github.com/CSE110-Coblenz/cse-110-project-team-9/issues)
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
