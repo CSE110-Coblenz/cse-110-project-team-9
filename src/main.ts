@@ -12,11 +12,7 @@ import { AmongUsResultsScreenController } from "./screens/AmongUsGameScreen/Resu
 import { MathScreenController } from "./screens/MathScreen/MathScreenController";
 import { STAGE_WIDTH, STAGE_HEIGHT } from "./constants";
 import { AudioController } from "./audios/AudioController";
-import {LinearScreenController} from "./screens/LinearScreen/LinearScreenController";
-
-import { MathScreenView } from "./screens/MathScreen/MathScreenView";
-import { MathScreenModel } from "./screens/MathScreen/MathScreenModel";
-import { QuadraticEquationsHelper } from "./class/MathEquations/QuadraticEquationsHelper";
+import { LinearScreenController } from "./screens/LinearScreen/LinearScreenController";
 
 /**
  * Main Application - Coordinates all screens including minigames
@@ -32,10 +28,7 @@ class App implements ScreenSwitcher {
 	private settingsController: SettingsScreenController;
 	private mainGameController: MainGameScreenController;
 
-	private mathScreenController!: MathScreenController;
-	private mathScreenView!: MathScreenView;
-	private mathScreenModel!: MathScreenModel;
-	private mathHelper!: QuadraticEquationsHelper;
+	private mathScreenController: MathScreenController;
 
 	// Wizard minigame screens
 	private WizardGameController: WizardGameScreenController;
@@ -80,6 +73,9 @@ class App implements ScreenSwitcher {
 		this.amongUsMenuController = new AmongUsMenuScreenController(this);
 		this.amongUsGameController = new AmongUsGameScreenController(this, this.audio);
 		this.amongUsResultsController = new AmongUsResultsScreenController(this);
+
+		// Initialize Math screen
+		this.mathScreenController = new MathScreenController(this);
 
 		//lienar screen controller
 		this.linearScreenController = new LinearScreenController(this, this.WizardGameController);
@@ -172,15 +168,14 @@ class App implements ScreenSwitcher {
 			case "wizardguide":
 				this.WizardGuideController.show();
 				break;
-			
 			case "math":
 				this.mathScreenController.init(); 
 				this.mathScreenController.show();
+				break;
 			case "linear_screen":
 				this.linearScreenController.show();
 				break;
 		}
-		
 	}
 
 	get lastScreen() { 
