@@ -92,10 +92,12 @@ export class MainGameScreenController extends ScreenController {
         const nodeType = this.gameModel.getNodeType(nodeIndex); 
         switch (nodeType)
         {   
+            ///used to be if statements; set up casee statements for maintainbility 
             case NodeType.EASY_QUESTION:
                 setCurrentDifficulty("easy" as DifficultyLevel);
                 this.view.displayNodeEvent("You landed on an Easy Question tile!");
                 this.screenSwitcher.layerOnScreen({ type: "math" });
+                //try diaabling roll button here
                 break;
             case NodeType.MEDIUM_QUESTION:
                 setCurrentDifficulty("medium" as DifficultyLevel);
